@@ -1,0 +1,29 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #fff;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+
+
+.title-underline-1 {
+    border-image-source: linear-gradient(to right, #C62020, #FF6600);
+    border-image-slice: 1;
+}
+
+.title-underline-2 {
+    border-image-source: linear-gradient(to right, #FF6600, #C62020);
+    border-image-slice: 1;
+}
+
+.page-section {
+    padding: 4rem 0;
+}

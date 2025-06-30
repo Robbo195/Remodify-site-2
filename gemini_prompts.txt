@@ -1,0 +1,2 @@
+29/06 Finished gemini prompt with Y/M/M text boxes and 'Search for a part'
+Backup must be uploaded to GitHub tomorrow
