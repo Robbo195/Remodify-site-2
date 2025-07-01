@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+select.placeholder-selected {
+  color: #6c757d;
+}
+
+select option {
+  color: #000000;
+}

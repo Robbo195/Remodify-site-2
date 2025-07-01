@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Container, Form, Row, Col, Button } from 'react-bootstrap';
+import { Container, Form, Row, Col, Button, Modal } from 'react-bootstrap';
 import { useDropzone } from 'react-dropzone';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,6 +13,8 @@ const CreateListing = () => {
   const [year, setYear] = useState('');
   const [condition, setCondition] = useState('');
   const [files, setFiles] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showLoginModal, setShowLoginModal] = useState(false); // New state for modal
   const navigate = useNavigate();
 
   const onDrop = useCallback(acceptedFiles => {
@@ -30,9 +32,21 @@ const CreateListing = () => {
     if (isFormValid) {
       // Handle form submission logic here
       console.log({ title, description, price, manufacturer, model, year, condition, files });
-      navigate('/SellersAddress');
+      navigate('/SignupInformation');
+    } else {
+      setErrorMessage('*you must complete all mandatory boxes');
     }
   };
+
+  const handleLoginClick = () => {
+    if (isFormValid) {
+      setShowLoginModal(true); // Show the modal
+    } else {
+      setErrorMessage('*you must complete all mandatory boxes');
+    }
+  };
+
+  const handleCloseLoginModal = () => setShowLoginModal(false);
 
   const years = [];
   for (let i = 1940; i <= 2026; i++) {
@@ -85,8 +99,19 @@ const CreateListing = () => {
                 </Col>
                 <Col>
                   <Form.Group controlId="formCondition">
-                    <Form.Label>Condition</Form.Label>
-                    <Form.Control type="text" placeholder="Enter condition" value={condition} onChange={(e) => setCondition(e.target.value)} required />
+                    <Form.Label>Condition <span style={{ color: 'red' }}>*</span></Form.Label>
+                    <Form.Select
+                      value={condition}
+                      onChange={(e) => setCondition(e.target.value)}
+                      required
+                      className={!condition ? 'placeholder-selected' : ''}
+                    >
+                      <option value="" disabled hidden>Select Condition</option>
+                      <option value="Brand new">Brand new</option>
+                      <option value="Used - like new">Used - like new</option>
+                      <option value="Used">Used</option>
+                      <option value="Worn">Worn</option>
+                    </Form.Select>
                   </Form.Group>
                 </Col>
               </Row>
@@ -96,9 +121,13 @@ const CreateListing = () => {
                 <Form.Control type="text" placeholder="Enter price" value={price} onChange={(e) => setPrice(e.target.value)} required />
               </Form.Group>
 
-              <Button style={{ backgroundColor: 'rgb(198, 32, 32)', borderColor: 'rgb(198, 32, 32)', color: 'white' }} type="submit" disabled={!isFormValid}>
-                Continue to Address
+              <Button style={{ backgroundColor: 'rgb(198, 32, 32)', borderColor: 'rgb(198, 32, 32)', color: 'white', marginRight: '10px' }} type="submit">
+                Continue to Sign-Up
               </Button>
+              <Button style={{ backgroundColor: 'rgb(255, 102, 0)', borderColor: 'rgb(255, 102, 0)', color: 'white' }} type="button" onClick={handleLoginClick}>
+                Log-in
+              </Button>
+              {errorMessage && <p style={{ color: 'grey', fontStyle: 'italic', marginTop: '10px' }}>{errorMessage}</p>}
             </Form>
           </Col>
           <Col md={6}>
@@ -129,6 +158,17 @@ const CreateListing = () => {
           </Col>
         </Row>
       </Container>
+
+      <Modal show={showLoginModal} onHide={handleCloseLoginModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Log in</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="text-center">
+          <Button variant="primary" style={{ backgroundColor: '#4285F4', borderColor: '#4285F4', color: 'white' }}>
+            Log-in with Google
+          </Button>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
