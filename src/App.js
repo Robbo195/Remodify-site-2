@@ -12,6 +12,8 @@ import Services from './pages/Services';
 import Contact from './pages/Contact';
 import Landing from './pages/Landing';
 import Results from './pages/Results';
+import CreateListing from './pages/CreateListing';
+import SellersAddress from './pages/SellersAddress';
 
 function App() {
   return (
@@ -48,6 +50,8 @@ function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/results" element={<Results />} />
+          <Route path="/create-listing" element={<CreateListing />} />
+          <Route path="/SellersAddress" element={<SellersAddress />} />
         </Routes>
       </div>
     </Router>
