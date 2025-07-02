@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Form, Row, Col, Button, Carousel } from 'react-bootstrap';
+import { Typeahead } from 'react-bootstrap-typeahead';
+
 import nlp from 'compromise';
 import logo from '../assets/logo.png';
 
@@ -9,10 +11,21 @@ const Landing = () => {
   const [year, setYear] = useState('');
   const [model, setModel] = useState('');
   const [manufacturer, setManufacturer] = useState('');
+  const [showOtherManufacturerField, setShowOtherManufacturerField] = useState(false);
   const [partNumber, setPartNumber] = useState('');
   const [keyword, setKeyword] = useState('');
   const [anyPartSearch, setAnyPartSearch] = useState('');
   const navigate = useNavigate();
+
+  const carBrands = [
+    "Abarth", "Alfa Romeo", "Alpine", "Aston Martin", "Audi", "Bentley", "BMW", "BYD",
+    "Chery", "Chevrolet", "Chrysler", "Citroen", "Cupra", "Ferrari", "Fiat", "Ford",
+    "Genesis", "GWM", "Haval", "Honda", "Hyundai", "Ineos", "Isuzu", "Jaecoo", "Jaguar",
+    "Jeep", "Kia", "Lamborghini", "Land Rover", "LDV", "Lexus", "Lotus", "Mahindra",
+    "Maserati", "Mazda", "McLaren", "Mercedes-Benz", "MG", "MINI", "Mitsubishi", "Nissan",
+    "Peugeot", "Polestar", "Porsche", "RAM", "Renault", "Rolls-Royce", "Skoda", "Ssangyong",
+    "Subaru", "Suzuki", "Tesla", "Toyota", "Volkswagen", "Volvo", "Zeekr", "Other"
+  ];
 
   const handleAnyPartSearchChange = (e) => {
     const text = e.target.value;
@@ -101,7 +114,14 @@ const Landing = () => {
   }
 
   const handleSearch = () => {
-    navigate('/results', { state: { year, model, manufacturer, partNumber, keyword } });
+    const queryParams = new URLSearchParams({
+      year,
+      manufacturer,
+      model,
+      partNumber,
+      keyword,
+    }).toString();
+    navigate(`/results?${queryParams}`);
   };
 
   return (
@@ -128,8 +148,46 @@ const Landing = () => {
             <Col>
               <Form.Group controlId="formManufacturer">
                 <Form.Label>Manufacturer</Form.Label>
-                <Form.Control type="text" placeholder="Enter manufacturer" value={manufacturer} onChange={(e) => setManufacturer(e.target.value)} />
+                <Typeahead
+                  id="manufacturer-typeahead"
+                  options={carBrands}
+                  onChange={(selected) => {
+                    if (selected.length > 0) {
+                      if (selected[0] === 'Other') {
+                        setShowOtherManufacturerField(true);
+                        setManufacturer(''); // Clear manufacturer when 'Other' is selected
+                      } else {
+                        setShowOtherManufacturerField(false);
+                        setManufacturer(selected[0]);
+                      }
+                    } else {
+                      setShowOtherManufacturerField(false);
+                      setManufacturer('');
+                    }
+                  }}
+                  onInputChange={(text) => {
+                    setManufacturer(text);
+                    if (text === 'Other') {
+                      setShowOtherManufacturerField(true);
+                    } else {
+                      setShowOtherManufacturerField(false);
+                    }
+                  }}
+                  selected={manufacturer ? [manufacturer] : []}
+                  placeholder="Enter or select manufacturer"
+                />
               </Form.Group>
+              {showOtherManufacturerField && (
+                <Form.Group controlId="formOtherManufacturer" className="mt-2">
+                  <Form.Label>Specify Other Manufacturer</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter manufacturer name"
+                    value={manufacturer}
+                    onChange={(e) => setManufacturer(e.target.value)}
+                  />
+                </Form.Group>
+              )}
             </Col>
             <Col>
               <Form.Group controlId="formModel">
