@@ -1,7 +1,6 @@
 .App {
   text-align: center;
 }
-
 .text-left {
   text-align: left;
 }
@@ -68,7 +67,6 @@
   max-width: 100%;
   height: auto;
 }
-
 .carousel-btn {
   position: absolute;
   top: 50%;
@@ -87,6 +85,7 @@
 
 .carousel-btn.next {
   right: 0;
+
 }
 
 .padding-top-50 {

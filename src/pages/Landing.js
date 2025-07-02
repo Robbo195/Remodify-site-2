@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Form, Row, Col, Button, Carousel } from 'react-bootstrap';
+import FeaturedCarousel from '../components/FeaturedCarousel';
 import { Typeahead } from 'react-bootstrap-typeahead';
 
 import nlp from 'compromise';
@@ -127,12 +128,12 @@ const Landing = () => {
   return (
     <div className="page-section">
       <Container className="text-start">
-        <Form.Group controlId="formAnyPartSearch" className="mb-4">
+        <h1 className="title-underline-1 mt-5 mb-5" style={{ fontSize: '24pt' }}>What part are you looking for today?</h1>
+        <Form.Group controlId="formAnyPartSearch" className="mt-5 mb-4">
           <Form.Control type="text" placeholder="Search any part" className="form-control-lg" value={anyPartSearch} onChange={handleAnyPartSearchChange} style={{ border: '1px solid rgb(255, 102, 0)' }} />
         </Form.Group>
-
-        <h1 className="title-underline-1" style={{ fontSize: '24pt' }}>Manually search for a part</h1>
-        <Form>
+        <p className="text-center mb-4" style={{ fontSize: '20px' }}>OR search by criteria</p>
+        <Form className="mt-5">
           <Row className="mb-3">
             <Col>
               <Form.Group controlId="formYear">
@@ -217,57 +218,39 @@ const Landing = () => {
           </Row>
         </Form>
 
-        <div className="mt-5">
-          <h1 className="title-underline-1" style={{ fontSize: '24pt' }}>Featured</h1>
-          <Carousel>
-            <Carousel.Item>
-              <img
-                className="d-block w-100"
-                src={logo}
-                alt="First slide"
-              />
-              <Carousel.Caption>
-                <h3>First slide label</h3>
-                <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-              </Carousel.Caption>
-            </Carousel.Item>
-            <Carousel.Item>
-              <img
-                className="d-block w-100"
-                src={logo}
-                alt="Second slide"
-              />
-
-              <Carousel.Caption>
-                <h3>Second slide label</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-              </Carousel.Caption>
-            </Carousel.Item>
-            <Carousel.Item>
-              <img
-                className="d-block w-100"
-                src={logo}
-                alt="Third slide"
-              />
-
-              <Carousel.Caption>
-                <h3>Third slide label</h3>
-                <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
-              </Carousel.Caption>
-            </Carousel.Item>
-            <Carousel.Item>
-              <img
-                className="d-block w-100"
-                src={logo}
-                alt="Fourth slide"
-              />
-
-              <Carousel.Caption>
-                <h3>Fourth slide label</h3>
-                <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
-              </Carousel.Caption>
-            </Carousel.Item>
-          </Carousel>
+<div className="mt-5">
+  <h1 className="title-underline-1" style={{ fontSize: '24pt' }}>Featured</h1>
+  <Carousel>
+    <Carousel.Item>
+      <img className="d-block w-100" src={logo} alt="First slide" />
+      <Carousel.Caption>
+        <h3>First slide label</h3>
+        <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+      </Carousel.Caption>
+    </Carousel.Item>
+    <Carousel.Item>
+      <img className="d-block w-100" src={logo} alt="Second slide" />
+      <Carousel.Caption>
+        <h3>Second slide label</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      </Carousel.Caption>
+    </Carousel.Item>
+    <Carousel.Item>
+      <img className="d-block w-100" src={logo} alt="Third slide" />
+      <Carousel.Caption>
+        <h3>Third slide label</h3>
+        <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+      </Carousel.Caption>
+    </Carousel.Item>
+    <Carousel.Item>
+      <img className="d-block w-100" src={logo} alt="Fourth slide" />
+      <Carousel.Caption>
+        <h3>Fourth slide label</h3>
+        <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+      </Carousel.Caption>
+    </Carousel.Item>
+  </Carousel>
+</div>
         </div>
       </Container>
     </div>
