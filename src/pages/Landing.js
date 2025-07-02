@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Form, Row, Col, Button } from 'react-bootstrap';
+import { Container, Form, Row, Col, Button, Carousel } from 'react-bootstrap';
 import nlp from 'compromise';
+import logo from '../assets/logo.png';
 
 const Landing = () => {
   const [year, setYear] = useState('');
@@ -125,15 +126,15 @@ const Landing = () => {
               </Form.Group>
             </Col>
             <Col>
-              <Form.Group controlId="formModel">
-                <Form.Label>Model</Form.Label>
-                <Form.Control type="text" placeholder="Enter model" value={model} onChange={(e) => setModel(e.target.value)} />
-              </Form.Group>
-            </Col>
-            <Col>
               <Form.Group controlId="formManufacturer">
                 <Form.Label>Manufacturer</Form.Label>
                 <Form.Control type="text" placeholder="Enter manufacturer" value={manufacturer} onChange={(e) => setManufacturer(e.target.value)} />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group controlId="formModel">
+                <Form.Label>Model</Form.Label>
+                <Form.Control type="text" placeholder="Enter model" value={model} onChange={(e) => setModel(e.target.value)} />
               </Form.Group>
             </Col>
           </Row>
@@ -157,6 +158,59 @@ const Landing = () => {
             </Col>
           </Row>
         </Form>
+
+        <div className="mt-5">
+          <h1 className="title-underline-1" style={{ fontSize: '24pt' }}>Featured</h1>
+          <Carousel>
+            <Carousel.Item>
+              <img
+                className="d-block w-100"
+                src={logo}
+                alt="First slide"
+              />
+              <Carousel.Caption>
+                <h3>First slide label</h3>
+                <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+              </Carousel.Caption>
+            </Carousel.Item>
+            <Carousel.Item>
+              <img
+                className="d-block w-100"
+                src={logo}
+                alt="Second slide"
+              />
+
+              <Carousel.Caption>
+                <h3>Second slide label</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+              </Carousel.Caption>
+            </Carousel.Item>
+            <Carousel.Item>
+              <img
+                className="d-block w-100"
+                src={logo}
+                alt="Third slide"
+              />
+
+              <Carousel.Caption>
+                <h3>Third slide label</h3>
+                <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+              </Carousel.Caption>
+            </Carousel.Item>
+            <Carousel.Item>
+              <img
+                className="d-block w-100"
+                src={logo}
+                alt="Fourth slide"
+              />
+
+              <Carousel.Caption>
+                <h3>Fourth slide label</h3>
+                <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+              </Carousel.Caption>
+            </Carousel.Item>
+          </Carousel>
+        </div>
       </Container>
     </div>
   );
