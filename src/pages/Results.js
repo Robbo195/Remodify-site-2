@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import Fuse from 'fuse.js';
 
@@ -11,14 +10,14 @@ const Results = () => {
   useEffect(() => {
     const loadInventoryAndSearch = async () => {
       try {
-        // Fetch live inventory (replace this URL with your real API)
-        const response = await fetch("/api/parts");
+        // ✅ Load inventory from mock JSON file in /public
+        const response = await fetch("/parts.json");
         if (!response.ok) {
           throw new Error(`Failed to fetch parts: ${response.statusText}`);
         }
         const inventory = await response.json();
 
-        // Get user input from query params
+        // Extract search parameters from URL
         const params = new URLSearchParams(window.location.search);
         const search = {
           year: params.get("year") || "",
