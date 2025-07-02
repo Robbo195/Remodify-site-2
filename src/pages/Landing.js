@@ -251,7 +251,6 @@ const Landing = () => {
     </Carousel.Item>
   </Carousel>
 </div>
-        </div>
       </Container>
     </div>
   );
