@@ -2,6 +2,10 @@
   text-align: center;
 }
 
+.text-left {
+  text-align: left;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -83,4 +87,18 @@
 
 .carousel-btn.next {
   right: 0;
+}
+
+.padding-top-50 {
+  padding-top: 25px;
+}
+
+.highlight-box {
+  border: 2px solid black;
+  border-radius: 15px;
+  padding: 15px;
+  padding-left: 15px; /* Align text with original margin */
+  margin-left: -15px; /* Extend box to the left edge of the container */
+  width: calc(100% + 15px); /* Extend width to cover the negative margin */
+  box-sizing: border-box;
 }
