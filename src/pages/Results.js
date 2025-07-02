@@ -1,39 +1,97 @@
 
-import React from 'react';
-import { useLocation } from 'react-router-dom';
-import { Container, Row, Col } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import Fuse from 'fuse.js';
 
 const Results = () => {
-  const location = useLocation();
-  const { year, model, manufacturer, partNumber, keyword } = location.state || {};
+  const [results, setResults] = useState([]);
+  const [searchInputs, setSearchInputs] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const loadInventoryAndSearch = async () => {
+      try {
+        // Fetch live inventory (replace this URL with your real API)
+        const response = await fetch("/api/parts");
+        if (!response.ok) {
+          throw new Error(`Failed to fetch parts: ${response.statusText}`);
+        }
+        const inventory = await response.json();
+
+        // Get user input from query params
+        const params = new URLSearchParams(window.location.search);
+        const search = {
+          year: params.get("year") || "",
+          manufacturer: params.get("manufacturer") || "",
+          model: params.get("model") || "",
+          partNumber: params.get("partNumber") || "",
+          keyword: params.get("keyword") || ""
+        };
+        setSearchInputs(search);
+
+        const searchString = Object.values(search).filter(Boolean).join(" ").toLowerCase();
+
+        const fuse = new Fuse(inventory, {
+          keys: [
+            { name: "year", weight: 0.15 },
+            { name: "manufacturer", weight: 0.25 },
+            { name: "model", weight: 0.25 },
+            { name: "partNumber", weight: 0.2 },
+            { name: "description", weight: 0.15 }
+          ],
+          threshold: 0.4,
+          includeScore: true
+        });
+
+        const searchResults = searchString
+          ? fuse.search(searchString)
+          : inventory.map(item => ({ item, score: 0 }));
+
+        setResults(searchResults);
+      } catch (e) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadInventoryAndSearch();
+  }, []);
+
+  const renderResults = () => {
+    if (loading) {
+      return <p>Loading results...</p>;
+    }
+
+    if (error) {
+      return <p>Error: {error}</p>;
+    }
+
+    if (results.length === 0) {
+      return <p>No parts matched your search.</p>;
+    }
+
+    return results.map(({ item, score }) => (
+      <div key={item.partNumber}>
+        <strong>{item.year} {item.manufacturer} {item.model}</strong><br />
+        Part #: {item.partNumber}<br />
+        Description: {item.description}<br />
+        Match Score: {(1 - score).toFixed(2)}
+      </div>
+    ));
+  };
 
   return (
     <div className="page-section">
-      <Container className="text-start">
+      <div className="container text-start">
         <h1 className="title-underline-1">Results</h1>
         <p className="fst-italic">
-          You searched for a {year} {manufacturer} {model} {partNumber && `part number ${partNumber}`} {keyword && `(${keyword})`}.
+          You searched for a {searchInputs.year} {searchInputs.manufacturer} {searchInputs.model} {searchInputs.partNumber && `part number ${searchInputs.partNumber}`} {searchInputs.keyword && `(${searchInputs.keyword})`}.
         </p>
-
-        <Row className="mt-4">
-          {[...Array(6)].map((_, index) => (
-            <Col key={index} lg={4} md={6} sm={12} className="mb-4">
-              <div style={{
-                border: '1px solid #ddd',
-                padding: '15px',
-                minHeight: '300px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: '#f9f9f9'
-              }}>
-                Listing {index + 1}
-                {/* Placeholder for image and listing details */}
-              </div>
-            </Col>
-          ))}
-        </Row>
-      </Container>
+        <div id="resultsContainer">
+          {renderResults()}
+        </div>
+      </div>
     </div>
   );
 };
