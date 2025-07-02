@@ -3,5 +3,15 @@
   { "year": "2020", "manufacturer": "Honda", "model": "Civic", "partNumber": "67890", "description": "Rear brake pads" },
   { "year": "2022", "manufacturer": "Ford", "model": "Mustang", "partNumber": "54321", "description": "Headlight assembly" },
   { "year": "2019", "manufacturer": "Chevrolet", "model": "Silverado", "partNumber": "98765", "description": "Tailgate handle" },
-  { "year": "2023", "manufacturer": "BMW", "model": "X5", "partNumber": "13579", "description": "Grille assembly" }
+  { "year": "2023", "manufacturer": "BMW", "model": "X5", "partNumber": "13579", "description": "Grille assembly" },
+  { "year": "2018", "manufacturer": "Nissan", "model": "Altima", "partNumber": "24680", "description": "Left mirror" },
+  { "year": "2017", "manufacturer": "Hyundai", "model": "Elantra", "partNumber": "11223", "description": "Air filter box" },
+  { "year": "2016", "manufacturer": "Mazda", "model": "CX-5", "partNumber": "33445", "description": "Rear door handle" },
+  { "year": "2015", "manufacturer": "Kia", "model": "Sportage", "partNumber": "55667", "description": "Window regulator" },
+  { "year": "2014", "manufacturer": "Volkswagen", "model": "Jetta", "partNumber": "77889", "description": "Front fender" },
+  { "year": "2020", "manufacturer": "Subaru", "model": "Outback", "partNumber": "99001", "description": "Roof rack cross bar" },
+  { "year": "2019", "manufacturer": "Jeep", "model": "Wrangler", "partNumber": "10101", "description": "Spare tire cover" },
+  { "year": "2021", "manufacturer": "Tesla", "model": "Model 3", "partNumber": "20202", "description": "Touchscreen display unit" },
+  { "year": "2018", "manufacturer": "Toyota", "model": "Prius", "partNumber": "30303", "description": "Tail light assembly" },
+  { "year": "2022", "manufacturer": "Ford", "model": "F-150", "partNumber": "40404", "description": "Front grille" }
 ]
