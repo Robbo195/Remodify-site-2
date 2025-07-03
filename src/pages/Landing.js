@@ -133,7 +133,8 @@ const Landing = () => {
           <Form.Control type="text" placeholder="Search any part" className="form-control-lg" value={anyPartSearch} onChange={handleAnyPartSearchChange} style={{ border: '1px solid rgb(255, 102, 0)' }} />
         </Form.Group>
         <p className="text-center mb-4" style={{ fontSize: '20px' }}>OR search by criteria</p>
-        <Form className="mt-5">
+        <div className="search-box mt-5 p-4 border rounded shadow-sm">
+          <Form>
           <Row className="mb-3">
             <Col>
               <Form.Group controlId="formYear">
@@ -217,6 +218,7 @@ const Landing = () => {
             </Col>
           </Row>
         </Form>
+        </div>
 
 <div className="mt-5">
   <h1 className="title-underline-1" style={{ fontSize: '24pt' }}>Featured</h1>
