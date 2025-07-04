@@ -1,7 +1,10 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Form, Row, Col, Button, Carousel } from 'react-bootstrap';
+import { Container, Form, Row, Col, Button } from 'react-bootstrap';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import FeaturedCarousel from '../components/FeaturedCarousel';
 import { Typeahead } from 'react-bootstrap-typeahead';
 
@@ -110,7 +113,7 @@ const Landing = () => {
   };
 
   const years = [];
-  for (let i = 1940; i <= 2026; i++) {
+  for (let i = 2026; i >= 1940; i--) {
     years.push(i);
   }
 
@@ -126,135 +129,181 @@ const Landing = () => {
   };
 
   return (
-    <div className="page-section">
-      <Container className="text-start">
-        <h1 className="title-underline-1 mt-5 mb-5" style={{ fontSize: '24pt' }}>What part are you looking for today?</h1>
-        <Form.Group controlId="formAnyPartSearch" className="mt-5 mb-4">
-          <Form.Control type="text" placeholder="Search any part" className="form-control-lg" value={anyPartSearch} onChange={handleAnyPartSearchChange} style={{ border: '1px solid rgb(255, 102, 0)' }} />
+    <>
+      <div className="hero-background">
+  <Container>
+    <h1 className="text-center mb-4" style={{ fontSize: '36pt' }}>
+      What part are you looking for today?
+    </h1>
+    <Row className="justify-content-center mb-4">
+      <Col md={10} lg={8}>
+        <Form.Group controlId="formAnyPartSearch">
+          <Form.Control
+            type="text"
+            placeholder="Search any part"
+            className="form-control-lg"
+            value={anyPartSearch}
+            onChange={handleAnyPartSearchChange}
+            style={{
+              width: '100%',
+              padding: '14px 20px',
+              fontSize: '1rem',
+              border: '1px solid #ccc',
+              borderRadius: '6px',
+            }}
+          />
         </Form.Group>
-        <p className="text-center mb-4" style={{ fontSize: '20px' }}>OR search by criteria</p>
-        <div className="search-box mt-5 p-4 border rounded shadow-sm">
-          <Form>
-          <Row className="mb-3">
-            <Col>
-              <Form.Group controlId="formYear">
-                <Form.Label>Year</Form.Label>
-                <Form.Select value={year} onChange={(e) => setYear(e.target.value)}>
-                  <option value="">Select Year</option>
-                  {years.map((y) => (
-                    <option key={y} value={y}>{y}</option>
-                  ))}
-                </Form.Select>
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group controlId="formManufacturer">
-                <Form.Label>Manufacturer</Form.Label>
-                <Typeahead
-                  id="manufacturer-typeahead"
-                  options={carBrands}
-                  onChange={(selected) => {
-                    if (selected.length > 0) {
-                      if (selected[0] === 'Other') {
-                        setShowOtherManufacturerField(true);
-                        setManufacturer(''); // Clear manufacturer when 'Other' is selected
+      </Col>
+    </Row>
+
+    <p className="text-center mb-4" style={{ fontSize: '20px' }}>OR search by criteria</p>
+    <div className="search-box p-4 border rounded shadow-sm">
+      <Form>
+            <Row className="mb-3">
+              <Col>
+                <Form.Group controlId="formYear">
+                  <Form.Label>Year</Form.Label>
+                  <Form.Select value={year} onChange={(e) => setYear(e.target.value)}>
+                    <option value="">Select Year</option>
+                    {years.map((y) => (
+                      <option key={y} value={y}>{y}</option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group controlId="formManufacturer">
+                  <Form.Label>Manufacturer</Form.Label>
+                  <Typeahead
+                    id="manufacturer-typeahead"
+                    options={carBrands}
+                    onChange={(selected) => {
+                      if (selected.length > 0) {
+                        if (selected[0] === 'Other') {
+                          setShowOtherManufacturerField(true);
+                          setManufacturer(''); // Clear manufacturer when 'Other' is selected
+                        } else {
+                          setShowOtherManufacturerField(false);
+                          setManufacturer(selected[0]);
+                        }
                       } else {
                         setShowOtherManufacturerField(false);
-                        setManufacturer(selected[0]);
+                        setManufacturer('');
                       }
-                    } else {
-                      setShowOtherManufacturerField(false);
-                      setManufacturer('');
-                    }
-                  }}
-                  onInputChange={(text) => {
-                    setManufacturer(text);
-                    if (text === 'Other') {
-                      setShowOtherManufacturerField(true);
-                    } else {
-                      setShowOtherManufacturerField(false);
-                    }
-                  }}
-                  selected={manufacturer ? [manufacturer] : []}
-                  placeholder="Enter or select manufacturer"
-                />
-              </Form.Group>
-              {showOtherManufacturerField && (
-                <Form.Group controlId="formOtherManufacturer" className="mt-2">
-                  <Form.Label>Specify Other Manufacturer</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter manufacturer name"
-                    value={manufacturer}
-                    onChange={(e) => setManufacturer(e.target.value)}
+                    }}
+                    onInputChange={(text) => {
+                      setManufacturer(text);
+                      if (text === 'Other') {
+                        setShowOtherManufacturerField(true);
+                      } else {
+                        setShowOtherManufacturerField(false);
+                      }
+                    }}
+                    selected={manufacturer ? [manufacturer] : []}
+                    placeholder="Enter or select manufacturer"
                   />
                 </Form.Group>
-              )}
-            </Col>
-            <Col>
-              <Form.Group controlId="formModel">
-                <Form.Label>Model</Form.Label>
-                <Form.Control type="text" placeholder="Enter model" value={model} onChange={(e) => setModel(e.target.value)} />
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row className="mb-3">
-            <Col>
-              <Form.Group controlId="formPartNumber">
-                <Form.Label>Part Number</Form.Label>
-                <Form.Control type="text" placeholder="Enter part number" value={partNumber} onChange={(e) => setPartNumber(e.target.value)} />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group controlId="formKeyword">
-                <Form.Label>Keyword</Form.Label>
-                <Form.Control type="text" placeholder="Enter keyword" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
-              </Form.Group>
-            </Col>
-            <Col className="d-flex align-items-end">
-              <Button style={{ backgroundColor: 'rgb(198, 32, 32)', borderColor: 'rgb(198, 32, 32)', color: 'white' }} onClick={handleSearch} className="w-100">
-                Search
-              </Button>
-            </Col>
-          </Row>
-        </Form>
-        </div>
-
-<div className="mt-5">
-  <h1 className="title-underline-1" style={{ fontSize: '24pt' }}>Featured</h1>
-  <Carousel>
-    <Carousel.Item>
-      <img className="d-block w-100" src={logo} alt="First slide" />
-      <Carousel.Caption>
-        <h3>First slide label</h3>
-        <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-      </Carousel.Caption>
-    </Carousel.Item>
-    <Carousel.Item>
-      <img className="d-block w-100" src={logo} alt="Second slide" />
-      <Carousel.Caption>
-        <h3>Second slide label</h3>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-      </Carousel.Caption>
-    </Carousel.Item>
-    <Carousel.Item>
-      <img className="d-block w-100" src={logo} alt="Third slide" />
-      <Carousel.Caption>
-        <h3>Third slide label</h3>
-        <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
-      </Carousel.Caption>
-    </Carousel.Item>
-    <Carousel.Item>
-      <img className="d-block w-100" src={logo} alt="Fourth slide" />
-      <Carousel.Caption>
-        <h3>Fourth slide label</h3>
-        <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
-      </Carousel.Caption>
-    </Carousel.Item>
-  </Carousel>
-</div>
-      </Container>
+                {showOtherManufacturerField && (
+                  <Form.Group controlId="formOtherManufacturer" className="mt-2">
+                    <Form.Label>Specify Other Manufacturer</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter manufacturer name"
+                      value={manufacturer}
+                      onChange={(e) => setManufacturer(e.target.value)}
+                    />
+                  </Form.Group>
+                )}
+              </Col>
+              <Col>
+                <Form.Group controlId="formModel">
+                  <Form.Label>Model</Form.Label>
+                  <Form.Control type="text" placeholder="Enter model" value={model} onChange={(e) => setModel(e.target.value)} />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row className="mb-3">
+              <Col>
+                <Form.Group controlId="formPartNumber">
+                  <Form.Label>Part Number</Form.Label>
+                  <Form.Control type="text" placeholder="Enter part number" value={partNumber} onChange={(e) => setPartNumber(e.target.value)} />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group controlId="formKeyword">
+                  <Form.Label>Keyword</Form.Label>
+                  <Form.Control type="text" placeholder="Enter keyword" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
+                </Form.Group>
+              </Col>
+              <Col className="d-flex align-items-end">
+                <Button style={{ backgroundColor: '#b01c1c', color: 'white', border: 'none', padding: '12px 20px', fontSize: '1rem', borderRadius: '4px' }} onClick={handleSearch} className="w-100">
+                  Search
+                </Button>
+              </Col>
+            </Row>
+          </Form>
     </div>
+  </Container>
+
+  <div className="curve-divider">
+    <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
+      <path
+        fill="#f0f0f0"
+        fillOpacity="1"
+        d="M0,160L80,149.3C160,139,320,117,480,133.3C640,149,800,203,960,218.7C1120,235,1280,213,1360,202.7L1440,192L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"
+      ></path>
+    </svg>
+  </div>
+</div>
+      <div style={{ padding: '80px 0' }}>
+  <Container>
+    <div>
+      <h1 className="title-underline-1" style={{ fontSize: '24pt' }}>Tailored picks for you</h1>
+      <Slider
+  slidesToShow={4}
+  slidesToScroll={1}
+  autoplay={true}
+  autoplaySpeed={3000}
+  infinite={true}
+  arrows={false}
+  dots={false}
+  responsive={[
+    {
+      breakpoint: 992,
+      settings: {
+        slidesToShow: 2,
+      }
+    },
+    {
+      breakpoint: 576,
+      settings: {
+        slidesToShow: 1,
+      }
+    }
+  ]}
+>
+  {[1, 2, 3, 4, 5, 6].map((item, index) => (
+    <div key={index} style={{ padding: '10px' }}>
+      <div style={{
+        backgroundColor: '#eee',
+        borderRadius: '8px',
+        padding: '20px',
+        textAlign: 'center'
+      }}>
+        <img src={logo} alt={`Slide ${index}`} style={{ width: '100%', height: 'auto', borderRadius: '4px' }} />
+        <h5>Item {index + 1}</h5>
+        <p>Part description or metadata</p>
+      </div>
+    </div>
+  ))}
+</Slider>
+    </div>
+    <footer style={{ padding: '16px', fontSize: '0.9rem', color: '#666' }} className="text-center mt-5">
+      (c) Remodify 2025
+    </footer>
+  </Container>
+</div>
+    </>
   );
 };
 
