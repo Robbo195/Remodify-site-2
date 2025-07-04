@@ -79,8 +79,8 @@ const CreateListing = () => {
                 </Col>
                 <Col>
                   <Form.Group controlId="formModel">
-                    <Form.Label>Model <span style={{ color: 'red' }}>*</span></Form.Label>
-                    <Form.Control type="text" placeholder="Enter model" value={model} onChange={(e) => setModel(e.target.value)} required />
+                    <Form.Label>Model</Form.Label>
+                    <Form.Control type="text" placeholder="Enter model" value={model} onChange={(e) => setModel(e.target.value)} />
                   </Form.Group>
                 </Col>
               </Row>
@@ -88,8 +88,8 @@ const CreateListing = () => {
               <Row className="mb-3">
                 <Col>
                   <Form.Group controlId="formYear">
-                    <Form.Label>Year <span style={{ color: 'red' }}>*</span></Form.Label>
-                    <Form.Select value={year} onChange={(e) => setYear(e.target.value)} required>
+                    <Form.Label>Year</Form.Label>
+                    <Form.Select value={year} onChange={(e) => setYear(e.target.value)}>
                       <option value="">Select Year</option>
                       {years.map((y) => (
                         <option key={y} value={y}>{y}</option>
@@ -107,10 +107,11 @@ const CreateListing = () => {
                       className={!condition ? 'placeholder-selected' : ''}
                     >
                       <option value="" disabled hidden>Select Condition</option>
-                      <option value="Brand new">Brand new</option>
+                      <option value="New">New</option>
                       <option value="Used - like new">Used - like new</option>
-                      <option value="Used">Used</option>
-                      <option value="Worn">Worn</option>
+                      <option value="Used - good">Used - good</option>
+                      <option value="Used - fair">Used - fair</option>
+                      <option value="Used - worn">Used - worn</option>
                     </Form.Select>
                   </Form.Group>
                 </Col>
