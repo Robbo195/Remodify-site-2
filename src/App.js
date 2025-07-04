@@ -20,7 +20,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <div style={{ borderBottom: '3px solid', borderImageSource: 'linear-gradient(to right, #C62020, #FF6600)', borderImageSlice: 1 }}>
+        <div className="App-header">
           <Navbar bg="light" expand="lg" sticky="top">
             <Container>
               <Navbar.Brand as={Link} to="/">
