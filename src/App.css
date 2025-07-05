@@ -109,11 +109,12 @@
 }
 
 .search-box {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 20px;
-  background-color: #f9f9f9;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255,); 
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  position: relative;
+  z-index: 2;
 }
 
 .slick-slider {
@@ -129,9 +130,9 @@
   background-image:
     linear-gradient(
       to bottom,
-      rgba(198, 32, 32, 0.9),
-      rgba(255, 102, 0, 0.7),
-      rgba(240, 240, 240, 0.85)
+      rgba(198, 32, 32, 0.92),
+      rgba(255, 102, 0, 0.75),
+      rgba(240, 240, 240, 0.95)
     ),
     url('./assets/hero.bg.png');
   background-size: cover;
@@ -140,11 +141,12 @@
   min-height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   flex-direction: column;
-  padding: 60px 20px;
+  padding: 100px 20px 200px;
   color: #fff;
   position: relative;
+  z-index: 1;
 }
 
 .curve-divider {
@@ -153,6 +155,9 @@
   left: 0;
   width: 100%;
   overflow: hidden;
+
+  pointer-events: none;
+  z-index: 0;
 }
 
 .curve-divider svg {
