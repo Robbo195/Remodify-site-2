@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 
@@ -34,8 +33,8 @@ const Contact = () => {
   return (
     <div className="page-section">
       <Container>
-        <h1 className="title-underline-2">Contact Us</h1>
-        <Form onSubmit={handleSubmit}>
+        <h1 className="title-underline-2" style={{ textAlign: 'left', marginTop: '2rem' }}>Contact Us</h1>
+        <Form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
           <Form.Group className="mb-3">
             <Form.Label>Name</Form.Label>
             <Form.Control type="text" name="name" value={formData.name} onChange={handleChange} required />
@@ -48,11 +47,24 @@ const Contact = () => {
             <Form.Label>Message</Form.Label>
             <Form.Control as="textarea" rows={3} name="message" value={formData.message} onChange={handleChange} required />
           </Form.Group>
-          <Button variant="primary" type="submit">
+          <Button variant="primary" type="submit" style={{ backgroundColor: 'rgb(198, 32, 32)', borderColor: 'rgb(198, 32, 32)' }}>
             Submit
           </Button>
         </Form>
       </Container>
+      <div className="team-section" style={{ marginTop: '3rem', textAlign: 'left' }}>
+        <Container>
+          <h2 className="title-underline-2" style={{ textAlign: 'left', fontSize: '2.5rem' }}>Meet the Team</h2>
+          <p>
+            G'day and Welcome to Remodify!<br /><br />
+            Thanks for taking a look around. We hope we have been useful to you in finding what you need.<br /><br />
+            We're Robert and Mark - two uni students studying medicine and commerce full time, while working part time. Sometimes, as with all of us, life gets a bit hectic. This being so, we mightn't be able to get back to you as fast as some other websites may. Nevertheless, we will endeavour to get back to you as soon as possible.<br /><br />
+            We would love for you to leave feedback - any feedback whether positive or negative is constructive to us.<br /><br />
+            We look forward to hearing from you. Happy Remodifying!<br /><br />
+            Mark and Rob.
+          </p>
+        </Container>
+      </div>
     </div>
   );
 };
