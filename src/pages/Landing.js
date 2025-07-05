@@ -118,6 +118,7 @@ const Landing = () => {
   }
 
   const handleSearch = () => {
+    console.log('Search triggered'); //debug
     const queryParams = new URLSearchParams({
       year,
       manufacturer,

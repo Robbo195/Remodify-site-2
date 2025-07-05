@@ -3,7 +3,6 @@
   { "year": "2020", "manufacturer": "Honda", "model": "Civic", "partNumber": "67890", "description": "Rear brake pads" },
   { "year": "2022", "manufacturer": "Ford", "model": "Mustang", "partNumber": "54321", "description": "Headlight assembly" },
   { "year": "2019", "manufacturer": "Chevrolet", "model": "Silverado", "partNumber": "98765", "description": "Tailgate handle" },
-[
   { "year": "2023", "manufacturer": "BMW", "model": "X5", "partNumber": "13579", "description": "Grille assembly" },
   { "year": "2018", "manufacturer": "Nissan", "model": "Altima", "partNumber": "24680", "description": "Left mirror" },
   { "year": "2017", "manufacturer": "Hyundai", "model": "Elantra", "partNumber": "11223", "description": "Air filter box" },
