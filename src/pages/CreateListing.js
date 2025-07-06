@@ -3,6 +3,8 @@ import { Container, Form, Row, Col, Button, Modal } from 'react-bootstrap';
 import { useDropzone } from 'react-dropzone';
 import { useNavigate } from 'react-router-dom';
 import { Typeahead } from 'react-bootstrap-typeahead';
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { auth } from '../firebase';
 
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../firebase';
