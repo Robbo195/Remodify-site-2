@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Fuse from 'fuse.js';
+import { useLocation } from 'react-router-dom';
+
+import {collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebase';
 
 const Results = () => {
   const [results, setResults] = useState([]);
@@ -17,15 +21,15 @@ const Results = () => {
     setShowModal(true);
   };
 
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+
   useEffect(() => {
     const loadInventoryAndSearch = async () => {
       try {
         setLoading(true);
-        const response = await fetch("/parts.json");
-        if (!response.ok) {
-          throw new Error(`Failed to fetch parts: ${response.statusText}`);
-        }
-        const inventory = await response.json();
+        const snapshot = await getDocs(collection(db, "listings"));
+        const inventory = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
         const params = new URLSearchParams(window.location.search);
         const search = {

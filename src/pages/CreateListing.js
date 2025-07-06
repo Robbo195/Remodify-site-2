@@ -1,10 +1,16 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Container, Form, Row, Col, Button, Modal } from 'react-bootstrap';
 import { useDropzone } from 'react-dropzone';
 import { useNavigate } from 'react-router-dom';
 import { Typeahead } from 'react-bootstrap-typeahead';
+
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../firebase';
+
+import { db } from '../firebase'; 
+import {collection, addDoc, serverTimestamp } from 'firebase/firestore'
+
+import { onAuthStateChanged } from 'firebase/auth';
 
 const CreateListing = () => {
   const [title, setTitle] = useState('');
@@ -24,7 +30,7 @@ const CreateListing = () => {
   const carBrands = [
     "Abarth", "Alfa Romeo", "Alpine", "Aston Martin", "Audi", "Bentley", "BMW", "BYD",
     "Chery", "Chevrolet", "Chrysler", "Citroen", "Cupra", "Ferrari", "Fiat", "Ford",
-    "Genesis", "GWM", "Haval", "Honda", "Hyundai", "Ineos", "Isuzu", "Jaecoo", "Jaguar",
+    "Genesis", "GWM", "Haval", "Holden" ,"Honda", "Hyundai", "Ineos", "Isuzu", "Jaecoo", "Jaguar",
     "Jeep", "Kia", "Lamborghini", "Land Rover", "LDV", "Lexus", "Lotus", "Mahindra",
     "Maserati", "Mazda", "McLaren", "Mercedes-Benz", "MG", "MINI", "Mitsubishi", "Nissan",
     "Peugeot", "Polestar", "Porsche", "RAM", "Renault", "Rolls-Royce", "Skoda", "Ssangyong",
@@ -41,14 +47,35 @@ const CreateListing = () => {
 
   const isFormValid = title && price && model && year && condition && files.length > 0 && description;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isFormValid) {
-      // Handle form submission logic here
-      console.log({ title, description, price, manufacturer, model, year, condition, files, negotiable });
-      navigate('/SignupInformation');
-    } else {
+    if (!isFormValid) {
       setErrorMessage('*you must complete all mandatory boxes');
+      return;
+    }
+
+    try {
+      // For now, placeholder image (you'll later use Firebase Storage)
+      const imageUrl = "https://via.placeholder.com/400x250";
+
+      const docRef = await addDoc(collection(db, "listings"), {
+        title,
+        description,
+        price: Number(price),
+        manufacturer,
+        model,
+        year,
+        condition,
+        negotiable,
+        imageUrl: "https://via.placeholder.com/400x250", //need to replace this
+        createdAt: serverTimestamp()
+    });
+
+      console.log("Listing added with ID:", docRef.id);
+      navigate('/SignupInformation'); // or redirect to /results
+    } catch (error) {
+      console.error("Error adding listing:", error);
+      setErrorMessage("Something went wrong. Please try again.");
     }
   };
 
@@ -76,6 +103,14 @@ const CreateListing = () => {
       console.error('Google Sign-In Error:', error);
    }
   };
+
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    const unsubcribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser)
+    });
+    return () => unsubcribe();
+  }, []);
 
   return (
     <div className="page-section">
@@ -125,12 +160,15 @@ const CreateListing = () => {
                 </div>
               </Form.Group>
 
-              <Button style={{ backgroundColor: 'rgb(198, 32, 32)', borderColor: 'rgb(198, 32, 32)', color: 'white', marginRight: '10px' }} type="submit">
-                Continue to Sign-Up
-              </Button>
-              <Button style={{ backgroundColor: 'rgb(255, 102, 0)', borderColor: 'rgb(255, 102, 0)', color: 'white' }} type="button" onClick={handleLoginClick}>
-                Log-in
-              </Button>
+                 {user ? (
+                <Button type="submit" variant="primary" style={{ backgroundColor: 'rgb(198, 32, 32)', borderColor: 'rgb(198, 32, 32)', color: 'white' }}>
+                  Post
+                </Button>
+              ) : (
+                <Button style={{ backgroundColor: 'rgb(255, 102, 0)', borderColor: 'rgb(255, 102, 0)', color: 'white' }} type="button" onClick={handleLoginClick}>
+                  Log-in
+                </Button>
+              )}
               {errorMessage && <p style={{ color: 'grey', fontStyle: 'italic', marginTop: '10px' }}>{errorMessage}</p>}
             </Form>
           </Col>

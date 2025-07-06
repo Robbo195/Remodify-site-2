@@ -1,7 +1,9 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { Container, Nav, Navbar, Image } from 'react-bootstrap';
+import { auth } from './firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 import logo from './assets/logo.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -15,8 +17,19 @@ import Results from './pages/Results';
 import CreateListing from './pages/CreateListing';
 import SignupInformation from './pages/SignupInformation';
 import Login from './pages/Login';
+import Account from './pages/Account';
+import ProfileIcon from './components/ProfileIcon';
 
 function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+    return () => unsubscribe();
+  }, []);
+
   return (
     <Router>
       <div className="App">
@@ -38,6 +51,11 @@ function App() {
                   <div className="d-flex align-items-center">
                     <span className="me-2">Create a listing</span>
                     <Nav.Link href="/create-listing" className="btn" style={{ backgroundColor: 'rgb(93, 93, 93)', color: 'white', padding: '0.375rem 2.25rem' }}>+</Nav.Link>
+                    {user ? (
+                      <ProfileIcon />
+                    ) : (
+                      <Nav.Link href="/login" className="btn btn-primary ms-2">Log-in</Nav.Link>
+                    )}
                   </div>
                 </Nav>
               </Navbar.Collapse>
@@ -54,6 +72,7 @@ function App() {
           <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/SellersAddress" element={<SignupInformation />} />
           <Route path="/Login" element={<Login />} />
+          <Route path="/account" element={<Account />} />
         </Routes>
       </div>
     </Router>
