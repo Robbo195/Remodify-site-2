@@ -6,9 +6,6 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../firebase';
 
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { auth } from '../firebase';
-
 import { db } from '../firebase'; 
 import {collection, addDoc, serverTimestamp } from 'firebase/firestore'
 
