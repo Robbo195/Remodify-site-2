@@ -3,6 +3,8 @@ import { Container, Form, Row, Col, Button, Modal } from 'react-bootstrap';
 import { useDropzone } from 'react-dropzone';
 import { useNavigate } from 'react-router-dom';
 import { Typeahead } from 'react-bootstrap-typeahead';
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { auth } from '../firebase';
 
 const CreateListing = () => {
   const [title, setTitle] = useState('');
@@ -64,6 +66,16 @@ const CreateListing = () => {
   for (let i = 2026; i >= 1940; i--) {
     years.push(i);
   }
+
+  const handleGoogleSignIn = async () => {
+    const provider = new GoogleAuthProvider();
+   try {
+     await signInWithPopup(auth, provider);
+      setShowLoginModal(false); // ✅ close modal on success
+   } catch (error) {
+      console.error('Google Sign-In Error:', error);
+   }
+  };
 
   return (
     <div className="page-section">
@@ -249,7 +261,11 @@ const CreateListing = () => {
           <Modal.Title>Log in</Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center">
-          <Button variant="primary" style={{ backgroundColor: '#4285F4', borderColor: '#4285F4', color: 'white' }}>
+          <Button
+            variant="primary"
+            onClick={handleGoogleSignIn}
+            style={{ backgroundColor: '#4285F4', borderColor: '#4285F4', color: 'white' }}
+          >
             Log-in with Google
           </Button>
         </Modal.Body>
