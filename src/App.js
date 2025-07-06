@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { Container, Nav, Navbar, Image } from 'react-bootstrap';
@@ -41,20 +40,20 @@ function App() {
               </Navbar.Brand>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="me-auto">
-                  <Nav.Link href="/">Home</Nav.Link>
-                  <Nav.Link href="/about">About</Nav.Link>
-                  <Nav.Link href="/services">Services</Nav.Link>
-                  <Nav.Link href="/contact">Contact</Nav.Link>
+                <Nav className="me-auto" style={{ color: 'black' }}>
+                  <Nav.Link href="/" style={{ color: 'black' }}>Home</Nav.Link>
+                  <Nav.Link href="/about" style={{ color: 'black' }}>About</Nav.Link>
+                  <Nav.Link href="/services" style={{ color: 'black' }}>Services</Nav.Link>
+                  <Nav.Link href="/contact" style={{ color: 'black' }}>Contact</Nav.Link>
                 </Nav>
                 <Nav>
-                  <div className="d-flex align-items-center">
-                    <span className="me-2">Create a listing</span>
+                  <div className="d-flex align-items-center" style={{ gap: '0.5rem' }}>
+                    <span className="me-2" style={{ color: 'black' }}>Sell your part</span>
                     <Nav.Link href="/create-listing" className="btn" style={{ backgroundColor: 'rgb(93, 93, 93)', color: 'white', padding: '0.375rem 2.25rem' }}>+</Nav.Link>
                     {user ? (
-                      <ProfileIcon />
+                      <div style={{ marginLeft: '2.5rem' }}><ProfileIcon /></div>
                     ) : (
-                      <Nav.Link href="/login" className="btn btn-primary ms-2">Log-in</Nav.Link>
+                      <Nav.Link href="/login" className="btn btn-primary ms-2">Sign in</Nav.Link>
                     )}
                   </div>
                 </Nav>
