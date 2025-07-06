@@ -67,7 +67,8 @@ const CreateListing = () => {
         condition,
         negotiable,
         imageUrl: "https://via.placeholder.com/400x250", //need to replace this
-        createdAt: serverTimestamp()
+        createdAt: serverTimestamp(),
+        userId: user.uid // Firestore security
     });
 
       console.log("Listing added with ID:", docRef.id);
