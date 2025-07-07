@@ -17,6 +17,7 @@ import CreateListing from './pages/CreateListing';
 import SignupInformation from './pages/SignupInformation';
 import Login from './pages/Login';
 import Account from './pages/Account';
+import ListingSuccess from './pages/ListingSuccess';
 import ProfileIcon from './components/ProfileIcon';
 
 function App() {
@@ -72,6 +73,7 @@ function App() {
           <Route path="/SellersAddress" element={<SignupInformation />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/account" element={<Account />} />
+          <Route path="/listing-success" element={<ListingSuccess />} />
         </Routes>
       </div>
     </Router>

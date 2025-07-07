@@ -72,7 +72,7 @@ const CreateListing = () => {
     });
 
       console.log("Listing added with ID:", docRef.id);
-      navigate('/SignupInformation'); // or redirect to /results
+      navigate('/listing-success', { state: { listingTitle: title } });
     } catch (error) {
       console.error("Error adding listing:", error);
       setErrorMessage("Something went wrong. Please try again.");
