@@ -68,7 +68,7 @@ const Results = () => {
     };
 
     loadInventoryAndSearch();
-  }, []);
+  }, [location]);
 
   // Pagination logic
   const totalPages = Math.ceil(results.length / itemsPerPage);
@@ -163,9 +163,11 @@ const Results = () => {
     <div className="page-section">
       <div className="container text-start">
         <h1 className="title-underline-1">Results</h1>
-        <p className="fst-italic">
-          You searched for a {searchInputs.year} {searchInputs.manufacturer} {searchInputs.model} {searchInputs.partNumber && `part number ${searchInputs.partNumber}`} {searchInputs.keyword && `(${searchInputs.keyword})`}.
-        </p>
+        {Object.values(searchInputs).some(input => input) && (
+          <p className="fst-italic">
+            You searched for a {searchInputs.year} {searchInputs.manufacturer} {searchInputs.model} {searchInputs.partNumber && `part number ${searchInputs.partNumber}`} {searchInputs.keyword && `(${searchInputs.keyword})`}.
+          </p>
+        )}
         <div id="resultsContainer">
           {renderResults()}
         </div>
@@ -180,7 +182,7 @@ const Results = () => {
             onClick={() => setShowModal(false)}
           >
             <div
-              className="modal-dialog modal-dialog-centered"
+              className="modal-dialog modal-dialog-centered modal-xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="modal-content">
@@ -192,16 +194,45 @@ const Results = () => {
                     onClick={() => setShowModal(false)}
                   ></button>
                 </div>
-                <div className="modal-body text-center">
-                  <img
-                    src={selectedItem.imageUrl || "https://via.placeholder.com/400x250"}
-                    alt={selectedItem.title}
-                    className="img-fluid mb-3"
-                  />
-                  <h4>${selectedItem.price?.toFixed(2)}</h4>
-                  {searchInputs.partNumber && (
-                    <p className="text-muted">Part #: {selectedItem.partNumber}</p>
-                  )}
+                <div className="modal-body">
+                  <div className="row">
+                    <div className="col-md-6 text-start d-flex flex-column">
+                      <div>
+                        {searchInputs.partNumber && (
+                          <p className="text-muted">Part #: {selectedItem.partNumber}</p>
+                        )}
+                        <p><strong>Model:</strong> {selectedItem.model}</p>
+                        <p><strong>Year:</strong> {selectedItem.year}</p>
+                        <p><strong>Description:</strong> {selectedItem.description}</p>
+                      </div>
+                      <div className="mt-auto text-start">
+                        <h4>
+                          ${selectedItem.price?.toFixed(2)}
+                          {selectedItem.negotiable ? (
+                            <small className="text-muted fst-italic ms-2">negotiable</small>
+                          ) : (
+                            <small className="text-muted fst-italic ms-2">Fixed price</small>
+                          )}
+                        </h4>
+                      </div>
+                    </div>
+                    <div className="col-md-6 d-flex flex-column">
+                      <img
+                        src={selectedItem.imageUrl || "https://via.placeholder.com/400x250"}
+                        alt={selectedItem.title}
+                        className="img-fluid"
+                      />
+                      <div className="mt-auto pt-3 text-end">
+                        <button
+                          type="button"
+                          className="btn"
+                          style={{ backgroundColor: "rgb(198, 32, 32)", color: "white" }}
+                        >
+                          Continue to Check-out
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
