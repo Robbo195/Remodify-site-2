@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Form, Button, Row, Col } from 'react-bootstrap';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const Account = () => {
   const [form, setForm] = useState({
@@ -12,6 +13,8 @@ const Account = () => {
     password: '',
     confirmPassword: '',
   });
+
+  const [user, setUser] = useState(null);
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState({});
@@ -32,8 +35,28 @@ const Account = () => {
     if (form.password !== form.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
+    if (!form.email.includes('@')) {
+      newErrors.email = 'Invalid email';
+    }
     return newErrors;
   };
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        setUser(firebaseUser);
+        setForm((prev) => ({
+          ...prev,
+          email: firebaseUser.email || '',
+          firstName: firebaseUser.displayName?.split(' ')[0] || '',
+          surname: firebaseUser.displayName?.split(' ')[1] || '',
+          phone: firebaseUser.phoneNumber || '',
+        }));
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -54,6 +77,21 @@ const Account = () => {
     <div className="page-section padding-top-50">
       <Container>
         <h1 className="title-underline-2 text-left">Your Remodify account</h1>
+
+        {user && (
+          <div className="mb-4 d-flex align-items-center">
+            <img
+              src={user.photoURL}
+              alt="Profile"
+              style={{ width: 60, borderRadius: '50%', marginRight: 16 }}
+            />
+            <div>
+              <div><strong>{user.displayName}</strong></div>
+              <div className="text-muted">{user.email}</div>
+            </div>
+          </div>
+        )}
+
         <Form onSubmit={handleSubmit} className="mt-4" noValidate>
           <Row className="mb-3">
             <Col md={6}>
@@ -67,7 +105,9 @@ const Account = () => {
                   required
                   isInvalid={!!errors.username}
                 />
-                <Form.Control.Feedback type="invalid">{errors.username}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errors.username}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -81,10 +121,13 @@ const Account = () => {
                   required
                   isInvalid={!!errors.email}
                 />
-                <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errors.email}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
           </Row>
+
           <Row className="mb-3">
             <Col md={6}>
               <Form.Group controlId="firstName">
@@ -97,7 +140,9 @@ const Account = () => {
                   required
                   isInvalid={!!errors.firstName}
                 />
-                <Form.Control.Feedback type="invalid">{errors.firstName}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errors.firstName}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -111,10 +156,13 @@ const Account = () => {
                   required
                   isInvalid={!!errors.surname}
                 />
-                <Form.Control.Feedback type="invalid">{errors.surname}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errors.surname}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
           </Row>
+
           <Row className="mb-3">
             <Col md={6}>
               <Form.Group controlId="phone">
@@ -127,7 +175,9 @@ const Account = () => {
                   required
                   isInvalid={!!errors.phone}
                 />
-                <Form.Control.Feedback type="invalid">{errors.phone}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errors.phone}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -141,10 +191,13 @@ const Account = () => {
                   required
                   isInvalid={!!errors.dob}
                 />
-                <Form.Control.Feedback type="invalid">{errors.dob}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errors.dob}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
           </Row>
+
           <Row className="mb-3">
             <Col md={6}>
               <Form.Group controlId="password">
@@ -158,7 +211,9 @@ const Account = () => {
                   isInvalid={!!errors.password}
                   placeholder="Enter new password"
                 />
-                <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errors.password}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -173,13 +228,22 @@ const Account = () => {
                   isInvalid={!!errors.confirmPassword}
                   placeholder="Re-enter new password"
                 />
-                <Form.Control.Feedback type="invalid">{errors.confirmPassword}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {errors.confirmPassword}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
           </Row>
-          <Button style={{ backgroundColor: '#E63946', borderColor: '#E63946' }} type="submit" disabled={saving} className="mt-2">
+
+          <Button
+            style={{ backgroundColor: '#E63946', borderColor: '#E63946' }}
+            type="submit"
+            disabled={saving}
+            className="mt-2"
+          >
             {saving ? 'Saving...' : 'Save changes'}
           </Button>
+
           {success && <div className="text-success mt-3">Account details updated!</div>}
         </Form>
       </Container>
