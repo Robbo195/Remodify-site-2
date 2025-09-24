@@ -40,21 +40,11 @@ function App() {
               <Navbar.Brand as={Link} to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <Image src={logo} alt="Remodify Logo" height="38" className="d-inline-block align-top" style={{ borderRadius: '0.5rem', boxShadow: '0 2px 8px rgba(230,57,70,0.10)' }} />
               </Navbar.Brand>
-              <Navbar.Toggle aria-controls="basic-navbar-nav" />
-              <Navbar.Collapse id="basic-navbar-nav">
-<<<<<<< HEAD
-                <Nav className="me-auto" style={{ color: 'black', fontWeight: 500, fontSize: '1.1rem' }}>
-                  {/* <Nav.Link href="/" style={{ color: 'black' }}>Home</Nav.Link> */}
-                  <Nav.Link href="/about" style={{ color: '#222', marginRight: '1.5rem' }}>About</Nav.Link>
-                  <Nav.Link href="/services" style={{ color: '#222', marginRight: '1.5rem' }}>Services</Nav.Link>
-                  <Nav.Link href="/contact" style={{ color: '#222', marginRight: '1.5rem' }}>Contact</Nav.Link>
-=======
+              <Navbar.Toggle aria-controls="basic-navbar-nav" />              <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="me-auto" style={{ color: 'black' }}>
                   <Nav.Link href="/" style={{ color: 'black' }}>Home</Nav.Link>
                   <Nav.Link href="/about" style={{ color: 'black' }}>About</Nav.Link>
-                  <Nav.Link href="/contact" style={{ color: 'black' }}>Contact</Nav.Link>
-                  <Nav.Link href="/services2" style={{ color: 'black' }}>Services</Nav.Link>
->>>>>>> origin/main
+                  <Nav.Link href="/services" style={{ color: 'black' }}>Services</Nav.Link>                  <Nav.Link href="/contact" style={{ color: 'black' }}>Contact</Nav.Link>
                 </Nav>
                 <Nav>
                   <div className="d-flex align-items-center" style={{ gap: '1.2rem' }}>
