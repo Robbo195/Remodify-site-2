@@ -76,12 +76,7 @@ const Account = () => {
   return (
     <div className="page-section" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
       <Container>
-<<<<<<< HEAD
         <h1 className="title-underline-2 text-left" style={{ color: '#E63946', fontWeight: 700, marginBottom: '2rem' }}>Your Remodify account</h1>
-        <Form onSubmit={handleSubmit} className="mt-4" noValidate style={{ background: '#fff', borderRadius: '1rem', boxShadow: '0 2px 12px rgba(230,57,70,0.07)', padding: '2rem' }}>
-=======
-        <h1 className="title-underline-2 text-left">Your Remodify account</h1>
-
         {user && (
           <div className="mb-4 d-flex align-items-center">
             <img
@@ -95,9 +90,7 @@ const Account = () => {
             </div>
           </div>
         )}
-
-        <Form onSubmit={handleSubmit} className="mt-4" noValidate>
->>>>>>> origin/main
+        <Form onSubmit={handleSubmit} className="mt-4" noValidate style={{ background: '#fff', borderRadius: '1rem', boxShadow: '0 2px 12px rgba(230,57,70,0.07)', padding: '2rem' }}>
           <Row className="mb-3">
             <Col md={6}>
               <Form.Group controlId="username">
@@ -132,7 +125,6 @@ const Account = () => {
               </Form.Group>
             </Col>
           </Row>
-
           <Row className="mb-3">
             <Col md={6}>
               <Form.Group controlId="firstName">
@@ -167,7 +159,6 @@ const Account = () => {
               </Form.Group>
             </Col>
           </Row>
-
           <Row className="mb-3">
             <Col md={6}>
               <Form.Group controlId="phone">
@@ -202,7 +193,6 @@ const Account = () => {
               </Form.Group>
             </Col>
           </Row>
-
           <Row className="mb-3">
             <Col md={6}>
               <Form.Group controlId="password">
@@ -239,20 +229,9 @@ const Account = () => {
               </Form.Group>
             </Col>
           </Row>
-<<<<<<< HEAD
           <Button style={{ backgroundColor: '#E63946', borderColor: '#E63946', color: 'white', fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem' }} type="submit" disabled={saving} className="mt-2">
-=======
-
-          <Button
-            style={{ backgroundColor: '#E63946', borderColor: '#E63946' }}
-            type="submit"
-            disabled={saving}
-            className="mt-2"
-          >
->>>>>>> origin/main
             {saving ? 'Saving...' : 'Save changes'}
           </Button>
-
           {success && <div className="text-success mt-3">Account details updated!</div>}
         </Form>
       </Container>

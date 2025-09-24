@@ -42,19 +42,11 @@ function App() {
               </Navbar.Brand>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
-<<<<<<< HEAD
                 <Nav className="me-auto" style={{ color: 'black', fontWeight: 500, fontSize: '1.1rem' }}>
                   {/* <Nav.Link href="/" style={{ color: 'black' }}>Home</Nav.Link> */}
                   <Nav.Link href="/about" style={{ color: '#222', marginRight: '1.5rem' }}>About</Nav.Link>
                   <Nav.Link href="/services" style={{ color: '#222', marginRight: '1.5rem' }}>Services</Nav.Link>
                   <Nav.Link href="/contact" style={{ color: '#222', marginRight: '1.5rem' }}>Contact</Nav.Link>
-=======
-                <Nav className="me-auto" style={{ color: 'black' }}>
-                  <Nav.Link href="/" style={{ color: 'black' }}>Home</Nav.Link>
-                  <Nav.Link href="/about" style={{ color: 'black' }}>About</Nav.Link>
-                  <Nav.Link href="/contact" style={{ color: 'black' }}>Contact</Nav.Link>
-                  <Nav.Link href="/services2" style={{ color: 'black' }}>Services</Nav.Link>
->>>>>>> origin/main
                 </Nav>
                 <Nav>
                   <div className="d-flex align-items-center" style={{ gap: '1.2rem' }}>
