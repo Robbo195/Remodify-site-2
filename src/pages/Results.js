@@ -89,22 +89,24 @@ const Results = () => {
 
           return (
             <div className="col" key={item.partNumber}>
-              <div className="card h-100 shadow-sm">
+              <div className="card h-100 shadow-sm" style={{ borderRadius: '1rem', overflow: 'hidden' }}>
                 <img
                   src={item.imageUrl || "https://via.placeholder.com/32x32"}
                   className="card-img-top"
                   alt={item.title}
+                  style={{ objectFit: 'cover', height: '200px' }}
                 />
                 <div className="card-body d-flex flex-column">
-                  <h5 className="card-title">{item.title || "Untitled listing"}</h5>
+                  <h5 className="card-title" style={{ fontWeight: 600, color: '#E63946' }}>{item.title || "Untitled listing"}</h5>
                   <p className="card-text">{item.description}</p>
-                  <p className="card-text fw-bold">${item.price?.toFixed(2) || "0.00"}</p>
+                  <p className="card-text fw-bold" style={{ color: '#E63946' }}>${item.price?.toFixed(2) || "0.00"}</p>
                   <div className="mt-auto d-flex justify-content-between align-items-center">
                     {isCloseMatch && (
                       <span className="badge bg-warning text-dark">Close Match</span>
                     )}
                     <button
-                      className="btn btn-sm btn-danger"
+                      className="btn btn-sm"
+                      style={{ backgroundColor: "#E63946", color: "white", borderRadius: '1rem' }}
                       onClick={() => handleViewItem(item)}
                     >
                       View Item
@@ -132,6 +134,7 @@ const Results = () => {
               setItemsPerPage(parseInt(e.target.value));
               setCurrentPage(1); // Reset to page 1 on change
             }}
+            style={{ borderRadius: '1rem' }}
           >
             <option value={5}>5</option>
             <option value={10}>10</option>
@@ -143,6 +146,7 @@ const Results = () => {
             className="btn btn-sm btn-outline-secondary me-2"
             disabled={currentPage === 1}
             onClick={() => setCurrentPage(prev => prev - 1)}
+            style={{ borderRadius: '1rem' }}
           >
             Previous
           </button>
@@ -151,6 +155,7 @@ const Results = () => {
             className="btn btn-sm btn-outline-secondary ms-2"
             disabled={currentPage === totalPages}
             onClick={() => setCurrentPage(prev => prev + 1)}
+            style={{ borderRadius: '1rem' }}
           >
             Next
           </button>
@@ -160,19 +165,20 @@ const Results = () => {
   };
 
   return (
-    <div className="page-section">
+    <div className="page-section" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
       <div className="container text-start">
-        <h1 className="title-underline-1">Results</h1>
+        <h1 className="title-underline-1" style={{ fontWeight: 700, color: '#E63946', marginBottom: '2rem' }}>Results</h1>
         {Object.values(searchInputs).some(input => input) && (
-          <p className="fst-italic">
-            You searched for a {searchInputs.year} {searchInputs.manufacturer} {searchInputs.model} {searchInputs.partNumber && `part number ${searchInputs.partNumber}`} {searchInputs.keyword && `(${searchInputs.keyword})`}.
-          </p>
+          <div className="p-3 mb-4 rounded" style={{ background: '#fff3f3', border: '1px solid #E63946', color: '#E63946' }}>
+            <span className="fst-italic">
+              You searched for a {searchInputs.year} {searchInputs.manufacturer} {searchInputs.model} {searchInputs.partNumber && `part number ${searchInputs.partNumber}`} {searchInputs.keyword && `(${searchInputs.keyword})`}.
+            </span>
+          </div>
         )}
         <div id="resultsContainer">
           {renderResults()}
         </div>
         {renderPaginationControls()}
-
         {/* Modal */}
         {showModal && selectedItem && (
           <div
@@ -185,9 +191,9 @@ const Results = () => {
               className="modal-dialog modal-dialog-centered modal-xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">{selectedItem.title}</h5>
+              <div className="modal-content" style={{ border: '2px solid #E63946', borderRadius: '1rem' }}>
+                <div className="modal-header" style={{ background: '#f8f9fa' }}>
+                  <h5 className="modal-title" style={{ color: '#E63946', fontWeight: 600 }}>{selectedItem.title}</h5>
                   <button
                     type="button"
                     className="btn-close"
@@ -206,7 +212,7 @@ const Results = () => {
                         <p><strong>Description:</strong> {selectedItem.description}</p>
                       </div>
                       <div className="mt-auto text-start">
-                        <h4>
+                        <h4 style={{ color: '#E63946', fontWeight: 700 }}>
                           ${selectedItem.price?.toFixed(2)}
                           {selectedItem.negotiable ? (
                             <small className="text-muted fst-italic ms-2">negotiable</small>
@@ -220,13 +226,14 @@ const Results = () => {
                       <img
                         src={selectedItem.imageUrl || "https://via.placeholder.com/400x250"}
                         alt={selectedItem.title}
-                        className="img-fluid"
+                        className="img-fluid rounded shadow-sm"
+                        style={{ objectFit: 'cover', maxHeight: '300px', background: '#fff' }}
                       />
                       <div className="mt-auto pt-3 text-end">
                         <button
                           type="button"
                           className="btn"
-                          style={{ backgroundColor: "rgb(198, 32, 32)", color: "white" }}
+                          style={{ backgroundColor: "#E63946", color: "white", fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem' }}
                         >
                           Continue to Check-out
                         </button>

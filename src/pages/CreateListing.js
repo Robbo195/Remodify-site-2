@@ -113,12 +113,12 @@ const CreateListing = () => {
   }, []);
 
   return (
-    <div className="page-section">
+    <div className="page-section" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
       <Container className="text-start">
-        <h1 className="title-underline-1" style={{ fontSize: '24pt', textAlign: 'left', marginTop: '2rem' }}>Create a Listing</h1>
+        <h1 className="title-underline-1" style={{ fontSize: '2.2rem', textAlign: 'left', marginTop: '2rem', color: '#E63946', fontWeight: 700 }}>Sell your part</h1>
         <Row>
           <Col md={6}>
-            <Form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
+            <Form onSubmit={handleSubmit} style={{ textAlign: 'left', background: '#fff', borderRadius: '1rem', boxShadow: '0 2px 12px rgba(230,57,70,0.07)', padding: '2rem' }}>
               <Form.Group controlId="formTitle" className="mb-3">
                 <Form.Label>Title <span style={{ color: 'red' }}>*</span></Form.Label>
                 <Form.Control type="text" placeholder="Enter title" value={title} onChange={(e) => setTitle(e.target.value)} required />
@@ -161,11 +161,11 @@ const CreateListing = () => {
               </Form.Group>
 
                  {user ? (
-                <Button type="submit" variant="primary" style={{ backgroundColor: 'rgb(198, 32, 32)', borderColor: 'rgb(198, 32, 32)', color: 'white' }}>
+                <Button type="submit" variant="primary" style={{ backgroundColor: '#E63946', borderColor: '#E63946', color: 'white', fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem' }}>
                   Post
                 </Button>
               ) : (
-                <Button style={{ backgroundColor: 'rgb(255, 102, 0)', borderColor: 'rgb(255, 102, 0)', color: 'white' }} type="button" onClick={handleLoginClick}>
+                <Button style={{ backgroundColor: 'rgb(255, 102, 0)', borderColor: 'rgb(255, 102, 0)', color: 'white', fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem' }} type="button" onClick={handleLoginClick}>
                   Log-in
                 </Button>
               )}
@@ -174,26 +174,28 @@ const CreateListing = () => {
           </Col>
           <Col md={6}>
             <div {...getRootProps()} style={{
-              border: '2px dashed #ddd',
+              border: '2px dashed #E63946',
               padding: '15px',
               minHeight: '300px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: isDragActive ? '#e8e8e8' : '#f9f9f9',
+              backgroundColor: isDragActive ? '#ffeaea' : '#fff',
               textAlign: 'center',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              borderRadius: '1rem',
+              boxShadow: '0 2px 12px rgba(230,57,70,0.07)'
             }}>
               <input {...getInputProps()} />
               {
                 files.length > 0 ? (
                   <div>
                     {files.map(file => (
-                      <img src={file.preview} key={file.path} alt={file.path} style={{ maxWidth: '100%', maxHeight: '280px' }} />
+                      <img src={file.preview} key={file.path} alt={file.path} style={{ maxWidth: '100%', maxHeight: '280px', borderRadius: '0.5rem', boxShadow: '0 2px 8px rgba(230,57,70,0.10)' }} />
                     ))}
                   </div>
                 ) : (
-                  <p>Drag and drop your photos here or click to select files. <span style={{ color: 'red' }}>*</span></p>
+                  <p style={{ color: '#E63946', fontWeight: 500 }}>Drag and drop your photos here or click to select files. <span style={{ color: 'red' }}>*</span></p>
                 )
               }
             </div>
@@ -203,12 +205,12 @@ const CreateListing = () => {
 
       <div style={{ marginTop: '3rem' }}>
         <Container>
-          <h2 style={{ fontSize: '1.7rem', textAlign: 'left', marginBottom: '1rem' }}>Additional information</h2>
+          <h2 style={{ fontSize: '1.7rem', textAlign: 'left', marginBottom: '1rem', color: '#E63946', fontWeight: 600 }}>Additional information</h2>
           <div style={{ marginTop: '1rem', color: '#555', fontSize: '1rem', textAlign: 'left' }}>
             Help buyers find the right item, your product, by adding extra information.
           </div>
           <div style={{ marginBottom: '2rem', marginTop: '1.5rem' }}>
-            <h3 style={{ fontSize: '1.2rem', textAlign: 'left', marginBottom: '1rem' }}>Suitable for</h3>
+            <h3 style={{ fontSize: '1.2rem', textAlign: 'left', marginBottom: '1rem', color: '#E63946', fontWeight: 600 }}>Suitable for</h3>
             <Row className="mb-3">
               <Col>
                 <Form.Group controlId="formYear">
@@ -274,7 +276,7 @@ const CreateListing = () => {
             </Row>
           </div>
           <div style={{ marginBottom: '2rem' }}>
-            <h3 style={{ fontSize: '1.2rem', textAlign: 'left', marginBottom: '1rem' }}>Part details</h3>
+            <h3 style={{ fontSize: '1.2rem', textAlign: 'left', marginBottom: '1rem', color: '#E63946', fontWeight: 600 }}>Part details</h3>
             <Row className="mb-3">
               <Col>
                 <Form.Group controlId="formPartBrand">
@@ -302,7 +304,7 @@ const CreateListing = () => {
           <Button
             variant="primary"
             onClick={handleGoogleSignIn}
-            style={{ backgroundColor: '#4285F4', borderColor: '#4285F4', color: 'white' }}
+            style={{ backgroundColor: '#4285F4', borderColor: '#4285F4', color: 'white', fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem' }}
           >
             Log-in with Google
           </Button>

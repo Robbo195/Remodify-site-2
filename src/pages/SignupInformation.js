@@ -21,10 +21,10 @@ const SignupInformation = () => {
   };
 
   return (
-    <div className="page-section">
+    <div className="page-section" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
       <Container className="text-start">
-        <h1 className="title-underline-1" style={{ fontSize: '24pt' }}>Sign up to Remodify</h1>
-        <Form onSubmit={handleSubmit}>
+        <h1 className="title-underline-1" style={{ fontSize: '2.2rem', color: '#E63946', fontWeight: 700, marginBottom: '2rem' }}>Sign up to Remodify</h1>
+        <Form onSubmit={handleSubmit} style={{ background: '#fff', borderRadius: '1rem', boxShadow: '0 2px 12px rgba(230,57,70,0.07)', padding: '2rem' }}>
           <Row className="mb-3">
             <Col>
               <Form.Group controlId="formFirstName">
@@ -70,8 +70,8 @@ const SignupInformation = () => {
             <Form.Control type="text" placeholder="Enter company name (optional)" value={companyName} onChange={(e) => setCompanyName(e.target.value)} />
           </Form.Group>
 
-          <Button style={{ backgroundColor: 'rgb(198, 32, 32)', borderColor: 'rgb(198, 32, 32)', color: 'white' }} type="submit" disabled={!isFormValid}>
-            Submit Listing
+          <Button style={{ backgroundColor: '#E63946', borderColor: '#E63946', color: 'white', fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem' }} type="submit" disabled={!isFormValid}>
+            Sign up
           </Button>
         </Form>
       </Container>
