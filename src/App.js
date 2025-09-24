@@ -9,7 +9,7 @@ import './App.css';
 
 import Home from './pages/Home';
 import About from './pages/About';
-import Services from './pages/Services';
+
 import Contact from './pages/Contact';
 import Landing from './pages/Landing';
 import Results from './pages/Results';
@@ -19,6 +19,7 @@ import Login from './pages/Login';
 import Account from './pages/Account';
 import ListingSuccess from './pages/ListingSuccess';
 import ProfileIcon from './components/ProfileIcon';
+import Services2 from './pages/services2';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -41,11 +42,19 @@ function App() {
               </Navbar.Brand>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
+<<<<<<< HEAD
                 <Nav className="me-auto" style={{ color: 'black', fontWeight: 500, fontSize: '1.1rem' }}>
                   {/* <Nav.Link href="/" style={{ color: 'black' }}>Home</Nav.Link> */}
                   <Nav.Link href="/about" style={{ color: '#222', marginRight: '1.5rem' }}>About</Nav.Link>
                   <Nav.Link href="/services" style={{ color: '#222', marginRight: '1.5rem' }}>Services</Nav.Link>
                   <Nav.Link href="/contact" style={{ color: '#222', marginRight: '1.5rem' }}>Contact</Nav.Link>
+=======
+                <Nav className="me-auto" style={{ color: 'black' }}>
+                  <Nav.Link href="/" style={{ color: 'black' }}>Home</Nav.Link>
+                  <Nav.Link href="/about" style={{ color: 'black' }}>About</Nav.Link>
+                  <Nav.Link href="/contact" style={{ color: 'black' }}>Contact</Nav.Link>
+                  <Nav.Link href="/services2" style={{ color: 'black' }}>Services</Nav.Link>
+>>>>>>> origin/main
                 </Nav>
                 <Nav>
                   <div className="d-flex align-items-center" style={{ gap: '1.2rem' }}>
@@ -68,7 +77,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/results" element={<Results />} />
           <Route path="/create-listing" element={<CreateListing />} />
@@ -76,6 +84,7 @@ function App() {
           <Route path="/Login" element={<Login />} />
           <Route path="/account" element={<Account />} />
           <Route path="/listing-success" element={<ListingSuccess />} />
+          <Route path="/services2" element={<Services2 />} />
         </Routes>
       </div>
     </Router>
