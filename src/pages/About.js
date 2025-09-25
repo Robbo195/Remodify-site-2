@@ -4,25 +4,42 @@ import australiaMap from '../assets/australia_map.png';
 
 const About = () => {
   return (
-    <div className="page-section padding-top-50">
+    <div className="page-section" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
       <Container>
-        <h1 className="title-underline-2 text-left">About Us</h1>
+        <h1 className="title-underline-2 text-left" style={{ color: '#E63946', fontWeight: 700, marginBottom: '2rem' }}>About Us</h1>
         <Row className="align-items-center">
           <Col md={8}>
-            <div className="highlight-box">
+            <div style={{ background: '#fff', borderRadius: '1rem', boxShadow: '0 2px 12px rgba(230,57,70,0.07)', padding: '2rem' }}>
               <p className="text-left">
-                Australia is a vast and isolated continent, with six states and two territories spread across the world's largest island. This unique geography often makes it challenging to source high-quality, affordable car parts.
+                When you’re building your building your pride and joy, you want the best quality parts at the most attainable prices. In many cases, you just about have to sell a kidney just to get your hands on the shell. And this is before you even think about modifying it. 
+              </p>
+              <p className="text-left">
+                And what about if you buy the wrong part? You’ve scoured every corner of the internet just to be sent the wrong part and find out there’s no refunds. 
+              </p>
+              <p className="text-left">
+                As car enthusiasts, we understand that building your dream rig is no easy feat. But we also understand that you shouldn’t have to settle for less or being ripped off.
+              </p>
+              <p className="text-left">
+                At Remodify, we value ALL motoring enthusiasts. No matter what your project – a car, bike, buggy or even a racing lawn mower, we are here to help you make your dream vehicle a reality and do it without breaking the bank. 
+              </p>
+              <p className="text-left">
+                Remodify connects enthusiasts to get the best parts at the best prices. Why buy brand new when you can buy almost brand new and pay half the price? And forget about being limited to the parts in your local area. Being from a regional city, we get it. Remodify will connect you with people all over the globe and make shipping and transactions safer and easier than ever.
+              </p>
+              <p className="text-left">
+                Got a part to sell? Want to buy a part? Remodify is your one-stop solution.
+              </p>
+              <p className="text-left">
+                So, what are you waiting for? 
+              </p>
+              <p className="text-left">
+                Happy Remodifying!
               </p>
             </div>
           </Col>
           <Col md={4}>
-            <img src={australiaMap} alt="Map of Australia" className="img-fluid" />
+            <img src={australiaMap} alt="Map of Australia" className="img-fluid rounded shadow-sm" style={{ background: '#fff', borderRadius: '1rem', boxShadow: '0 2px 12px rgba(230,57,70,0.07)' }} />
           </Col>
         </Row>
-        <p className="text-left">Remodify is made by car enthusiasts for car enthusiasts. And not just enthusiasts - wreckers, mechanics and anyone needing a part for their car or motorbike. Whether for your track car, project car, daily driver or offroad/touring rig, Remodify is the all-in-one marketplace which facilitates easy and safe transactions.</p>
-        <p className="text-left">Other marketplaces are too cluttered, aren’t easy to filter, and most importantly, aren’t safe, opening both buyer and seller up to being scammed. And often in Australia, we are divided too easily by location.</p>
-        <p className="text-left">As car lovers, we appreciate that we want the highest quality parts for our cars but buying brand new is not always feasible.</p>
-        <p className="text-left">Remodify aims to break down the location barriers that motoring enthusiasts in Australia face - state to state, rural and region and between capital cities.</p>
       </Container>
     </div>
   );

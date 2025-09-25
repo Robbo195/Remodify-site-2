@@ -31,10 +31,10 @@ const Contact = () => {
   };
 
   return (
-    <div className="page-section">
+    <div className="page-section" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
       <Container>
-        <h1 className="title-underline-2" style={{ textAlign: 'left', marginTop: '2rem' }}>Contact Us</h1>
-        <Form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
+        <h1 className="title-underline-2" style={{ textAlign: 'left', marginTop: '2rem', color: '#E63946', fontWeight: 700 }}>Contact Us</h1>
+        <Form onSubmit={handleSubmit} style={{ textAlign: 'left', background: '#fff', borderRadius: '1rem', boxShadow: '0 2px 12px rgba(230,57,70,0.07)', padding: '2rem' }}>
           <Form.Group className="mb-3">
             <Form.Label>Name</Form.Label>
             <Form.Control type="text" name="name" value={formData.name} onChange={handleChange} required />
@@ -47,14 +47,14 @@ const Contact = () => {
             <Form.Label>Message</Form.Label>
             <Form.Control as="textarea" rows={3} name="message" value={formData.message} onChange={handleChange} required />
           </Form.Group>
-          <Button variant="primary" type="submit" style={{ backgroundColor: 'rgb(198, 32, 32)', borderColor: 'rgb(198, 32, 32)' }}>
+          <Button variant="primary" type="submit" style={{ backgroundColor: '#E63946', borderColor: '#E63946', fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem' }}>
             Submit
           </Button>
         </Form>
       </Container>
       <div className="team-section" style={{ marginTop: '3rem', textAlign: 'left' }}>
         <Container>
-          <h2 className="title-underline-2" style={{ textAlign: 'left', fontSize: '2.5rem' }}>Meet the Team</h2>
+          <h2 className="title-underline-2" style={{ textAlign: 'left', fontSize: '2.5rem', color: '#E63946', fontWeight: 700 }}>Meet the Team</h2>
           <p>
             G'day and Welcome to Remodify!<br /><br />
             Thanks for taking a look around. We hope we have been useful to you in finding what you need.<br /><br />
