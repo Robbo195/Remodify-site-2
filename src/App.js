@@ -20,6 +20,8 @@ import Account from './pages/Account';
 import ListingSuccess from './pages/ListingSuccess';
 import ProfileIcon from './components/ProfileIcon';
 import Services2 from './pages/services2';
+import SavedListings from './pages/SavedListings';
+import Checkout from './pages/Checkout';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -47,9 +49,22 @@ function App() {
                   <Nav.Link href="/about" style={{ color: '#222', marginRight: '1.5rem' }}>About</Nav.Link>
                   <Nav.Link href="/services" style={{ color: '#222', marginRight: '1.5rem' }}>Services</Nav.Link>
                   <Nav.Link href="/contact" style={{ color: '#222', marginRight: '1.5rem' }}>Contact</Nav.Link>
+                  {/* Removed Saved Listings button from banner as it is now in the account dropdown */}
                 </Nav>
                 <Nav>
                   <div className="d-flex align-items-center" style={{ gap: '1.2rem' }}>
+                    <Nav.Link
+                      as={Link}
+                      to="/checkout"
+                      className="d-flex align-items-center ms-2"
+                      style={{ background: 'none', border: 'none', boxShadow: 'none', padding: '0.3rem 0.8rem' }}
+                      title="Go to checkout"
+                    >
+                      <span style={{ display: 'flex', alignItems: 'center' }}>
+                        <img src={require('./assets/cart.svg').default} alt="Cart" style={{ width: 26, height: 26, marginRight: 6, filter: 'drop-shadow(0 1px 2px rgba(230,57,70,0.10))' }} />
+                        <span className="d-none d-md-inline" style={{ color: '#E63946', fontWeight: 600, fontSize: '1.05rem' }}>Cart</span>
+                      </span>
+                    </Nav.Link>
                     <Nav.Link href="/create-listing" className="ms-2" style={{ color: '#E63946', fontWeight: 700, fontSize: '1.1rem', border: '2px solid #E63946', borderRadius: '2rem', padding: '0.3rem 1.2rem', background: 'white', transition: 'background 0.2s, color 0.2s' }}
                       onMouseOver={e => { e.target.style.background = '#E63946'; e.target.style.color = 'white'; }}
                       onMouseOut={e => { e.target.style.background = 'white'; e.target.style.color = '#E63946'; }}
@@ -71,12 +86,14 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/results" element={<Results />} />
+          <Route path="/checkout" element={<Checkout />} />
           <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/SellersAddress" element={<SignupInformation />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/account" element={<Account />} />
           <Route path="/listing-success" element={<ListingSuccess />} />
           <Route path="/services2" element={<Services2 />} />
+          <Route path="/saved-listings" element={<SavedListings />} />
         </Routes>
       </div>
     </Router>
