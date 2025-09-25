@@ -44,7 +44,7 @@ function App() {
                 <Nav className="me-auto" style={{ color: 'black' }}>
                   <Nav.Link href="/" style={{ color: 'black' }}>Home</Nav.Link>
                   <Nav.Link href="/about" style={{ color: 'black' }}>About</Nav.Link>
-                  <Nav.Link href="/services" style={{ color: 'black' }}>Services</Nav.Link>                  <Nav.Link href="/contact" style={{ color: 'black' }}>Contact</Nav.Link>
+                  <Nav.Link href="/services2" style={{ color: 'black' }}>Services</Nav.Link>                  <Nav.Link href="/contact" style={{ color: 'black' }}>Contact</Nav.Link>
                 </Nav>
                 <Nav>
                   <div className="d-flex align-items-center" style={{ gap: '1.2rem' }}>
