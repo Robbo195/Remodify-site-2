@@ -36,15 +36,15 @@ const Contact = () => {
         <h1 className="title-underline-2" style={{ textAlign: 'left', marginTop: '2rem', color: '#E63946', fontWeight: 700 }}>Contact Us</h1>
         <Form onSubmit={handleSubmit} style={{ textAlign: 'left', background: '#fff', borderRadius: '1rem', boxShadow: '0 2px 12px rgba(230,57,70,0.07)', padding: '2rem' }}>
           <Form.Group className="mb-3">
-            <Form.Label>Name</Form.Label>
+            <Form.Label>Name <span style={{ color: 'red' }}>*</span></Form.Label>
             <Form.Control type="text" name="name" value={formData.name} onChange={handleChange} required />
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Email</Form.Label>
+            <Form.Label>Email <span style={{ color: 'red' }}>*</span></Form.Label>
             <Form.Control type="email" name="email" value={formData.email} onChange={handleChange} required />
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Message</Form.Label>
+            <Form.Label>Message <span style={{ color: 'red' }}>*</span></Form.Label>
             <Form.Control as="textarea" rows={3} name="message" value={formData.message} onChange={handleChange} required />
           </Form.Group>
           <Button variant="primary" type="submit" style={{ backgroundColor: '#E63946', borderColor: '#E63946', fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem' }}>

@@ -251,6 +251,13 @@ const CreateListing = () => {
                     </Col>
                   </Row>
                 </div>
+                <div style={{ marginBottom: '2rem' }}>
+                  <h3 style={{ fontSize: '1.2rem', textAlign: 'left', marginBottom: '1rem', color: '#E63946', fontWeight: 600 }}>Comments</h3>
+                  <Form.Group controlId="formComments">
+                    <Form.Label>Comments (optional)</Form.Label>
+                    <Form.Control as="textarea" rows={2} placeholder="Add any extra notes or comments for buyers" />
+                  </Form.Group>
+                </div>
                 {/* Add any extra fields, notes, or content here as needed */}
               </div>
               {user && (

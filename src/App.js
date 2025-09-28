@@ -22,15 +22,29 @@ import ProfileIcon from './components/ProfileIcon';
 import Services2 from './pages/services2';
 import SavedListings from './pages/SavedListings';
 import Checkout from './pages/Checkout';
+import DeliveryPaymentDetails from './pages/DeliveryDetails';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
+      setAuthLoading(false);
     });
     return () => unsubscribe();
+  }, []);
+
+  // Listen for cart changes from Results page
+  useEffect(() => {
+    // Listen for custom event from Results page
+    const handleCartUpdate = (e) => {
+      setCartCount(e.detail.count);
+    };
+    window.addEventListener('remodify-cart-update', handleCartUpdate);
+    return () => window.removeEventListener('remodify-cart-update', handleCartUpdate);
   }, []);
 
   return (
@@ -57,19 +71,37 @@ function App() {
                       as={Link}
                       to="/checkout"
                       className="d-flex align-items-center ms-2"
-                      style={{ background: 'none', border: 'none', boxShadow: 'none', padding: '0.3rem 0.8rem' }}
+                      style={{ background: 'none', border: 'none', boxShadow: 'none', padding: '0.3rem 0.8rem', position: 'relative' }}
                       title="Go to checkout"
                     >
-                      <span style={{ display: 'flex', alignItems: 'center' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
                         <img src={require('./assets/cart.svg').default} alt="Cart" style={{ width: 26, height: 26, marginRight: 6, filter: 'drop-shadow(0 1px 2px rgba(230,57,70,0.10))' }} />
                         <span className="d-none d-md-inline" style={{ color: '#E63946', fontWeight: 600, fontSize: '1.05rem' }}>Cart</span>
+                        {cartCount > 0 && (
+                          <span style={{
+                            position: 'absolute',
+                            top: -6,
+                            right: -10,
+                            background: '#FF6600',
+                            color: 'white',
+                            borderRadius: '50%',
+                            fontSize: '0.85rem',
+                            fontWeight: 700,
+                            minWidth: 22,
+                            height: 22,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: '0 2px 8px rgba(230,57,70,0.10)'
+                          }}>{cartCount}</span>
+                        )}
                       </span>
                     </Nav.Link>
                     <Nav.Link href="/create-listing" className="ms-2" style={{ color: '#E63946', fontWeight: 700, fontSize: '1.1rem', border: '2px solid #E63946', borderRadius: '2rem', padding: '0.3rem 1.2rem', background: 'white', transition: 'background 0.2s, color 0.2s' }}
                       onMouseOver={e => { e.target.style.background = '#E63946'; e.target.style.color = 'white'; }}
                       onMouseOut={e => { e.target.style.background = 'white'; e.target.style.color = '#E63946'; }}
                     >Sell your part</Nav.Link>
-                    {user ? (
+                    {authLoading ? null : user ? (
                       <div style={{ marginLeft: '2.5rem' }}><ProfileIcon /></div>
                     ) : (
                       <Nav.Link href="/login" className="btn ms-2" style={{ backgroundColor: '#FF6600', color: 'white', fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem', fontSize: '1.1rem', boxShadow: '0 2px 8px rgba(230,57,70,0.10)' }}>Sign up/Log in</Nav.Link>
@@ -94,6 +126,7 @@ function App() {
           <Route path="/listing-success" element={<ListingSuccess />} />
           <Route path="/services2" element={<Services2 />} />
           <Route path="/saved-listings" element={<SavedListings />} />
+          <Route path="/delivery-details" element={<DeliveryPaymentDetails />} />
         </Routes>
       </div>
     </Router>

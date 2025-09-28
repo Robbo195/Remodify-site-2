@@ -16,6 +16,7 @@ const Results = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5); // Default 5 per page
   const [user, setUser] = useState(null);
+  const [cart, setCart] = useState([]);
   const navigate = useNavigate();
 
   // Filtering and sorting state
@@ -125,6 +126,31 @@ const Results = () => {
     } catch (err) {
       alert('Error saving listing.');
     }
+  };
+
+  // Load cart from localStorage on mount
+  useEffect(() => {
+    const storedCart = localStorage.getItem('remodifyCart');
+    if (storedCart) {
+      setCart(JSON.parse(storedCart));
+    }
+  }, []);
+
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('remodifyCart', JSON.stringify(cart));
+    // Notify App.js of cart changes
+    const event = new CustomEvent('remodify-cart-update', { detail: { count: cart.length } });
+    window.dispatchEvent(event);
+  }, [cart]);
+
+  // Add to cart handler
+  const handleAddToCart = (item) => {
+    setCart(prevCart => {
+      // Prevent duplicates by id
+      if (prevCart.some(cartItem => cartItem.id === item.id)) return prevCart;
+      return [...prevCart, item];
+    });
   };
 
   // Dynamically determine max price from listings
@@ -339,6 +365,16 @@ const Results = () => {
     </div>
   );
 
+  // Notify App.js of cart changes
+  useEffect(() => {
+    const event = new CustomEvent('remodify-cart-update', { detail: { count: cart.length } });
+    window.dispatchEvent(event);
+  }, [cart]);
+
+  const [showContactBox, setShowContactBox] = useState(false);
+  const [contactMessage, setContactMessage] = useState("");
+  const [contactSuccess, setContactSuccess] = useState(false);
+
   return (
     <div className="page-section" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
       <div className="row g-0" style={{ margin: 0 }}>
@@ -370,7 +406,7 @@ const Results = () => {
           className="modal show fade d-block"
           tabIndex="-1"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-          onClick={() => setShowModal(false)}
+          onClick={() => { setShowModal(false); setShowContactBox(false); setContactSuccess(false); }}
         >
           <div
             className="modal-dialog modal-dialog-centered modal-xl"
@@ -382,7 +418,7 @@ const Results = () => {
                 <button
                   type="button"
                   className="btn-close"
-                  onClick={() => setShowModal(false)}
+                  onClick={() => { setShowModal(false); setShowContactBox(false); setContactSuccess(false); }}
                 ></button>
               </div>
               <div className="modal-body">
@@ -415,25 +451,59 @@ const Results = () => {
                       style={{ objectFit: 'cover', maxHeight: '300px', background: '#fff' }}
                     />
                     <div className="mt-auto pt-3 text-end">
-                      <button
-                        type="button"
-                        className="btn me-2"
-                        style={{ backgroundColor: "#FF6600", color: "white", fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem' }}
-                        onClick={() => {
-                          // TODO: Implement contact seller logic (e.g., open contact modal or redirect)
-                          alert('Contact Seller functionality coming soon!');
-                        }}
-                      >
-                        Contact Seller
-                      </button>
+                      {!showContactBox && (
+                        <button
+                          type="button"
+                          className="btn me-2"
+                          style={{ backgroundColor: "#FF6600", color: "white", fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem' }}
+                          onClick={() => setShowContactBox(true)}
+                        >
+                          Contact Seller
+                        </button>
+                      )}
+                      {showContactBox && (
+                        <div className="mb-2 text-start">
+                          <textarea
+                            className="form-control mb-2"
+                            rows={3}
+                            placeholder="Type your message to the seller..."
+                            value={contactMessage}
+                            onChange={e => setContactMessage(e.target.value)}
+                          />
+                          <button
+                            className="btn btn-primary"
+                            style={{ backgroundColor: '#E63946', borderRadius: '1rem', fontWeight: 600 }}
+                            onClick={() => {
+                              let messages = JSON.parse(localStorage.getItem('remodifySellerMessages') || '[]');
+                              messages.push({
+                                from: 'buyer',
+                                message: contactMessage,
+                                date: new Date().toISOString(),
+                                listingId: selectedItem.id
+                              });
+                              localStorage.setItem('remodifySellerMessages', JSON.stringify(messages));
+                              setContactSuccess(true);
+                              setContactMessage("");
+                              setShowContactBox(false);
+                            }}
+                            disabled={!contactMessage.trim()}
+                          >
+                            Send Message
+                          </button>
+                        </div>
+                      )}
+                      {contactSuccess && (
+                        <div className="alert alert-success mt-2">Message sent to seller!</div>
+                      )}
                       <button
                         type="button"
                         className="btn"
                         style={{ backgroundColor: "#E63946", color: "white", fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem' }}
                         onClick={() => {
+                          handleAddToCart(selectedItem);
                           setShowModal(false);
                           window.scrollTo(0, 0);
-                          navigate('/checkout', { state: { listing: selectedItem } });
+                          navigate('/checkout', { state: { cart: [...cart, selectedItem] } });
                         }}
                       >
                         I have to have it!
