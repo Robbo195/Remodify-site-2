@@ -14,12 +14,12 @@ const Results = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5); // Default 5 per page
+  const [itemsPerPage, setItemsPerPage] = useState(5); /* Default 5 per page */
   const [user, setUser] = useState(null);
   const [cart, setCart] = useState([]);
   const navigate = useNavigate();
 
-  // Filtering and sorting state
+  /* Filtering and sorting state */
   const [filters, setFilters] = useState({
     minPrice: '',
     maxPrice: '',
@@ -52,9 +52,9 @@ const Results = () => {
         const snapshot = await getDocs(collection(db, "listings"));
         let inventory = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        // If a new listing was just posted, show it at the top (if not already in Firestore results)
+        /* If a new listing was just posted, show it at the top (if not already in Firestore results) */
         if (newListing) {
-          // Check if it's already in inventory (by title, description, etc.)
+          /* Check if it's already in inventory (by title, description, etc.) */
           const alreadyExists = inventory.some(item =>
             item.title === newListing.title &&
             item.description === newListing.description &&
@@ -71,7 +71,6 @@ const Results = () => {
           }
         }
 
-        const params = new URLSearchParams(window.location.search);
         const search = {
           year: params.get("year") || "",
           manufacturer: params.get("manufacturer") || "",
@@ -110,7 +109,7 @@ const Results = () => {
     loadInventoryAndSearch();
   }, [location]);
 
-  // Save listing handler
+  /* Save listing handler */
   const handleSaveListing = async (listing) => {
     if (!user) {
       alert('Please log in to save listings.');
@@ -118,7 +117,7 @@ const Results = () => {
     }
     try {
       const userRef = doc(db, 'users', user.uid);
-      await setDoc(userRef, {}, { merge: true }); // Ensure user doc exists
+      await setDoc(userRef, {}, { merge: true }); 
       await updateDoc(userRef, {
         savedListings: arrayUnion(listing.id)
       });
@@ -128,7 +127,6 @@ const Results = () => {
     }
   };
 
-  // Load cart from localStorage on mount
   useEffect(() => {
     const storedCart = localStorage.getItem('remodifyCart');
     if (storedCart) {
@@ -136,15 +134,15 @@ const Results = () => {
     }
   }, []);
 
-  // Save cart to localStorage whenever it changes
+ 
   useEffect(() => {
     localStorage.setItem('remodifyCart', JSON.stringify(cart));
-    // Notify App.js of cart changes
+
     const event = new CustomEvent('remodify-cart-update', { detail: { count: cart.length } });
     window.dispatchEvent(event);
   }, [cart]);
 
-  // Add to cart handler
+ 
   const handleAddToCart = (item) => {
     setCart(prevCart => {
       // Prevent duplicates by id
@@ -153,7 +151,7 @@ const Results = () => {
     });
   };
 
-  // Dynamically determine max price from listings
+  /* Dynamically determine max price from listings */
   const getMaxListingPrice = (items) => {
     if (!items.length) return 1000;
     return Math.max(...items.map(i => Number(i.price) || 0), 1000);
@@ -162,10 +160,10 @@ const Results = () => {
   const dynamicMax = getMaxListingPrice(allItems);
   useEffect(() => {
     setMaxPrice(dynamicMax);
-    // eslint-disable-next-line
+    /* eslint-disable-next-line */
   }, [dynamicMax]);
 
-  // Filtering and sorting logic
+  /* Filtering and sorting logic */
   const applyFiltersAndSort = (items) => {
     let filtered = items;
     filtered = filtered.filter(i => Number(i.price) >= 0 && Number(i.price) <= maxPrice);
@@ -174,11 +172,11 @@ const Results = () => {
     if (sortBy === 'price-desc') filtered = filtered.sort((a, b) => b.price - a.price);
     if (sortBy === 'year-desc') filtered = filtered.sort((a, b) => b.year - a.year);
     if (sortBy === 'year-asc') filtered = filtered.sort((a, b) => a.year - b.year);
-    // Default: relevance (Fuse score order)
+    /* Default: relevance (Fuse score order) */
     return filtered;
   };
 
-  // Pagination logic
+  /* Pagination logic */
   const totalPages = Math.ceil(results.length / itemsPerPage);
   const paginatedResults = applyFiltersAndSort(results.map(r => r.item)).slice(
     (currentPage - 1) * itemsPerPage,
@@ -191,46 +189,22 @@ const Results = () => {
     if (results.length === 0 && !newListing) return <p>No parts matched your search.</p>;
 
     return (
-<>
-  {newListing && (
-    <div className="row mb-4">
-      <div className="col">
-        <div
-          className="card h-100 shadow-sm"
-          style={{
-            borderRadius: '1rem',
-            overflow: 'hidden',
-            border: '2px solid #E63946',
-            background: '#fff7f7'
-          }}
-        >
-          {/* new listing content here */}
-        </div>
-      </div>
-    </div>
-  )}
-
-  <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-    {paginatedResults.map(({ item, score }) => {
-      const isCloseMatch = score <= 0.3;
-
-      return (
-        <div className="col" key={item.partNumber}>
-          <div
-            className="card h-100 shadow-sm"
-            style={{ borderRadius: '1rem', overflow: 'hidden' }}
-          >
-            {/* existing search result card content here */}
-          </div>
-        </div>
-      );
-    })}
-  </div>
-</>
+      <>
+        {newListing && (
+          <div className="row mb-4">
+            <div className="col">
+              <div
+                className="card h-100 shadow-sm"
+                style={{
+                  borderRadius: '1rem',
+                  overflow: 'hidden',
+                  border: '2px solid #E63946',
+                  background: '#fff7f7'
+                }}
+              >
                 <img
                   src={newListing.files && newListing.files[0] ? newListing.files[0] : "https://via.placeholder.com/32x32"}
                   className="card-img-top"
-
                   alt={newListing.title}
                   style={{ objectFit: 'cover', height: '200px' }}
                 />
@@ -243,7 +217,19 @@ const Results = () => {
                   <div className="mb-2"><strong>Condition:</strong> {newListing.condition}</div>
                   <div className="mb-2"><strong>Description:</strong> {newListing.description}</div>
                   <div className="mb-2"><strong>Negotiable:</strong> {newListing.negotiable ? 'Yes' : 'No'}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
+        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+          {paginatedResults.map((item) => (
+            <div className="col" key={item.partNumber}>
+              <div className="card h-100 shadow-sm" style={{ borderRadius: '1rem', overflow: 'hidden' }}>
+                <img
+                  src={item.imageUrl || "https://via.placeholder.com/32x32"}
+                  className="card-img-top"
                   alt={item.title}
                   style={{ objectFit: 'cover', height: '200px' }}
                 />
@@ -252,70 +238,34 @@ const Results = () => {
                   <p className="card-text">{item.description}</p>
                   <p className="card-text fw-bold" style={{ color: '#E63946' }}>${item.price?.toFixed(2) || "0.00"}</p>
                   <div className="mt-auto d-flex justify-content-between align-items-center">
-                    {isCloseMatch && (
-                      <span className="badge bg-warning text-dark">Close Match</span>
-                    )}
-                    <button
-                      className="btn btn-sm"
-                      style={{ backgroundColor: "#E63946", color: "white", borderRadius: '1rem' }}
-                      onClick={() => handleViewItem(item)}
-                    >
-                      View Item
-                    </button>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-          {paginatedResults.map((item) => {
-            // If you want to show close match badge, you can optionally recompute score here if needed
-            return (
-              <div className="col" key={item.partNumber}>
-                <div className="card h-100 shadow-sm" style={{ borderRadius: '1rem', overflow: 'hidden' }}>
-                  <img
-                    src={item.imageUrl || "https://via.placeholder.com/32x32"}
-                    className="card-img-top"
-                    alt={item.title}
-                    style={{ objectFit: 'cover', height: '200px' }}
-                  />
-                  <div className="card-body d-flex flex-column">
-                    <h5 className="card-title" style={{ fontWeight: 600, color: '#E63946' }}>{item.title || "Untitled listing"}</h5>
-                    <p className="card-text">{item.description}</p>
-                    <p className="card-text fw-bold" style={{ color: '#E63946' }}>${item.price?.toFixed(2) || "0.00"}</p>
-                    <div className="mt-auto d-flex justify-content-between align-items-center">
-                      {/* Optionally, remove isCloseMatch badge or recompute if needed */}
-                      <div>
-                        <button
-                          className="btn btn-sm me-2"
-                          style={{
-                            background: '#FF6600', // Remodify orange
-                            color: 'white',
-                            fontWeight: 'bold',
-                            border: '2px solid #FF6600',
-                            borderRadius: '1rem',
-                            boxShadow: '0 2px 8px rgba(230,57,70,0.08)'
-                          }}
-                          onClick={() => handleSaveListing(item)}
-                        >
-                          Save
-                        </button>
-                        <button
-                          className="btn btn-sm"
-                          style={{ backgroundColor: "#E63946", color: "white", borderRadius: '1rem' }}
-                          onClick={() => handleViewItem(item)}
-                        >
-                          View Item
-                        </button>
-                      </div>
+                    <div>
+                      <button
+                        className="btn btn-sm me-2"
+                        style={{
+                          background: '#FF6600',
+                          color: 'white',
+                          fontWeight: 'bold',
+                          border: '2px solid #FF6600',
+                          borderRadius: '1rem',
+                          boxShadow: '0 2px 8px rgba(230,57,70,0.08)'
+                        }}
+                        onClick={() => handleSaveListing(item)}
+                      >
+                        Save
+                      </button>
+                      <button
+                        className="btn btn-sm"
+                        style={{ backgroundColor: "#E63946", color: "white", borderRadius: '1rem' }}
+                        onClick={() => handleViewItem(item)}
+                      >
+                        View Item
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </>
     );
@@ -332,7 +282,7 @@ const Results = () => {
             value={itemsPerPage}
             onChange={e => {
               setItemsPerPage(parseInt(e.target.value));
-              setCurrentPage(1); // Reset to page 1 on change
+              setCurrentPage(1); /* Reset to page 1 on change */
             }}
             style={{ borderRadius: '1rem' }}
           >
@@ -365,11 +315,11 @@ const Results = () => {
   };
 
 
-  // Filtering UI (sidebar)
+  /* Filtering UI (sidebar) */
   const renderFilters = () => (
     <div className="p-3 mb-3" style={{
-      background: '#f8f9fa', // match page background
-      border: '1px solid #e5e5e5', // lighter border
+      background: '#f8f9fa', /* match page background */
+      border: '1px solid #e5e5e5', /* lighter border */
       borderRadius: '1rem',
       marginLeft: '-2px',
       width: 'calc(100% + 4px)',
@@ -405,7 +355,7 @@ const Results = () => {
     </div>
   );
 
-  // Sort By UI (top right)
+  /* Sort By UI (top right) */
   const renderSortBy = () => (
     <div className="d-flex justify-content-end align-items-center mb-3">
       <label className="form-label me-2 mb-0">Sort By</label>
@@ -419,18 +369,12 @@ const Results = () => {
     </div>
   );
 
-  // Notify App.js of cart changes
-  useEffect(() => {
-    const event = new CustomEvent('remodify-cart-update', { detail: { count: cart.length } });
-    window.dispatchEvent(event);
-  }, [cart]);
-
   const [showContactBox, setShowContactBox] = useState(false);
   const [contactMessage, setContactMessage] = useState("");
   const [contactSuccess, setContactSuccess] = useState(false);
 
   return (
-    <div className="page-section" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
+    <div className="page-section" style={{ background: '#f9f9fa', minHeight: '100vh' }}>
       <div className="row g-0" style={{ margin: 0 }}>
         {/* Sidebar flush left */}
         <div className="col-12 col-md-2" style={{ minWidth: 220, paddingLeft: 0, paddingRight: 0, background: '#f8f9fa' }}>
@@ -462,181 +406,137 @@ const Results = () => {
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
           onClick={() => { setShowModal(false); setShowContactBox(false); setContactSuccess(false); }}
         >
-        
-  return (
-    <div className="page-section" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
-      <div className="container text-start">
-        <h1 className="title-underline-1" style={{ fontWeight: 700, color: '#E63946', marginBottom: '2rem' }}>Results</h1>
-        {Object.values(searchInputs).some(input => input) && (
-          <div className="p-3 mb-4 rounded" style={{ background: '#fff3f3', border: '1px solid #E63946', color: '#E63946' }}>
-            <span className="fst-italic">
-              You searched for a {searchInputs.year} {searchInputs.manufacturer} {searchInputs.model} {searchInputs.partNumber && `part number ${searchInputs.partNumber}`} {searchInputs.keyword && `(${searchInputs.keyword})`}.
-            </span>
-          </div>
-        )}
-        <div id="resultsContainer">
-          {renderResults()}
-        </div>
-        {renderPaginationControls()}
-        {/* Modal */}
-        {showModal && selectedItem && (
-        
           <div
             className="modal-dialog modal-dialog-centered modal-xl"
             onClick={(e) => e.stopPropagation()}
           >
-
-         <div
-  className="modal-dialog modal-dialog-centered modal-xl"
-  onClick={(e) => e.stopPropagation()} // keep backdrop clicks closing, inner clicks not
->
-  <div className="modal-content" style={{ border: '2px solid #E63946', borderRadius: '1rem' }}>
-    <div className="modal-header" style={{ background: '#f8f9fa' }}>
-      <h5 className="modal-title" style={{ color: '#E63946', fontWeight: 600 }}>
-        {selectedItem.title}
-      </h5>
-      <button
-        type="button"
-        className="btn-close"
-        onClick={() => { 
-          setShowModal(false);
-          setShowContactBox(false);     // keep feature’s extra resets
-          setContactSuccess(false);
-        }}
-      />
-    </div>
-
-    <div className="modal-body">
-      <div className="row">
-        <div className="col-md-6 text-start d-flex flex-column">
-          <div>
-            {searchInputs.partNumber && (
-              <p className="text-muted">Part #: {selectedItem.partNumber}</p>
-            )}
-            <p><strong>Model:</strong> {selectedItem.model}</p>
-            <p><strong>Year:</strong> {selectedItem.year}</p>
-            <p><strong>Description:</strong> {selectedItem.description}</p>
-          </div>
-
-          <div className="mt-auto text-start">
-            <h4 style={{ color: '#E63946', fontWeight: 700 }}>
-              ${selectedItem.price?.toFixed(2)}
-              {selectedItem.negotiable ? (
-                <small className="text-muted fst-italic ms-2">negotiable</small>
-              ) : (
-                <small className="text-muted fst-italic ms-2">Fixed price</small>
-              )}
-            </h4>
-          </div>
-        </div>
-
-        <div className="col-md-6 d-flex flex-column">
-          <img
-            src={selectedItem.imageUrl || "https://via.placeholder.com/400x250"}
-            alt={selectedItem.title}
-            className="img-fluid rounded shadow-sm"
-            style={{ objectFit: 'cover', maxHeight: '300px', background: '#fff' }}
-          />
-
-          <div className="mt-auto pt-3 text-end">
-            {!showContactBox ? (
-              <>
-                {/* Feature’s Contact button */}
+            <div className="modal-content" style={{ border: '2px solid #E63946', borderRadius: '1rem' }}>
+              <div className="modal-header" style={{ background: '#f8f9fa' }}>
+                <h5 className="modal-title" style={{ color: '#E63946', fontWeight: 600 }}>
+                  {selectedItem.title}
+                </h5>
                 <button
                   type="button"
-                  className="btn me-2"
-                  style={{
-                    backgroundColor: "#FF6600",
-                    color: "white",
-                    fontWeight: 600,
-                    borderRadius: '2rem',
-                    padding: '0.5rem 2rem'
+                  className="btn-close"
+                  onClick={() => {
+                    setShowModal(false);
+                    setShowContactBox(false);
+                    setContactSuccess(false);
                   }}
-                  onClick={() => setShowContactBox(true)}
-                >
-                  Contact seller
-                </button>
-
-                {/* Main’s red action button (keep if you still want a primary CTA here) */}
-                <button
-                  type="button"
-                  className="btn"
-                  style={{
-                    backgroundColor: "#E63946",
-                    color: "white",
-                    fontWeight: 600,
-                    borderRadius: '2rem',
-                    padding: '0.5rem 2rem'
-                  }}
-                  onClick={() => {/* e.g., addToCart(selectedItem) or open details */}}
-                >
-                  Action
-                </button>
-              </>
-            ) : (
-              <>
-                {/* Your contact box UI goes here */}
-                {/* e.g., a small form bound to contactMessage and contactSuccess */}
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
+                />
+              </div>
+              <div className="modal-body">
+                <div className="row">
+                  <div className="col-md-6 text-start d-flex flex-column">
+                    <div>
+                      {searchInputs.partNumber && (
+                        <p className="text-muted">Part #: {selectedItem.partNumber}</p>
+                      )}
+                      <p><strong>Model:</strong> {selectedItem.model}</p>
+                      <p><strong>Year:</strong> {selectedItem.year}</p>
+                      <p><strong>Description:</strong> {selectedItem.description}</p>
+                    </div>
+                    <div className="mt-auto text-start">
+                      <h4 style={{ color: '#E63946', fontWeight: 700 }}>
+                        ${selectedItem.price?.toFixed(2)}
+                        {selectedItem.negotiable ? (
+                          <small className="text-muted fst-italic ms-2">negotiable</small>
+                        ) : (
+                          <small className="text-muted fst-italic ms-2">Fixed price</small>
+                        )}
+                      </h4>
+                    </div>
+                  </div>
+                  <div className="col-md-6 d-flex flex-column">
+                    <img
+                      src={selectedItem.imageUrl || "https://via.placeholder.com/400x250"}
+                      alt={selectedItem.title}
+                      className="img-fluid rounded shadow-sm"
+                      style={{ objectFit: 'cover', maxHeight: '300px', background: '#fff' }}
+                    />
+                    <div className="mt-auto pt-3 text-end">
+                      <>
+                        {!showContactBox ? (
+                          <>
+                            <button
+                              type="button"
+                              className="btn me-2"
+                              style={{
+                                backgroundColor: "#FF6600",
+                                color: "white",
+                                fontWeight: 600,
+                                borderRadius: '2rem',
+                                padding: '0.5rem 2rem'
+                              }}
+                              onClick={() => setShowContactBox(true)}
+                            >
+                              Contact seller
+                            </button>
+                            <button
+                              type="button"
+                              className="btn"
+                              style={{
+                                backgroundColor: "#E63946",
+                                color: "white",
+                                fontWeight: 600,
+                                borderRadius: '2rem',
+                                padding: '0.5rem 2rem'
+                              }}
+                              onClick={() => {/* e.g., addToCart(selectedItem) or open details */}}
+                            >
+                              Action
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <div className="mb-2 text-start">
+                              <textarea
+                                className="form-control mb-2"
+                                rows={3}
+                                placeholder="Type your message to the seller..."
+                                value={contactMessage}
+                                onChange={e => setContactMessage(e.target.value)}
+                              />
+                              <button
+                                className="btn btn-primary"
+                                style={{ backgroundColor: '#E63946', borderRadius: '1rem', fontWeight: 600 }}
+                                onClick={() => {
+                                  let messages = JSON.parse(localStorage.getItem('remodifySellerMessages') || '[]');
+                                  messages.push({
+                                    from: 'buyer',
+                                    message: contactMessage,
+                                    date: new Date().toISOString(),
+                                    listingId: selectedItem.id
+                                  });
+                                  localStorage.setItem('remodifySellerMessages', JSON.stringify(messages));
+                                  setContactSuccess(true);
+                                  setContactMessage("");
+                                  setShowContactBox(false);
+                                }}
+                                disabled={!contactMessage.trim()}
+                              >
+                                Send Message
+                              </button>
+                            </div>
+                          </>
+                        )}
+                        {contactSuccess && (
+                          <div className="alert alert-success mt-2">Message sent to seller!</div>
+                        )}
+                        <button
+                          type="button"
+                          className="btn"
+                          style={{ backgroundColor: "#E63946", color: "white", fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem' }}
+                          onClick={() => {
+                            handleAddToCart(selectedItem);
+                            setShowModal(false);
+                            window.scrollTo(0, 0);
+                            navigate('/checkout', { state: { cart: [...cart, selectedItem] } });
+                          }}
                         >
-                          Contact Seller
+                          I have to have it!
                         </button>
-                      )}
-                      {showContactBox && (
-                        <div className="mb-2 text-start">
-                          <textarea
-                            className="form-control mb-2"
-                            rows={3}
-                            placeholder="Type your message to the seller..."
-                            value={contactMessage}
-                            onChange={e => setContactMessage(e.target.value)}
-                          />
-                          <button
-                            className="btn btn-primary"
-                            style={{ backgroundColor: '#E63946', borderRadius: '1rem', fontWeight: 600 }}
-                            onClick={() => {
-                              let messages = JSON.parse(localStorage.getItem('remodifySellerMessages') || '[]');
-                              messages.push({
-                                from: 'buyer',
-                                message: contactMessage,
-                                date: new Date().toISOString(),
-                                listingId: selectedItem.id
-                              });
-                              localStorage.setItem('remodifySellerMessages', JSON.stringify(messages));
-                              setContactSuccess(true);
-                              setContactMessage("");
-                              setShowContactBox(false);
-                            }}
-                            disabled={!contactMessage.trim()}
-                          >
-                            Send Message
-                          </button>
-                        </div>
-                      )}
-                      {contactSuccess && (
-                        <div className="alert alert-success mt-2">Message sent to seller!</div>
-                      )}
-                      <button
-                        type="button"
-                        className="btn"
-                        style={{ backgroundColor: "#E63946", color: "white", fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem' }}
-                        onClick={() => {
-                          handleAddToCart(selectedItem);
-                          setShowModal(false);
-                          window.scrollTo(0, 0);
-                          navigate('/checkout', { state: { cart: [...cart, selectedItem] } });
-                        }}
-                      >
-                        I have to have it!
-                      </button>
+                      </>
                     </div>
                   </div>
                 </div>
