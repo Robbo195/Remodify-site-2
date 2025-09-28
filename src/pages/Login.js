@@ -9,11 +9,14 @@ import {
   signOut
 } from 'firebase/auth'
 import { auth } from '../firebase.js'
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -57,9 +60,22 @@ const Login = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
+      if (firebaseUser) {
+        // Check for redirect param in location.state or query string
+        let redirectTo = null;
+        if (location.state && location.state.redirectTo) {
+          redirectTo = location.state.redirectTo;
+        } else {
+          const params = new URLSearchParams(location.search);
+          redirectTo = params.get('redirect');
+        }
+        if (redirectTo) {
+          navigate(redirectTo, { replace: true });
+        }
+      }
     });
     return () => unsubscribe();
-  }, []);
+  }, [location, navigate]);
 
   return (
     <div className="page-section" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
