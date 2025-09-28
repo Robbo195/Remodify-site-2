@@ -191,14 +191,46 @@ const Results = () => {
     if (results.length === 0 && !newListing) return <p>No parts matched your search.</p>;
 
     return (
-      <>
-        {newListing && (
-          <div className="row mb-4">
-            <div className="col">
-              <div className="card h-100 shadow-sm" style={{ borderRadius: '1rem', overflow: 'hidden', border: '2px solid #E63946', background: '#fff7f7' }}>
+<>
+  {newListing && (
+    <div className="row mb-4">
+      <div className="col">
+        <div
+          className="card h-100 shadow-sm"
+          style={{
+            borderRadius: '1rem',
+            overflow: 'hidden',
+            border: '2px solid #E63946',
+            background: '#fff7f7'
+          }}
+        >
+          {/* new listing content here */}
+        </div>
+      </div>
+    </div>
+  )}
+
+  <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {paginatedResults.map(({ item, score }) => {
+      const isCloseMatch = score <= 0.3;
+
+      return (
+        <div className="col" key={item.partNumber}>
+          <div
+            className="card h-100 shadow-sm"
+            style={{ borderRadius: '1rem', overflow: 'hidden' }}
+          >
+            {/* existing search result card content here */}
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</>
                 <img
                   src={newListing.files && newListing.files[0] ? newListing.files[0] : "https://via.placeholder.com/32x32"}
                   className="card-img-top"
+
                   alt={newListing.title}
                   style={{ objectFit: 'cover', height: '200px' }}
                 />
@@ -211,6 +243,27 @@ const Results = () => {
                   <div className="mb-2"><strong>Condition:</strong> {newListing.condition}</div>
                   <div className="mb-2"><strong>Description:</strong> {newListing.description}</div>
                   <div className="mb-2"><strong>Negotiable:</strong> {newListing.negotiable ? 'Yes' : 'No'}</div>
+
+                  alt={item.title}
+                  style={{ objectFit: 'cover', height: '200px' }}
+                />
+                <div className="card-body d-flex flex-column">
+                  <h5 className="card-title" style={{ fontWeight: 600, color: '#E63946' }}>{item.title || "Untitled listing"}</h5>
+                  <p className="card-text">{item.description}</p>
+                  <p className="card-text fw-bold" style={{ color: '#E63946' }}>${item.price?.toFixed(2) || "0.00"}</p>
+                  <div className="mt-auto d-flex justify-content-between align-items-center">
+                    {isCloseMatch && (
+                      <span className="badge bg-warning text-dark">Close Match</span>
+                    )}
+                    <button
+                      className="btn btn-sm"
+                      style={{ backgroundColor: "#E63946", color: "white", borderRadius: '1rem' }}
+                      onClick={() => handleViewItem(item)}
+                    >
+                      View Item
+                    </button>
+                  </div>
+
                 </div>
               </div>
             </div>
@@ -311,6 +364,7 @@ const Results = () => {
     );
   };
 
+
   // Filtering UI (sidebar)
   const renderFilters = () => (
     <div className="p-3 mb-3" style={{
@@ -408,55 +462,130 @@ const Results = () => {
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
           onClick={() => { setShowModal(false); setShowContactBox(false); setContactSuccess(false); }}
         >
+        
+  return (
+    <div className="page-section" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
+      <div className="container text-start">
+        <h1 className="title-underline-1" style={{ fontWeight: 700, color: '#E63946', marginBottom: '2rem' }}>Results</h1>
+        {Object.values(searchInputs).some(input => input) && (
+          <div className="p-3 mb-4 rounded" style={{ background: '#fff3f3', border: '1px solid #E63946', color: '#E63946' }}>
+            <span className="fst-italic">
+              You searched for a {searchInputs.year} {searchInputs.manufacturer} {searchInputs.model} {searchInputs.partNumber && `part number ${searchInputs.partNumber}`} {searchInputs.keyword && `(${searchInputs.keyword})`}.
+            </span>
+          </div>
+        )}
+        <div id="resultsContainer">
+          {renderResults()}
+        </div>
+        {renderPaginationControls()}
+        {/* Modal */}
+        {showModal && selectedItem && (
+        
           <div
             className="modal-dialog modal-dialog-centered modal-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="modal-content" style={{ border: '2px solid #E63946', borderRadius: '1rem' }}>
-              <div className="modal-header" style={{ background: '#f8f9fa' }}>
-                <h5 className="modal-title" style={{ color: '#E63946', fontWeight: 600 }}>{selectedItem.title}</h5>
+
+         <div
+  className="modal-dialog modal-dialog-centered modal-xl"
+  onClick={(e) => e.stopPropagation()} // keep backdrop clicks closing, inner clicks not
+>
+  <div className="modal-content" style={{ border: '2px solid #E63946', borderRadius: '1rem' }}>
+    <div className="modal-header" style={{ background: '#f8f9fa' }}>
+      <h5 className="modal-title" style={{ color: '#E63946', fontWeight: 600 }}>
+        {selectedItem.title}
+      </h5>
+      <button
+        type="button"
+        className="btn-close"
+        onClick={() => { 
+          setShowModal(false);
+          setShowContactBox(false);     // keep feature’s extra resets
+          setContactSuccess(false);
+        }}
+      />
+    </div>
+
+    <div className="modal-body">
+      <div className="row">
+        <div className="col-md-6 text-start d-flex flex-column">
+          <div>
+            {searchInputs.partNumber && (
+              <p className="text-muted">Part #: {selectedItem.partNumber}</p>
+            )}
+            <p><strong>Model:</strong> {selectedItem.model}</p>
+            <p><strong>Year:</strong> {selectedItem.year}</p>
+            <p><strong>Description:</strong> {selectedItem.description}</p>
+          </div>
+
+          <div className="mt-auto text-start">
+            <h4 style={{ color: '#E63946', fontWeight: 700 }}>
+              ${selectedItem.price?.toFixed(2)}
+              {selectedItem.negotiable ? (
+                <small className="text-muted fst-italic ms-2">negotiable</small>
+              ) : (
+                <small className="text-muted fst-italic ms-2">Fixed price</small>
+              )}
+            </h4>
+          </div>
+        </div>
+
+        <div className="col-md-6 d-flex flex-column">
+          <img
+            src={selectedItem.imageUrl || "https://via.placeholder.com/400x250"}
+            alt={selectedItem.title}
+            className="img-fluid rounded shadow-sm"
+            style={{ objectFit: 'cover', maxHeight: '300px', background: '#fff' }}
+          />
+
+          <div className="mt-auto pt-3 text-end">
+            {!showContactBox ? (
+              <>
+                {/* Feature’s Contact button */}
                 <button
                   type="button"
-                  className="btn-close"
-                  onClick={() => { setShowModal(false); setShowContactBox(false); setContactSuccess(false); }}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <div className="row">
-                  <div className="col-md-6 text-start d-flex flex-column">
-                    <div>
-                      {searchInputs.partNumber && (
-                        <p className="text-muted">Part #: {selectedItem.partNumber}</p>
-                      )}
-                      <p><strong>Model:</strong> {selectedItem.model}</p>
-                      <p><strong>Year:</strong> {selectedItem.year}</p>
-                      <p><strong>Description:</strong> {selectedItem.description}</p>
-                    </div>
-                    <div className="mt-auto text-start">
-                      <h4 style={{ color: '#E63946', fontWeight: 700 }}>
-                        ${selectedItem.price?.toFixed(2)}
-                        {selectedItem.negotiable ? (
-                          <small className="text-muted fst-italic ms-2">negotiable</small>
-                        ) : (
-                          <small className="text-muted fst-italic ms-2">Fixed price</small>
-                        )}
-                      </h4>
-                    </div>
-                  </div>
-                  <div className="col-md-6 d-flex flex-column">
-                    <img
-                      src={selectedItem.imageUrl || "https://via.placeholder.com/400x250"}
-                      alt={selectedItem.title}
-                      className="img-fluid rounded shadow-sm"
-                      style={{ objectFit: 'cover', maxHeight: '300px', background: '#fff' }}
-                    />
-                    <div className="mt-auto pt-3 text-end">
-                      {!showContactBox && (
-                        <button
-                          type="button"
-                          className="btn me-2"
-                          style={{ backgroundColor: "#FF6600", color: "white", fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem' }}
-                          onClick={() => setShowContactBox(true)}
+                  className="btn me-2"
+                  style={{
+                    backgroundColor: "#FF6600",
+                    color: "white",
+                    fontWeight: 600,
+                    borderRadius: '2rem',
+                    padding: '0.5rem 2rem'
+                  }}
+                  onClick={() => setShowContactBox(true)}
+                >
+                  Contact seller
+                </button>
+
+                {/* Main’s red action button (keep if you still want a primary CTA here) */}
+                <button
+                  type="button"
+                  className="btn"
+                  style={{
+                    backgroundColor: "#E63946",
+                    color: "white",
+                    fontWeight: 600,
+                    borderRadius: '2rem',
+                    padding: '0.5rem 2rem'
+                  }}
+                  onClick={() => {/* e.g., addToCart(selectedItem) or open details */}}
+                >
+                  Action
+                </button>
+              </>
+            ) : (
+              <>
+                {/* Your contact box UI goes here */}
+                {/* e.g., a small form bound to contactMessage and contactSuccess */}
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
                         >
                           Contact Seller
                         </button>
@@ -519,5 +648,4 @@ const Results = () => {
     </div>
   );
 };
-
 export default Results;
