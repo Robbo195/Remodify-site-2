@@ -17,6 +17,7 @@ const Results = () => {
   const [itemsPerPage, setItemsPerPage] = useState(5); // Default 5 per page
   const [user, setUser] = useState(null);
   const [cart, setCart] = useState([]);
+  const [savedSearches, setSavedSearches] = useState([]);
   const navigate = useNavigate();
 
   // Filtering and sorting state
@@ -71,7 +72,6 @@ const Results = () => {
           }
         }
 
-        const params = new URLSearchParams(window.location.search);
         const search = {
           year: params.get("year") || "",
           manufacturer: params.get("manufacturer") || "",
@@ -153,6 +153,22 @@ const Results = () => {
     });
   };
 
+  // Save search handler
+  const handleSaveSearch = () => {
+    const searchToSave = { ...searchInputs, date: new Date().toISOString() };
+    let searches = JSON.parse(localStorage.getItem('remodifySavedSearches') || '[]');
+    searches.push(searchToSave);
+    localStorage.setItem('remodifySavedSearches', JSON.stringify(searches));
+    setSavedSearches(searches);
+    alert('Search saved!');
+  };
+
+  // Load saved searches from localStorage on mount
+  useEffect(() => {
+    const searches = JSON.parse(localStorage.getItem('remodifySavedSearches') || '[]');
+    setSavedSearches(searches);
+  }, []);
+
   // Dynamically determine max price from listings
   const getMaxListingPrice = (items) => {
     if (!items.length) return 1000;
@@ -216,53 +232,41 @@ const Results = () => {
             </div>
           </div>
         )}
+
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-          {paginatedResults.map((item) => {
-            // If you want to show close match badge, you can optionally recompute score here if needed
-            return (
-              <div className="col" key={item.partNumber}>
-                <div className="card h-100 shadow-sm" style={{ borderRadius: '1rem', overflow: 'hidden' }}>
-                  <img
-                    src={item.imageUrl || "https://via.placeholder.com/32x32"}
-                    className="card-img-top"
-                    alt={item.title}
-                    style={{ objectFit: 'cover', height: '200px' }}
-                  />
-                  <div className="card-body d-flex flex-column">
-                    <h5 className="card-title" style={{ fontWeight: 600, color: '#E63946' }}>{item.title || "Untitled listing"}</h5>
-                    <p className="card-text">{item.description}</p>
-                    <p className="card-text fw-bold" style={{ color: '#E63946' }}>${item.price?.toFixed(2) || "0.00"}</p>
-                    <div className="mt-auto d-flex justify-content-between align-items-center">
-                      {/* Optionally, remove isCloseMatch badge or recompute if needed */}
-                      <div>
-                        <button
-                          className="btn btn-sm me-2"
-                          style={{
-                            background: '#FF6600', // Remodify orange
-                            color: 'white',
-                            fontWeight: 'bold',
-                            border: '2px solid #FF6600',
-                            borderRadius: '1rem',
-                            boxShadow: '0 2px 8px rgba(230,57,70,0.08)'
-                          }}
-                          onClick={() => handleSaveListing(item)}
-                        >
-                          Save
-                        </button>
-                        <button
-                          className="btn btn-sm"
-                          style={{ backgroundColor: "#E63946", color: "white", borderRadius: '1rem' }}
-                          onClick={() => handleViewItem(item)}
-                        >
-                          View Item
-                        </button>
-                      </div>
-                    </div>
+          {paginatedResults.map((item) => (
+            <div className="col" key={item.partNumber}>
+              <div className="card h-100 shadow-sm" style={{ borderRadius: '1rem', overflow: 'hidden' }}>
+                <img
+                  src={item.imageUrl || "https://via.placeholder.com/32x32"}
+                  className="card-img-top"
+                  alt={item.title}
+                  style={{ objectFit: 'cover', height: '200px' }}
+                />
+                <div className="card-body d-flex flex-column">
+                  <h5 className="card-title" style={{ fontWeight: 600, color: '#E63946' }}>{item.title || "Untitled listing"}</h5>
+                  <p className="card-text">{item.description}</p>
+                  <p className="card-text fw-bold" style={{ color: '#E63946' }}>${item.price?.toFixed(2) || "0.00"}</p>
+                  <div className="mt-auto d-flex justify-content-between align-items-center">
+                    <button
+                      className="btn btn-sm me-2"
+                      style={{ background: '#FF6600', color: 'white', fontWeight: 'bold', border: '2px solid #FF6600', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(230,57,70,0.08)' }}
+                      onClick={() => handleSaveListing(item)}
+                    >
+                      Save
+                    </button>
+                    <button
+                      className="btn btn-sm"
+                      style={{ backgroundColor: "#E63946", color: "white", borderRadius: '1rem' }}
+                      onClick={() => handleViewItem(item)}
+                    >
+                      View Item
+                    </button>
                   </div>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </>
     );
@@ -279,7 +283,7 @@ const Results = () => {
             value={itemsPerPage}
             onChange={e => {
               setItemsPerPage(parseInt(e.target.value));
-              setCurrentPage(1); // Reset to page 1 on change
+              setCurrentPage(1); /* Reset to page 1 on change */
             }}
             style={{ borderRadius: '1rem' }}
           >
@@ -311,11 +315,11 @@ const Results = () => {
     );
   };
 
-  // Filtering UI (sidebar)
+  /* Filtering UI (sidebar) */
   const renderFilters = () => (
     <div className="p-3 mb-3" style={{
-      background: '#f8f9fa', // match page background
-      border: '1px solid #e5e5e5', // lighter border
+      background: '#f8f9fa', /* match page background */
+      border: '1px solid #e5e5e5', /* lighter border */
       borderRadius: '1rem',
       marginLeft: '-2px',
       width: 'calc(100% + 4px)',
@@ -351,9 +355,25 @@ const Results = () => {
     </div>
   );
 
-  // Sort By UI (top right)
+  /* Sort By UI (top right) */
   const renderSortBy = () => (
     <div className="d-flex justify-content-end align-items-center mb-3">
+      <button
+        className="btn"
+        style={{
+          background: 'white',
+          color: '#FF6A13', // Remodify orange text
+          borderRadius: '1rem',
+          fontWeight: 600,
+          marginRight: '1rem',
+          border: '2px solid #FF6A13',
+          boxShadow: '0 2px 8px rgba(255,106,19,0.10)'
+        }}
+        onClick={handleSaveSearch}
+        disabled={Object.values(searchInputs).every(val => !val)}
+      >
+        Save Search
+      </button>
       <label className="form-label me-2 mb-0">Sort By</label>
       <select className="form-select w-auto" value={sortBy} onChange={e => setSortBy(e.target.value)}>
         <option value="relevance">Relevance</option>
@@ -365,21 +385,24 @@ const Results = () => {
     </div>
   );
 
-  // Notify App.js of cart changes
-  useEffect(() => {
-    const event = new CustomEvent('remodify-cart-update', { detail: { count: cart.length } });
-    window.dispatchEvent(event);
-  }, [cart]);
-
   const [showContactBox, setShowContactBox] = useState(false);
   const [contactMessage, setContactMessage] = useState("");
   const [contactSuccess, setContactSuccess] = useState(false);
 
   return (
-    <div className="page-section" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
+    <div className="page-section" style={{ background: '#f9f9fa', minHeight: '100vh' }}>
       <div className="row g-0" style={{ margin: 0 }}>
-        {/* Sidebar flush left */}
-        <div className="col-12 col-md-2" style={{ minWidth: 220, paddingLeft: 0, paddingRight: 0, background: '#f8f9fa' }}>
+        {/* Sidebar flush left, add top margin to align with results */}
+        <div
+          className="col-12 col-md-2"
+          style={{
+            minWidth: 220,
+            paddingLeft: 0,
+            paddingRight: 0,
+            background: '#f8f9fa',
+            marginTop: '6.5rem' // aligns with header + search summary + sort bar
+          }}
+        >
           {renderFilters()}
         </div>
         <div className="col-12 col-md-10" style={{ paddingLeft: 0 }}>
@@ -414,12 +437,18 @@ const Results = () => {
           >
             <div className="modal-content" style={{ border: '2px solid #E63946', borderRadius: '1rem' }}>
               <div className="modal-header" style={{ background: '#f8f9fa' }}>
-                <h5 className="modal-title" style={{ color: '#E63946', fontWeight: 600 }}>{selectedItem.title}</h5>
+                <h5 className="modal-title" style={{ color: '#E63946', fontWeight: 600 }}>
+                  {selectedItem.title}
+                </h5>
                 <button
                   type="button"
                   className="btn-close"
-                  onClick={() => { setShowModal(false); setShowContactBox(false); setContactSuccess(false); }}
-                ></button>
+                  onClick={() => {
+                    setShowModal(false);
+                    setShowContactBox(false);
+                    setContactSuccess(false);
+                  }}
+                />
               </div>
               <div className="modal-body">
                 <div className="row">
@@ -519,5 +548,4 @@ const Results = () => {
     </div>
   );
 };
-
 export default Results;

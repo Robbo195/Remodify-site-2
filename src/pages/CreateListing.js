@@ -143,6 +143,7 @@ const CreateListing = () => {
                   <option value="Used - good">Used - good</option>
                   <option value="Used - fair">Used - fair</option>
                   <option value="Used - worn">Used - worn</option>
+                  <option value="Refurbished">Refurbished</option>
                 </Form.Select>
               </Form.Group>
 
@@ -211,25 +212,24 @@ const CreateListing = () => {
                             }
                           }}
                           selected={manufacturer ? [manufacturer] : []}
-                          placeholder="Enter or select manufacturer"
+                          placeholder="Select or type manufacturer"
+                          allowNew
                         />
-                      </Form.Group>
-                      {showOtherManufacturerField && (
-                        <Form.Group controlId="formOtherManufacturer" className="mt-2">
-                          <Form.Label>Specify Other Manufacturer</Form.Label>
+                        {showOtherManufacturerField && (
                           <Form.Control
                             type="text"
-                            placeholder="Enter manufacturer name"
+                            placeholder="Enter manufacturer"
                             value={manufacturer}
-                            onChange={(e) => setManufacturer(e.target.value)}
+                            onChange={e => setManufacturer(e.target.value)}
+                            className="mt-2"
                           />
-                        </Form.Group>
-                      )}
+                        )}
+                      </Form.Group>
                     </Col>
                     <Col>
                       <Form.Group controlId="formModel">
                         <Form.Label>Model</Form.Label>
-                        <Form.Control type="text" placeholder="Enter model" value={model} onChange={(e) => setModel(e.target.value)} />
+                        <Form.Control type="text" placeholder="Enter model" value={model} onChange={e => setModel(e.target.value)} />
                       </Form.Group>
                     </Col>
                   </Row>
