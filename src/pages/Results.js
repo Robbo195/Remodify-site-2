@@ -14,12 +14,13 @@ const Results = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5); /* Default 5 per page */
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Default 5 per page
   const [user, setUser] = useState(null);
   const [cart, setCart] = useState([]);
+  const [savedSearches, setSavedSearches] = useState([]);
   const navigate = useNavigate();
 
-  /* Filtering and sorting state */
+  // Filtering and sorting state
   const [filters, setFilters] = useState({
     minPrice: '',
     maxPrice: '',
@@ -52,9 +53,9 @@ const Results = () => {
         const snapshot = await getDocs(collection(db, "listings"));
         let inventory = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        /* If a new listing was just posted, show it at the top (if not already in Firestore results) */
+        // If a new listing was just posted, show it at the top (if not already in Firestore results)
         if (newListing) {
-          /* Check if it's already in inventory (by title, description, etc.) */
+          // Check if it's already in inventory (by title, description, etc.)
           const alreadyExists = inventory.some(item =>
             item.title === newListing.title &&
             item.description === newListing.description &&
@@ -109,7 +110,7 @@ const Results = () => {
     loadInventoryAndSearch();
   }, [location]);
 
-  /* Save listing handler */
+  // Save listing handler
   const handleSaveListing = async (listing) => {
     if (!user) {
       alert('Please log in to save listings.');
@@ -117,7 +118,7 @@ const Results = () => {
     }
     try {
       const userRef = doc(db, 'users', user.uid);
-      await setDoc(userRef, {}, { merge: true }); 
+      await setDoc(userRef, {}, { merge: true }); // Ensure user doc exists
       await updateDoc(userRef, {
         savedListings: arrayUnion(listing.id)
       });
@@ -127,6 +128,7 @@ const Results = () => {
     }
   };
 
+  // Load cart from localStorage on mount
   useEffect(() => {
     const storedCart = localStorage.getItem('remodifyCart');
     if (storedCart) {
@@ -134,15 +136,15 @@ const Results = () => {
     }
   }, []);
 
- 
+  // Save cart to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('remodifyCart', JSON.stringify(cart));
-
+    // Notify App.js of cart changes
     const event = new CustomEvent('remodify-cart-update', { detail: { count: cart.length } });
     window.dispatchEvent(event);
   }, [cart]);
 
- 
+  // Add to cart handler
   const handleAddToCart = (item) => {
     setCart(prevCart => {
       // Prevent duplicates by id
@@ -151,7 +153,23 @@ const Results = () => {
     });
   };
 
-  /* Dynamically determine max price from listings */
+  // Save search handler
+  const handleSaveSearch = () => {
+    const searchToSave = { ...searchInputs, date: new Date().toISOString() };
+    let searches = JSON.parse(localStorage.getItem('remodifySavedSearches') || '[]');
+    searches.push(searchToSave);
+    localStorage.setItem('remodifySavedSearches', JSON.stringify(searches));
+    setSavedSearches(searches);
+    alert('Search saved!');
+  };
+
+  // Load saved searches from localStorage on mount
+  useEffect(() => {
+    const searches = JSON.parse(localStorage.getItem('remodifySavedSearches') || '[]');
+    setSavedSearches(searches);
+  }, []);
+
+  // Dynamically determine max price from listings
   const getMaxListingPrice = (items) => {
     if (!items.length) return 1000;
     return Math.max(...items.map(i => Number(i.price) || 0), 1000);
@@ -160,10 +178,10 @@ const Results = () => {
   const dynamicMax = getMaxListingPrice(allItems);
   useEffect(() => {
     setMaxPrice(dynamicMax);
-    /* eslint-disable-next-line */
+    // eslint-disable-next-line
   }, [dynamicMax]);
 
-  /* Filtering and sorting logic */
+  // Filtering and sorting logic
   const applyFiltersAndSort = (items) => {
     let filtered = items;
     filtered = filtered.filter(i => Number(i.price) >= 0 && Number(i.price) <= maxPrice);
@@ -172,11 +190,11 @@ const Results = () => {
     if (sortBy === 'price-desc') filtered = filtered.sort((a, b) => b.price - a.price);
     if (sortBy === 'year-desc') filtered = filtered.sort((a, b) => b.year - a.year);
     if (sortBy === 'year-asc') filtered = filtered.sort((a, b) => a.year - b.year);
-    /* Default: relevance (Fuse score order) */
+    // Default: relevance (Fuse score order)
     return filtered;
   };
 
-  /* Pagination logic */
+  // Pagination logic
   const totalPages = Math.ceil(results.length / itemsPerPage);
   const paginatedResults = applyFiltersAndSort(results.map(r => r.item)).slice(
     (currentPage - 1) * itemsPerPage,
@@ -193,15 +211,7 @@ const Results = () => {
         {newListing && (
           <div className="row mb-4">
             <div className="col">
-              <div
-                className="card h-100 shadow-sm"
-                style={{
-                  borderRadius: '1rem',
-                  overflow: 'hidden',
-                  border: '2px solid #E63946',
-                  background: '#fff7f7'
-                }}
-              >
+              <div className="card h-100 shadow-sm" style={{ borderRadius: '1rem', overflow: 'hidden', border: '2px solid #E63946', background: '#fff7f7' }}>
                 <img
                   src={newListing.files && newListing.files[0] ? newListing.files[0] : "https://via.placeholder.com/32x32"}
                   className="card-img-top"
@@ -238,29 +248,20 @@ const Results = () => {
                   <p className="card-text">{item.description}</p>
                   <p className="card-text fw-bold" style={{ color: '#E63946' }}>${item.price?.toFixed(2) || "0.00"}</p>
                   <div className="mt-auto d-flex justify-content-between align-items-center">
-                    <div>
-                      <button
-                        className="btn btn-sm me-2"
-                        style={{
-                          background: '#FF6600',
-                          color: 'white',
-                          fontWeight: 'bold',
-                          border: '2px solid #FF6600',
-                          borderRadius: '1rem',
-                          boxShadow: '0 2px 8px rgba(230,57,70,0.08)'
-                        }}
-                        onClick={() => handleSaveListing(item)}
-                      >
-                        Save
-                      </button>
-                      <button
-                        className="btn btn-sm"
-                        style={{ backgroundColor: "#E63946", color: "white", borderRadius: '1rem' }}
-                        onClick={() => handleViewItem(item)}
-                      >
-                        View Item
-                      </button>
-                    </div>
+                    <button
+                      className="btn btn-sm me-2"
+                      style={{ background: '#FF6600', color: 'white', fontWeight: 'bold', border: '2px solid #FF6600', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(230,57,70,0.08)' }}
+                      onClick={() => handleSaveListing(item)}
+                    >
+                      Save
+                    </button>
+                    <button
+                      className="btn btn-sm"
+                      style={{ backgroundColor: "#E63946", color: "white", borderRadius: '1rem' }}
+                      onClick={() => handleViewItem(item)}
+                    >
+                      View Item
+                    </button>
                   </div>
                 </div>
               </div>
@@ -314,7 +315,6 @@ const Results = () => {
     );
   };
 
-
   /* Filtering UI (sidebar) */
   const renderFilters = () => (
     <div className="p-3 mb-3" style={{
@@ -358,6 +358,22 @@ const Results = () => {
   /* Sort By UI (top right) */
   const renderSortBy = () => (
     <div className="d-flex justify-content-end align-items-center mb-3">
+      <button
+        className="btn"
+        style={{
+          background: 'white',
+          color: '#FF6A13', // Remodify orange text
+          borderRadius: '1rem',
+          fontWeight: 600,
+          marginRight: '1rem',
+          border: '2px solid #FF6A13',
+          boxShadow: '0 2px 8px rgba(255,106,19,0.10)'
+        }}
+        onClick={handleSaveSearch}
+        disabled={Object.values(searchInputs).every(val => !val)}
+      >
+        Save Search
+      </button>
       <label className="form-label me-2 mb-0">Sort By</label>
       <select className="form-select w-auto" value={sortBy} onChange={e => setSortBy(e.target.value)}>
         <option value="relevance">Relevance</option>
@@ -376,8 +392,17 @@ const Results = () => {
   return (
     <div className="page-section" style={{ background: '#f9f9fa', minHeight: '100vh' }}>
       <div className="row g-0" style={{ margin: 0 }}>
-        {/* Sidebar flush left */}
-        <div className="col-12 col-md-2" style={{ minWidth: 220, paddingLeft: 0, paddingRight: 0, background: '#f8f9fa' }}>
+        {/* Sidebar flush left, add top margin to align with results */}
+        <div
+          className="col-12 col-md-2"
+          style={{
+            minWidth: 220,
+            paddingLeft: 0,
+            paddingRight: 0,
+            background: '#f8f9fa',
+            marginTop: '6.5rem' // aligns with header + search summary + sort bar
+          }}
+        >
           {renderFilters()}
         </div>
         <div className="col-12 col-md-10" style={{ paddingLeft: 0 }}>
@@ -455,88 +480,63 @@ const Results = () => {
                       style={{ objectFit: 'cover', maxHeight: '300px', background: '#fff' }}
                     />
                     <div className="mt-auto pt-3 text-end">
-                      <>
-                        {!showContactBox ? (
-                          <>
-                            <button
-                              type="button"
-                              className="btn me-2"
-                              style={{
-                                backgroundColor: "#FF6600",
-                                color: "white",
-                                fontWeight: 600,
-                                borderRadius: '2rem',
-                                padding: '0.5rem 2rem'
-                              }}
-                              onClick={() => setShowContactBox(true)}
-                            >
-                              Contact seller
-                            </button>
-                            <button
-                              type="button"
-                              className="btn"
-                              style={{
-                                backgroundColor: "#E63946",
-                                color: "white",
-                                fontWeight: 600,
-                                borderRadius: '2rem',
-                                padding: '0.5rem 2rem'
-                              }}
-                              onClick={() => {/* e.g., addToCart(selectedItem) or open details */}}
-                            >
-                              Action
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <div className="mb-2 text-start">
-                              <textarea
-                                className="form-control mb-2"
-                                rows={3}
-                                placeholder="Type your message to the seller..."
-                                value={contactMessage}
-                                onChange={e => setContactMessage(e.target.value)}
-                              />
-                              <button
-                                className="btn btn-primary"
-                                style={{ backgroundColor: '#E63946', borderRadius: '1rem', fontWeight: 600 }}
-                                onClick={() => {
-                                  let messages = JSON.parse(localStorage.getItem('remodifySellerMessages') || '[]');
-                                  messages.push({
-                                    from: 'buyer',
-                                    message: contactMessage,
-                                    date: new Date().toISOString(),
-                                    listingId: selectedItem.id
-                                  });
-                                  localStorage.setItem('remodifySellerMessages', JSON.stringify(messages));
-                                  setContactSuccess(true);
-                                  setContactMessage("");
-                                  setShowContactBox(false);
-                                }}
-                                disabled={!contactMessage.trim()}
-                              >
-                                Send Message
-                              </button>
-                            </div>
-                          </>
-                        )}
-                        {contactSuccess && (
-                          <div className="alert alert-success mt-2">Message sent to seller!</div>
-                        )}
+                      {!showContactBox && (
                         <button
                           type="button"
-                          className="btn"
-                          style={{ backgroundColor: "#E63946", color: "white", fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem' }}
-                          onClick={() => {
-                            handleAddToCart(selectedItem);
-                            setShowModal(false);
-                            window.scrollTo(0, 0);
-                            navigate('/checkout', { state: { cart: [...cart, selectedItem] } });
-                          }}
+                          className="btn me-2"
+                          style={{ backgroundColor: "#FF6600", color: "white", fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem' }}
+                          onClick={() => setShowContactBox(true)}
                         >
-                          I have to have it!
+                          Contact Seller
                         </button>
-                      </>
+                      )}
+                      {showContactBox && (
+                        <div className="mb-2 text-start">
+                          <textarea
+                            className="form-control mb-2"
+                            rows={3}
+                            placeholder="Type your message to the seller..."
+                            value={contactMessage}
+                            onChange={e => setContactMessage(e.target.value)}
+                          />
+                          <button
+                            className="btn btn-primary"
+                            style={{ backgroundColor: '#E63946', borderRadius: '1rem', fontWeight: 600 }}
+                            onClick={() => {
+                              let messages = JSON.parse(localStorage.getItem('remodifySellerMessages') || '[]');
+                              messages.push({
+                                from: 'buyer',
+                                message: contactMessage,
+                                date: new Date().toISOString(),
+                                listingId: selectedItem.id
+                              });
+                              localStorage.setItem('remodifySellerMessages', JSON.stringify(messages));
+                              setContactSuccess(true);
+                              setContactMessage("");
+                              setShowContactBox(false);
+                            }}
+                            disabled={!contactMessage.trim()}
+                          >
+                            Send Message
+                          </button>
+                        </div>
+                      )}
+                      {contactSuccess && (
+                        <div className="alert alert-success mt-2">Message sent to seller!</div>
+                      )}
+                      <button
+                        type="button"
+                        className="btn"
+                        style={{ backgroundColor: "#E63946", color: "white", fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem' }}
+                        onClick={() => {
+                          handleAddToCart(selectedItem);
+                          setShowModal(false);
+                          window.scrollTo(0, 0);
+                          navigate('/checkout', { state: { cart: [...cart, selectedItem] } });
+                        }}
+                      >
+                        I have to have it!
+                      </button>
                     </div>
                   </div>
                 </div>

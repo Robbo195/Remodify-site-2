@@ -21,7 +21,7 @@ import ListingSuccess from './pages/ListingSuccess';
 import ProfileIcon from './components/ProfileIcon';
 import Services2 from './pages/services2';
 import SavedListings from './pages/SavedListings';
-import Checkout from './pages/Checkout';
+import Checkout from './pages/checkout';
 import DeliveryPaymentDetails from './pages/DeliveryDetails';
 
 function App() {
@@ -63,6 +63,7 @@ function App() {
                   <Nav.Link as={Link} to="/about" style={{ color: '#222', marginRight: '1.5rem' }}>About</Nav.Link>
                   <Nav.Link as={Link} to="/services2" style={{ color: '#222', marginRight: '1.5rem' }}>Services</Nav.Link>
                   <Nav.Link as={Link} to="/contact" style={{ color: '#222', marginRight: '1.5rem' }}>Contact</Nav.Link>
+                  {/* Removed Saved Listings button from banner as it is now in the account dropdown */}
                 </Nav>
                 <Nav>
                   <div className="d-flex align-items-center" style={{ gap: '1.2rem' }}>

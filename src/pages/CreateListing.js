@@ -118,9 +118,7 @@ const CreateListing = () => {
         <h1 className="title-underline-1" style={{ fontSize: '2.2rem', textAlign: 'left', marginTop: '2rem', color: '#E63946', fontWeight: 700 }}>Sell your part</h1>
         <Row>
           <Col md={6}>
-
             <Form onSubmit={handleSubmit} id="listingForm" style={{ textAlign: 'left', background: '#fff', borderRadius: '1rem', boxShadow: '0 2px 12px rgba(230,57,70,0.07)', padding: '2rem' }}>
-
               <Form.Group controlId="formTitle" className="mb-3">
                 <Form.Label>Title <span style={{ color: 'red' }}>*</span></Form.Label>
                 <Form.Control type="text" placeholder="Enter title" value={title} onChange={(e) => setTitle(e.target.value)} required />
@@ -145,6 +143,7 @@ const CreateListing = () => {
                   <option value="Used - good">Used - good</option>
                   <option value="Used - fair">Used - fair</option>
                   <option value="Used - worn">Used - worn</option>
+                  <option value="Refurbished">Refurbished</option>
                 </Form.Select>
               </Form.Group>
 
@@ -161,7 +160,6 @@ const CreateListing = () => {
                   />
                 </div>
               </Form.Group>
-
 
               {errorMessage && <p style={{ color: 'grey', fontStyle: 'italic', marginTop: '10px' }}>{errorMessage}</p>}
 
@@ -214,25 +212,24 @@ const CreateListing = () => {
                             }
                           }}
                           selected={manufacturer ? [manufacturer] : []}
-                          placeholder="Enter or select manufacturer"
+                          placeholder="Select or type manufacturer"
+                          allowNew
                         />
-                      </Form.Group>
-                      {showOtherManufacturerField && (
-                        <Form.Group controlId="formOtherManufacturer" className="mt-2">
-                          <Form.Label>Specify Other Manufacturer</Form.Label>
+                        {showOtherManufacturerField && (
                           <Form.Control
                             type="text"
-                            placeholder="Enter manufacturer name"
+                            placeholder="Enter manufacturer"
                             value={manufacturer}
-                            onChange={(e) => setManufacturer(e.target.value)}
+                            onChange={e => setManufacturer(e.target.value)}
+                            className="mt-2"
                           />
-                        </Form.Group>
-                      )}
+                        )}
+                      </Form.Group>
                     </Col>
                     <Col>
                       <Form.Group controlId="formModel">
                         <Form.Label>Model</Form.Label>
-                        <Form.Control type="text" placeholder="Enter model" value={model} onChange={(e) => setModel(e.target.value)} />
+                        <Form.Control type="text" placeholder="Enter model" value={model} onChange={e => setModel(e.target.value)} />
                       </Form.Group>
                     </Col>
                   </Row>
@@ -305,99 +302,6 @@ const CreateListing = () => {
           </Col>
         </Row>
       </Container>
-
-      <div style={{ marginTop: '3rem' }}>
-        <Container>
-          <h2 style={{ fontSize: '1.7rem', textAlign: 'left', marginBottom: '1rem', color: '#E63946', fontWeight: 600 }}>Additional information</h2>
-          <div style={{ marginTop: '1rem', color: '#555', fontSize: '1rem', textAlign: 'left' }}>
-            Help buyers find the right item, your product, by adding extra information.
-          </div>
-          <div style={{ marginBottom: '2rem', marginTop: '1.5rem' }}>
-            <h3 style={{ fontSize: '1.2rem', textAlign: 'left', marginBottom: '1rem', color: '#E63946', fontWeight: 600 }}>Suitable for</h3>
-            <Row className="mb-3">
-              <Col>
-                <Form.Group controlId="formYear">
-                  <Form.Label>Year</Form.Label>
-                  <Form.Select value={year} onChange={(e) => setYear(e.target.value)}>
-                    <option value="">Select Year</option>
-                    {years.map((y) => (
-                      <option key={y} value={y}>{y}</option>
-                    ))}
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-              <Col>
-                <Form.Group controlId="formManufacturer">
-                  <Form.Label>Manufacturer</Form.Label>
-                  <Typeahead
-                    id="manufacturer-typeahead"
-                    options={carBrands}
-                    onChange={(selected) => {
-                      if (selected.length > 0) {
-                        if (selected[0] === 'Other') {
-                          setShowOtherManufacturerField(true);
-                          setManufacturer('');
-                        } else {
-                          setShowOtherManufacturerField(false);
-                          setManufacturer(selected[0]);
-                        }
-                      } else {
-                        setShowOtherManufacturerField(false);
-                        setManufacturer('');
-                      }
-                    }}
-                    onInputChange={(text) => {
-                      setManufacturer(text);
-                      if (text === 'Other') {
-                        setShowOtherManufacturerField(true);
-                      } else {
-                        setShowOtherManufacturerField(false);
-                      }
-                    }}
-                    selected={manufacturer ? [manufacturer] : []}
-                    placeholder="Enter or select manufacturer"
-                  />
-                </Form.Group>
-                {showOtherManufacturerField && (
-                  <Form.Group controlId="formOtherManufacturer" className="mt-2">
-                    <Form.Label>Specify Other Manufacturer</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter manufacturer name"
-                      value={manufacturer}
-                      onChange={(e) => setManufacturer(e.target.value)}
-                    />
-                  </Form.Group>
-                )}
-              </Col>
-              <Col>
-                <Form.Group controlId="formModel">
-                  <Form.Label>Model</Form.Label>
-                  <Form.Control type="text" placeholder="Enter model" value={model} onChange={(e) => setModel(e.target.value)} />
-                </Form.Group>
-              </Col>
-            </Row>
-          </div>
-          <div style={{ marginBottom: '2rem' }}>
-            <h3 style={{ fontSize: '1.2rem', textAlign: 'left', marginBottom: '1rem', color: '#E63946', fontWeight: 600 }}>Part details</h3>
-            <Row className="mb-3">
-              <Col>
-                <Form.Group controlId="formPartBrand">
-                  <Form.Label>Manufacturer/Brand</Form.Label>
-                  <Form.Control type="text" placeholder="Enter manufacturer or brand" />
-                </Form.Group>
-              </Col>
-              <Col>
-                <Form.Group controlId="formPartNumber">
-                  <Form.Label>Part number</Form.Label>
-                  <Form.Control type="text" placeholder="Enter part number" />
-                </Form.Group>
-              </Col>
-            </Row>
-          </div>
-          {/* Add any extra fields, notes, or content here as needed */}
-        </Container>
-      </div>
 
       <Modal show={showLoginModal} onHide={handleCloseLoginModal} centered>
         <Modal.Header closeButton>
