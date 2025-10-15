@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { Container, Form, Row, Col, Button } from 'react-bootstrap';
 import Slider from 'react-slick';
@@ -19,6 +20,7 @@ const Landing = () => {
   const [partNumber, setPartNumber] = useState('');
   const [keyword, setKeyword] = useState('');
   const [anyPartSearch, setAnyPartSearch] = useState('');
+  const [showManualSearch, setShowManualSearch] = useState(false);
   const navigate = useNavigate();
 
   const carBrands = [
@@ -136,9 +138,10 @@ const Landing = () => {
     <h1 className="text-center mb-4" style={{ fontSize: '36pt' }}>
       What part are you looking for today?
     </h1>
-    <Row className="justify-content-center mb-4">
+
+    <Row className="justify-content-center mb-2">
       <Col md={10} lg={8}>
-        <Form.Group controlId="formAnyPartSearch">
+        <Form.Group controlId="formAnyPartSearch" style={{ position: 'relative' }}>
           <Form.Control
             type="text"
             placeholder="Search any part"
@@ -147,19 +150,45 @@ const Landing = () => {
             onChange={handleAnyPartSearchChange}
             style={{
               width: '100%',
-              padding: '14px 20px',
+              padding: '14px 44px 14px 20px',
               fontSize: '1rem',
               border: '1px solid #ccc',
               borderRadius: '6px',
             }}
           />
+          <FaSearch
+            style={{ position: 'absolute', right: 18, top: '50%', transform: 'translateY(-50%)', color: '#b01c1c', fontSize: '1.2rem', cursor: 'pointer', zIndex: 2 }}
+            onClick={handleSearch}
+            title="Search"
+            tabIndex={0}
+            onKeyPress={e => { if (e.key === 'Enter' || e.key === ' ') handleSearch(); }}
+          />
         </Form.Group>
+        <div className="d-flex justify-content-center mt-3">
+          <Button
+            style={{
+              fontWeight: 600,
+              fontSize: '1.1rem',
+              borderRadius: '6px',
+              padding: '10px 32px',
+              backgroundColor: '#E63946',
+              color: 'white',
+              border: '2px solid #B01C1C',
+              boxShadow: '0 2px 8px rgba(230,57,70,0.10)'
+            }}
+            onClick={() => setShowManualSearch((prev) => !prev)}
+            aria-expanded={showManualSearch}
+          >
+            Search manually
+          </Button>
+        </div>
       </Col>
     </Row>
 
-    <p className="text-center mb-4" style={{ fontSize: '20px' }}>OR search by criteria</p>
-    <div className="search-box p-4 border rounded shadow-sm">
-      <Form>
+    {showManualSearch && (
+      <div style={{ marginTop: '40px' }}>
+        <div className="search-box p-4 border rounded shadow-sm">
+          <Form>
             <Row className="mb-3">
               <Col>
                 <Form.Group controlId="formYear">
@@ -243,18 +272,39 @@ const Landing = () => {
               </Col>
             </Row>
           </Form>
-    </div>
+        </div>
+      </div>
+    )}
   </Container>
 
-  <div className="curve-divider">
-    <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
-      <path
-        fill="#f0f0f0"
-        fillOpacity="1"
-        d="M0,160L80,149.3C160,139,320,117,480,133.3C640,149,800,203,960,218.7C1120,235,1280,213,1360,202.7L1440,192L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"
-      ></path>
-    </svg>
-  </div>
+    {/* Slogan below searching fields, hidden when manual search is open */}
+    {!showManualSearch && (
+      <div className="text-center mb-5" style={{
+        fontSize: '2.2rem',
+        color: '#E63946',
+        fontWeight: 800,
+        fontStyle: 'italic',
+        letterSpacing: '1.5px',
+        textShadow: '0 2px 12px rgba(230,57,70,0.10)',
+        background: 'linear-gradient(90deg, #fff 60%, #ffeaea 100%)',
+        borderRadius: '1.5rem',
+        padding: '1.2rem 0 1.2rem 0',
+        margin: '60px auto 0 auto',
+        maxWidth: '700px',
+        boxShadow: '0 4px 24px rgba(230,57,70,0.10)'
+      }}>
+        Securely connecting motoring enthusiasts
+      </div>
+    )}
+    <div className="curve-divider">
+      <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
+        <path
+          fill="#f0f0f0"
+          fillOpacity="1"
+          d="M0,160L80,149.3C160,139,320,117,480,133.3C640,149,800,203,960,218.7C1120,235,1280,213,1360,202.7L1440,192L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"
+        ></path>
+      </svg>
+    </div>
 </div>
       <div style={{ padding: '80px 0' }}>
   <Container>
