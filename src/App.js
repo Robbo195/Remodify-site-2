@@ -75,8 +75,8 @@ function App() {
                       title="Go to checkout"
                     >
                       <span style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
-                        <img src={require('./assets/cart.svg').default} alt="Cart" style={{ width: 26, height: 26, marginRight: 6, filter: 'drop-shadow(0 1px 2px rgba(230,57,70,0.10))' }} />
-                        <span className="d-none d-md-inline" style={{ color: '#E63946', fontWeight: 600, fontSize: '1.05rem' }}>Cart</span>
+                        <img src={require('./assets/trolley.svg').default} alt="Trolley" style={{ width: 26, height: 26, marginRight: 6, filter: 'drop-shadow(0 1px 2px rgba(230,57,70,0.10))' }} />
+                        <span className="d-none d-md-inline" style={{ color: '#E63946', fontWeight: 600, fontSize: '1.05rem', marginLeft: 6 }}>Trolley</span>
                         {cartCount > 0 && (
                           <span style={{
                             position: 'absolute',
