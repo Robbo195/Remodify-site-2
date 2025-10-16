@@ -40,6 +40,22 @@ const About = () => {
             <img src={australiaMap} alt="Map of Australia" className="img-fluid rounded shadow-sm" style={{ background: '#fff', borderRadius: '1rem', boxShadow: '0 2px 12px rgba(230,57,70,0.07)' }} />
           </Col>
         </Row>
+
+        {/* Our Core Values Section */}
+        <Row className="mt-5">
+          <Col md={{ span: 10, offset: 1 }}>
+            <div style={{ background: '#fff', borderRadius: '1rem', boxShadow: '0 2px 12px rgba(230,57,70,0.07)', padding: '2rem' }}>
+              <h2 style={{ color: '#E63946', fontWeight: 700, marginBottom: '1.5rem' }}>Our Core Values</h2>
+              <ol style={{ fontSize: '1.1rem', color: '#333', paddingLeft: 0, marginLeft: 0, textAlign: 'left' }}>
+                <li style={{ marginBottom: '1rem' }}><strong>Community:</strong> We believe in unifying all motoring enthusiasts from across Australia into one homogenous community.</li>
+                <li style={{ marginBottom: '1rem' }}><strong>Affordability:</strong> Making dream builds accessible by providing quality parts at fair prices, helping you save without compromise.</li>
+                <li style={{ marginBottom: '1rem' }}><strong>Trust & Safety:</strong> We prioritise secure transactions and reliable shipping, so you can buy and sell with confidence.</li>
+                <li style={{ marginBottom: '1rem' }}><strong>Passion:</strong> We are car lovers at heart, dedicated to helping you achieve your vision, no matter how unique your project.</li>
+                <li style={{ marginBottom: '1rem' }}><strong>Transparency:</strong> Clear communication and honest listings are at the core of every transaction on Remodify.</li>
+              </ol>
+            </div>
+          </Col>
+        </Row>
       </Container>
     </div>
   );
