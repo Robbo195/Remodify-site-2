@@ -19,6 +19,10 @@ import Login from './pages/Login';
 import Account from './pages/Account';
 import ListingSuccess from './pages/ListingSuccess';
 import ProfileIcon from './components/ProfileIcon';
+import Footer from './components/Footer';
+import Terms from './pages/Terms';
+import Returns from './pages/Returns';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import Services2 from './pages/services2';
 import SavedListings from './pages/SavedListings';
 import Checkout from './pages/checkout';
@@ -131,7 +135,11 @@ function App() {
           <Route path="/services2" element={<Services2 />} />
           <Route path="/saved-listings" element={<SavedListings />} />
           <Route path="/delivery-details" element={<DeliveryPaymentDetails />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/returns" element={<Returns />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
         </Routes>
+        <Footer />
       </div>
     </Router>
   );
