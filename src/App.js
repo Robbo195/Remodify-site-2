@@ -20,6 +20,7 @@ import Account from './pages/Account';
 import ListingSuccess from './pages/ListingSuccess';
 import ProfileIcon from './components/ProfileIcon';
 import Footer from './components/Footer';
+import trolleyIcon from './assets/trolley.svg';
 import Terms from './pages/Terms';
 import Returns from './pages/Returns';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -64,8 +65,8 @@ function App() {
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="me-auto" style={{ color: 'black', fontWeight: 500, fontSize: '1.1rem' }}>
-                  <Nav.Link as={Link} to="/about" style={{ color: '#222', marginRight: '1.5rem' }}>About</Nav.Link>
                   <Nav.Link as={Link} to="/services2" style={{ color: '#222', marginRight: '1.5rem' }}>Services</Nav.Link>
+                  <Nav.Link as={Link} to="/about" style={{ color: '#222', marginRight: '1.5rem' }}>About</Nav.Link>
                   <Nav.Link as={Link} to="/contact" style={{ color: '#222', marginRight: '1.5rem' }}>Contact</Nav.Link>
                   {/* Removed Saved Listings button from banner as it is now in the account dropdown */}
                 </Nav>
@@ -79,7 +80,7 @@ function App() {
                       title="Go to checkout"
                     >
                       <span style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
-                        <img src={require('./assets/trolley.svg').default} alt="Trolley" style={{ width: 26, height: 26, marginRight: 6, filter: 'drop-shadow(0 1px 2px rgba(230,57,70,0.10))' }} />
+                        <img src={trolleyIcon} alt="Trolley" style={{ width: 26, height: 26, marginRight: 6, filter: 'drop-shadow(0 1px 2px rgba(230,57,70,0.10))' }} />
                         <span className="d-none d-md-inline" style={{ color: '#E63946', fontWeight: 600, fontSize: '1.05rem', marginLeft: 6 }}>Trolley</span>
                         {cartCount > 0 && (
                           <span style={{
