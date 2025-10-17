@@ -349,6 +349,21 @@ const Landing = () => {
   ))}
 </Slider>
     </div>
+    <div style={{ marginTop: '48px', textAlign: 'center' }}>
+      <h2 style={{ fontSize: '24pt', marginBottom: '12px' }}>I'm chasing...</h2>
+  <p style={{ color: '#555', maxWidth: 760, margin: '0 auto' }}>Looking for something specific but don't want it to get snatched up by someone else? Post a 'Wanting to Buy' note and allow sellers to get in contact with you as soon as they list their item if it closely matches your criteria!</p>
+      <div className="d-flex justify-content-center" style={{ marginTop: '16px' }}>
+        <Button
+          as="a"
+          href="/create-listing?prefill=want"
+          variant="outline-danger"
+          style={{ borderRadius: '8px', fontWeight: 700, padding: '12px 24px', transition: 'background 0.15s, color 0.15s' }}
+          onMouseEnter={e => { e.currentTarget.style.background = '#E63946'; e.currentTarget.style.color = 'white'; e.currentTarget.style.borderColor = '#B01C1C'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = ''; e.currentTarget.style.borderColor = ''; }}
+        >Post a WTB</Button>
+      </div>
+    </div>
+
     <footer style={{ padding: '16px', fontSize: '0.9rem', color: '#666' }} className="text-center mt-5">
       (c) Remodify 2025
     </footer>
