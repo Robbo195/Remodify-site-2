@@ -8,7 +8,7 @@ import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../firebase';
 
 import { db } from '../firebase'; 
-import {collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, addDoc, serverTimestamp, getDocs } from 'firebase/firestore'
 
 import { onAuthStateChanged } from 'firebase/auth';
 
@@ -20,6 +20,8 @@ const CreateListing = () => {
   const [model, setModel] = useState('');
   const [year, setYear] = useState('');
   const [condition, setCondition] = useState('');
+  const [series, setSeries] = useState('');
+  const [trimSpec, setTrimSpec] = useState('');
   const [files, setFiles] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [showLoginModal, setShowLoginModal] = useState(false); // New state for modal
@@ -66,6 +68,8 @@ const CreateListing = () => {
         manufacturer,
         model,
         year,
+        series,
+        trimSpec,
         condition,
         negotiable,
         imageUrl: "https://via.placeholder.com/400x250", //need to replace this
@@ -74,7 +78,40 @@ const CreateListing = () => {
     });
 
       console.log("Listing added with ID:", docRef.id);
-      navigate('/listing-success', { state: { listingTitle: title } });
+
+      // --- Buyer matching: find top 4 wants that best match this listing ---
+      const wantsSnapshot = await getDocs(collection(db, 'wants'));
+      const wants = wantsSnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      // Simple scoring: +3 exact manufacturer, +3 exact model, +2 year match, +2 within price range, +1 series, +1 trim
+      const scoreWant = (want) => {
+        let score = 0;
+        if (want.desiredManufacturer && manufacturer && want.desiredManufacturer.toLowerCase() === manufacturer.toLowerCase()) score += 3;
+        if (want.desiredModel && model && want.desiredModel.toLowerCase() === model.toLowerCase()) score += 3;
+        if (want.desiredYear && year && want.desiredYear.toString() === year.toString()) score += 2;
+        if (want.maxPrice && !isNaN(want.maxPrice) && price && Number(price) <= Number(want.maxPrice)) score += 2;
+        if (want.desiredSeries && series && want.desiredSeries.toLowerCase() === series.toLowerCase()) score += 1;
+        if (want.desiredTrim && trimSpec && want.desiredTrim.toLowerCase() === trimSpec.toLowerCase()) score += 1;
+        return score;
+      };
+
+      const scored = wants.map(w => ({ ...w, score: scoreWant(w) }));
+      scored.sort((a,b) => b.score - a.score);
+      const top4 = scored.slice(0,4).filter(s => s.score > 0);
+
+      // Create notification documents for top matches
+      for (const match of top4) {
+        await addDoc(collection(db, 'buyer_notifications'), {
+          buyerId: match.userId || match.buyerId || null,
+          wantId: match.id,
+          listingId: docRef.id,
+          score: match.score,
+          createdAt: serverTimestamp(),
+          notified: false
+        });
+      }
+
+  navigate('/listing-success', { state: { listingTitle: title, listingId: docRef.id, matchedBuyers: top4.map(t => ({ id: t.id, score: t.score })) } });
     } catch (error) {
       console.error("Error adding listing:", error);
       setErrorMessage("Something went wrong. Please try again.");
@@ -163,6 +200,58 @@ const CreateListing = () => {
                 </div>
               </Form.Group>
 
+              <Row className="mb-3">
+                <Col>
+                  <Form.Group controlId="formManufacturerMain">
+                    <Form.Label>Manufacturer <span style={{ color: 'red' }}>*</span></Form.Label>
+                    <Typeahead
+                      id="manufacturer-typeahead-main"
+                      options={carBrands}
+                      onChange={(selected) => {
+                        if (selected.length > 0) {
+                          if (selected[0] === 'Other') {
+                            setShowOtherManufacturerField(true);
+                            setManufacturer('');
+                          } else {
+                            setShowOtherManufacturerField(false);
+                            setManufacturer(selected[0]);
+                          }
+                        } else {
+                          setShowOtherManufacturerField(false);
+                          setManufacturer('');
+                        }
+                      }}
+                      onInputChange={(text) => {
+                        setManufacturer(text);
+                        if (text === 'Other') {
+                          setShowOtherManufacturerField(true);
+                        } else {
+                          setShowOtherManufacturerField(false);
+                        }
+                      }}
+                      selected={manufacturer ? [manufacturer] : []}
+                      placeholder="Select or type manufacturer"
+                      allowNew
+                    />
+                    {showOtherManufacturerField && (
+                      <Form.Control
+                        type="text"
+                        placeholder="Enter manufacturer"
+                        value={manufacturer}
+                        onChange={e => setManufacturer(e.target.value)}
+                        className="mt-2"
+                      />
+                    )}
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group controlId="formModelMain">
+                    <Form.Label>Model <span style={{ color: 'red' }}>*</span></Form.Label>
+                    <Form.Control type="text" placeholder="Enter model" value={model} onChange={e => setModel(e.target.value)} required />
+                  </Form.Group>
+                </Col>
+              </Row>
+
               {errorMessage && <p style={{ color: 'grey', fontStyle: 'italic', marginTop: '10px' }}>{errorMessage}</p>}
 
               {/* Additional Information section - now collapsible */}
@@ -186,7 +275,7 @@ const CreateListing = () => {
                 {showAdditionalInfo && (
                   <>
                     <div style={{ marginTop: '1rem', color: '#555', fontSize: '1rem', textAlign: 'left' }}>
-                      Help buyers find the right item, your product, by adding extra information.
+                      We want buyers to find the right product. Help us by providing more info!
                     </div>
                     <div style={{ marginBottom: '2rem', marginTop: '1.5rem' }}>
                       <h3 style={{ fontSize: '1.2rem', textAlign: 'left', marginBottom: '1rem', color: '#E63946', fontWeight: 600 }}>Suitable for</h3>
@@ -203,52 +292,15 @@ const CreateListing = () => {
                           </Form.Group>
                         </Col>
                         <Col>
-                          <Form.Group controlId="formManufacturer">
-                            <Form.Label>Manufacturer</Form.Label>
-                            <Typeahead
-                              id="manufacturer-typeahead"
-                              options={carBrands}
-                              onChange={(selected) => {
-                                if (selected.length > 0) {
-                                  if (selected[0] === 'Other') {
-                                    setShowOtherManufacturerField(true);
-                                    setManufacturer('');
-                                  } else {
-                                    setShowOtherManufacturerField(false);
-                                    setManufacturer(selected[0]);
-                                  }
-                                } else {
-                                  setShowOtherManufacturerField(false);
-                                  setManufacturer('');
-                                }
-                              }}
-                              onInputChange={(text) => {
-                                setManufacturer(text);
-                                if (text === 'Other') {
-                                  setShowOtherManufacturerField(true);
-                                } else {
-                                  setShowOtherManufacturerField(false);
-                                }
-                              }}
-                              selected={manufacturer ? [manufacturer] : []}
-                              placeholder="Select or type manufacturer"
-                              allowNew
-                            />
-                            {showOtherManufacturerField && (
-                              <Form.Control
-                                type="text"
-                                placeholder="Enter manufacturer"
-                                value={manufacturer}
-                                onChange={e => setManufacturer(e.target.value)}
-                                className="mt-2"
-                              />
-                            )}
+                          <Form.Group controlId="formSeries">
+                            <Form.Label>Series / Generation</Form.Label>
+                            <Form.Control type="text" placeholder="e.g. MK7, Series II" value={series} onChange={e => setSeries(e.target.value)} />
                           </Form.Group>
                         </Col>
                         <Col>
-                          <Form.Group controlId="formModel">
-                            <Form.Label>Model</Form.Label>
-                            <Form.Control type="text" placeholder="Enter model" value={model} onChange={e => setModel(e.target.value)} />
+                          <Form.Group controlId="formTrimSpec">
+                            <Form.Label>Trim Spec</Form.Label>
+                            <Form.Control type="text" placeholder="e.g. LT, Sport, GT-Line" value={trimSpec} onChange={e => setTrimSpec(e.target.value)} />
                           </Form.Group>
                         </Col>
                       </Row>
