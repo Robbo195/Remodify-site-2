@@ -22,6 +22,7 @@ const CreateListing = () => {
   const [condition, setCondition] = useState('');
   const [series, setSeries] = useState('');
   const [trimSpec, setTrimSpec] = useState('');
+  const [category, setCategory] = useState('');
   const [files, setFiles] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [showLoginModal, setShowLoginModal] = useState(false); // New state for modal
@@ -40,6 +41,10 @@ const CreateListing = () => {
     "Subaru", "Suzuki", "Tesla", "Toyota", "Volkswagen", "Volvo", "Zeekr", "Other"
   ];
 
+  const categories = [
+    'Engine', 'Suspension', 'Brakes', 'Electrical', 'Body', 'Interior', 'Transmission', 'Wheels & Tyres', 'Accessories', 'Performance', 'Cooling', 'Hydraulic', 'Custom Made', 'Other'
+  ];
+
   const onDrop = useCallback(acceptedFiles => {
     setFiles(acceptedFiles.map(file => Object.assign(file, {
       preview: URL.createObjectURL(file)
@@ -48,7 +53,7 @@ const CreateListing = () => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const isFormValid = title && price && model && year && condition && files.length > 0 && description;
+  const isFormValid = title && price && model && year && condition && category && files.length > 0 && description;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -68,6 +73,7 @@ const CreateListing = () => {
         manufacturer,
         model,
         year,
+        category,
         series,
         trimSpec,
         condition,
@@ -168,23 +174,38 @@ const CreateListing = () => {
                 <Form.Control as="textarea" rows={3} placeholder="Enter description" value={description} onChange={(e) => setDescription(e.target.value)} required />
               </Form.Group>
 
-              <Form.Group controlId="formCondition" className="mb-3">
-                <Form.Label>Condition <span style={{ color: 'red' }}>*</span></Form.Label>
-                <Form.Select
-                  value={condition}
-                  onChange={(e) => setCondition(e.target.value)}
-                  required
-                  className={!condition ? 'placeholder-selected' : ''}
-                >
-                  <option value="" disabled hidden>Select Condition</option>
-                  <option value="New">New</option>
-                  <option value="Used - like new">Used - like new</option>
-                  <option value="Used - good">Used - good</option>
-                  <option value="Used - fair">Used - fair</option>
-                  <option value="Used - worn">Used - worn</option>
-                  <option value="Refurbished">Refurbished</option>
-                </Form.Select>
-              </Form.Group>
+              <Row className="mb-3">
+                <Col>
+                  <Form.Group controlId="formCondition">
+                    <Form.Label>Condition <span style={{ color: 'red' }}>*</span></Form.Label>
+                    <Form.Select
+                      value={condition}
+                      onChange={(e) => setCondition(e.target.value)}
+                      required
+                      className={!condition ? 'placeholder-selected' : ''}
+                    >
+                      <option value="" disabled hidden>Select Condition</option>
+                      <option value="New">New</option>
+                      <option value="Used - like new">Used - like new</option>
+                      <option value="Used - good">Used - good</option>
+                      <option value="Used - fair">Used - fair</option>
+                      <option value="Used - worn">Used - worn</option>
+                      <option value="Refurbished">Refurbished</option>
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group controlId="formCategoryMain">
+                    <Form.Label>Category <span style={{ color: 'red' }}>*</span></Form.Label>
+                    <Form.Select value={category} onChange={e => setCategory(e.target.value)} required className={!category ? 'placeholder-selected' : ''}>
+                      <option value="" disabled hidden>Select category</option>
+                      {categories.map(cat => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+              </Row>
 
               <Form.Group controlId="formPrice" className="mb-3">
                 <Form.Label>Price <span style={{ color: 'red' }}>*</span></Form.Label>
@@ -320,6 +341,7 @@ const CreateListing = () => {
                             <Form.Control type="text" placeholder="Enter part number" />
                           </Form.Group>
                         </Col>
+                        {/* Category moved to main details (next to Condition) */}
                       </Row>
                     </div>
                     <div style={{ marginBottom: '2rem' }}>
