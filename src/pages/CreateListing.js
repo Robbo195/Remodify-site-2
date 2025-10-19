@@ -7,8 +7,9 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../firebase';
 
-import { db } from '../firebase'; 
+import { db, storage } from '../firebase'; 
 import { collection, addDoc, serverTimestamp, getDocs } from 'firebase/firestore'
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 import { onAuthStateChanged } from 'firebase/auth';
 
@@ -25,6 +26,7 @@ const CreateListing = () => {
   const [category, setCategory] = useState('');
   const [files, setFiles] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false); // New state for modal
   const [negotiable, setNegotiable] = useState(false);
   const [showOtherManufacturerField, setShowOtherManufacturerField] = useState(false);
@@ -53,18 +55,42 @@ const CreateListing = () => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const isFormValid = title && price && model && year && condition && category && files.length > 0 && description;
+  // Year is part of 'Additional information' (not shown as mandatory in the UI),
+  // so don't require it here. Trim text fields to avoid whitespace-only values.
+  const isFormValid = (
+    title.trim() &&
+    price.toString().trim() &&
+    model.trim() &&
+    condition.trim() &&
+    category.trim() &&
+    files.length > 0 &&
+    description.trim()
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('CreateListing: submit clicked');
+    setErrorMessage('');
     if (!isFormValid) {
       setErrorMessage('*you must complete all mandatory boxes');
+      console.log('CreateListing: form invalid', { title, price, model, year, condition, category, filesLength: files.length, description });
       return;
     }
+    if (isSubmitting) {
+      console.log('CreateListing: already submitting');
+      return;
+    }
+    setIsSubmitting(true);
 
     try {
-      // For now, placeholder image (you'll later use Firebase Storage)
-      const imageUrl = "https://via.placeholder.com/400x250";
+      // Upload files to Firebase Storage and collect URLs
+      const uploadedUrls = [];
+      for (const file of files) {
+        const fileRef = storageRef(storage, `listings/${Date.now()}_${file.name}`);
+        const snapshot = await uploadBytes(fileRef, file);
+        const url = await getDownloadURL(snapshot.ref);
+        uploadedUrls.push(url);
+      }
 
       const docRef = await addDoc(collection(db, "listings"), {
         title,
@@ -78,7 +104,8 @@ const CreateListing = () => {
         trimSpec,
         condition,
         negotiable,
-        imageUrl: "https://via.placeholder.com/400x250", //need to replace this
+        imageUrl: uploadedUrls.length ? uploadedUrls[0] : "https://via.placeholder.com/400x250",
+        files: uploadedUrls,
         createdAt: serverTimestamp(),
         userId: user.uid // Firestore security
     });
@@ -117,10 +144,29 @@ const CreateListing = () => {
         });
       }
 
-  navigate('/listing-success', { state: { listingTitle: title, listingId: docRef.id, matchedBuyers: top4.map(t => ({ id: t.id, score: t.score })) } });
+      const newListing = {
+        id: docRef.id,
+        title,
+        description,
+        price: Number(price),
+        manufacturer,
+        model,
+        year,
+        category,
+        series,
+        trimSpec,
+        condition,
+        negotiable,
+        imageUrl: uploadedUrls.length ? uploadedUrls[0] : "https://via.placeholder.com/400x250",
+        files: uploadedUrls
+      };
+
+      navigate('/results', { state: { newListing } });
+      setIsSubmitting(false);
     } catch (error) {
       console.error("Error adding listing:", error);
-      setErrorMessage("Something went wrong. Please try again.");
+      setErrorMessage(error?.message ? `Error: ${error.message}` : "Something went wrong. Please try again.");
+      setIsSubmitting(false);
     }
   };
 
@@ -156,6 +202,8 @@ const CreateListing = () => {
     });
     return () => unsubcribe();
   }, []);
+
+  
 
   return (
     <div className="page-section" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
@@ -359,8 +407,9 @@ const CreateListing = () => {
                   <Button
                     style={{ backgroundColor: '#E63946', borderColor: '#E63946', color: 'white', fontWeight: 600, borderRadius: '2rem', padding: '0.7rem 2.5rem', fontSize: '1.15rem' }}
                     type="submit"
+                    disabled={!isFormValid || isSubmitting}
                   >
-                    Post
+                    {isSubmitting ? 'Posting…' : 'Post'}
                   </Button>
                 </div>
               )}
