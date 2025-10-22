@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { Container, Form, Row, Col, Button } from 'react-bootstrap';
@@ -279,22 +279,13 @@ const Landing = () => {
 
     {/* Slogan below searching fields, hidden when manual search is open */}
     {!showManualSearch && (
-      <div className="text-center mb-5" style={{
-        fontSize: '2.2rem',
-        color: '#E63946',
-        fontWeight: 800,
-        fontStyle: 'italic',
-        letterSpacing: '1.5px',
-        textShadow: '0 2px 12px rgba(230,57,70,0.10)',
-        background: 'linear-gradient(90deg, #fff 60%, #ffeaea 100%)',
-        borderRadius: '1.5rem',
-        padding: '1.2rem 0 1.2rem 0',
-        margin: '60px auto 0 auto',
-        maxWidth: '700px',
-        boxShadow: '0 4px 24px rgba(230,57,70,0.10)'
-      }}>
-        Securely connecting motoring enthusiasts
-      </div>
+      <Container>
+        <Row className="justify-content-center">
+          <Col md={10} lg={8}>
+            <AnimatedSlogan />
+          </Col>
+        </Row>
+      </Container>
     )}
     <div className="curve-divider">
       <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
@@ -370,6 +361,87 @@ const Landing = () => {
   </Container>
 </div>
     </>
+  );
+};
+
+// Animated slogan words (kept outside component to avoid effect dependencies)
+const SLOGAN_WORDS = ['car', 'motorbike', 'jetski', 'boat', 'ATV', 'truck'];
+
+// Animated slogan component
+const AnimatedSlogan = () => {
+  const words = SLOGAN_WORDS;
+  const [index, setIndex] = useState(0);
+  const [display, setDisplay] = useState('');
+  const [deleting, setDeleting] = useState(false);
+  const [charIndex, setCharIndex] = useState(0);
+  const [sloganError, setSloganError] = useState('');
+
+  useEffect(() => {
+    let timeout;
+    try {
+      if (!words || words.length === 0) return undefined;
+      const currentWord = words[index] || '';
+
+      if (!deleting) {
+        // Typing (slower)
+        if (charIndex < currentWord.length) {
+          // Slightly slower typing
+          timeout = setTimeout(() => {
+            setDisplay(currentWord.slice(0, charIndex + 1));
+            setCharIndex(ci => ci + 1);
+          }, 220);
+        } else {
+          // Slightly longer pause before deleting
+          timeout = setTimeout(() => setDeleting(true), 1600);
+        }
+      } else {
+        // Deleting (slower)
+        if (charIndex > 0) {
+          // Slightly slower deleting
+          timeout = setTimeout(() => {
+            setDisplay(currentWord.slice(0, charIndex - 1));
+            setCharIndex(ci => ci - 1);
+          }, 150);
+        } else {
+          // Move to next word
+          setDeleting(false);
+          setIndex(i => (i + 1) % words.length);
+          setCharIndex(0);
+        }
+      }
+    } catch (err) {
+      console.error('AnimatedSlogan error', err);
+      setSloganError(err?.message || String(err));
+    }
+
+    return () => clearTimeout(timeout);
+  }, [charIndex, deleting, index, words]);
+
+  return (
+    <div>
+  <div className="text-center mb-5 animated-slogan" style={{
+        fontSize: '2.2rem',
+        color: '#E63946',
+        fontWeight: 800,
+  fontStyle: 'normal',
+        letterSpacing: '1.5px',
+        textShadow: '0 2px 12px rgba(230,57,70,0.10)',
+        background: 'linear-gradient(90deg, #fff 60%, #ffeaea 100%)',
+        borderRadius: '1.5rem',
+        padding: '1.2rem 0 1.2rem 0',
+        margin: '60px auto 0 auto',
+        maxWidth: '100%',
+        boxShadow: '0 4px 24px rgba(230,57,70,0.10)'
+      }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'nowrap' }}>
+          <span>Securely find parts for your</span>
+          <span className="animated-slogan-word" style={{ color: '#000000', display: 'inline-block', whiteSpace: 'nowrap' }}>{display}<span className="animated-slogan-caret" style={{ borderRight: '2px solid #000000', marginLeft: '4px' }} /></span>
+        </span>
+      </div>
+      {sloganError && (
+        <div style={{ color: 'red', textAlign: 'center' }}>Slogan error: {sloganError}</div>
+      )}
+    </div>
   );
 };
 
