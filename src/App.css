@@ -188,6 +188,34 @@
   align-items: center;
 }
 
+/* Blinking caret for animated slogan */
+.animated-slogan-caret {
+  /* caret is drawn using border-right on the element; ensure it's visible */
+  border-right-width: 2px;
+  border-right-style: solid;
+  /* keep color inherited from inline styles, but fallback to black */
+  border-right-color: currentColor;
+  /* small horizontal spacing handled by inline marginLeft; ensure box sizing */
+  box-sizing: content-box;
+  /* blinking animation */
+  animation: animated-caret-blink 1s steps(2, start) infinite;
+}
+
+/* Ensure the caret has height so the border-right is visible even when the span is empty */
+.animated-slogan-caret {
+  display: inline-block;
+  width: 0; /* caret is a vertical line, no horizontal width */
+  height: 1em; /* match font height */
+  vertical-align: middle;
+  margin-left: 0.25rem; /* small gap from the word */
+}
+
+@keyframes animated-caret-blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
 /* At small widths allow the word to wrap and reduce font-size/padding */
 @media (max-width: 576px) {
   .animated-slogan {

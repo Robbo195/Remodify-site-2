@@ -342,7 +342,7 @@ const Landing = () => {
     </div>
     <div style={{ marginTop: '48px', textAlign: 'center' }}>
       <h2 style={{ fontSize: '24pt', marginBottom: '12px' }}>I'm chasing...</h2>
-  <p style={{ color: '#555', maxWidth: 760, margin: '0 auto' }}>Looking for something specific but don't want it to get snatched up by someone else? Post a 'Wanting to Buy' note and allow sellers to get in contact with you as soon as they list their item if it closely matches your criteria!</p>
+  <p style={{ color: '#555', maxWidth: 760, margin: '0 auto' }}>Post a 'Wanting to Buy' note — we’ll notify sellers who have matching items so you don’t miss out.</p>
       <div className="d-flex justify-content-center" style={{ marginTop: '16px' }}>
         <Button
           as="a"
@@ -355,9 +355,7 @@ const Landing = () => {
       </div>
     </div>
 
-    <footer style={{ padding: '16px', fontSize: '0.9rem', color: '#666' }} className="text-center mt-5">
-      (c) Remodify 2025
-    </footer>
+    
   </Container>
 </div>
     </>
@@ -365,7 +363,8 @@ const Landing = () => {
 };
 
 // Animated slogan words (kept outside component to avoid effect dependencies)
-const SLOGAN_WORDS = ['car', 'motorbike', 'jetski', 'boat', 'ATV', 'truck'];
+const SLOGAN_WORDS = ['pavement princess', 'weekend warrior', 'track day toy', 'toorak tractor', 'paddock basher', 'rice burner'
+];
 
 // Animated slogan component
 const AnimatedSlogan = () => {
