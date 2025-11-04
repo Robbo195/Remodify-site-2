@@ -32,6 +32,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [cartCount, setCartCount] = useState(0);
+  const [trolleyClicked, setTrolleyClicked] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -55,7 +56,7 @@ function App() {
     <Router>
       <div className="App">
         <div className="App-header">
-          <Navbar bg="white" expand="lg" sticky="top" style={{ boxShadow: '0 2px 12px rgba(230,57,70,0.07)', borderBottom: '2px solid #E63946', minHeight: '70px' }}>
+          <Navbar bg="white" expand="lg" sticky="top" style={{ boxShadow: '0 2px 12px rgba(230,57,70,0.07)', minHeight: '70px' }}>
             <Container>
               <Navbar.Brand as={Link} to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <Image src={logo} alt="Remodify Logo" height="38" className="d-inline-block align-top" style={{ borderRadius: '0.5rem', boxShadow: '0 2px 8px rgba(230,57,70,0.10)' }} />
@@ -74,13 +75,25 @@ function App() {
                     <Nav.Link
                       as={Link}
                       to="/checkout"
-                      className="d-flex align-items-center ms-2"
+                      className={`d-flex align-items-center ms-2 trolley-link ${trolleyClicked ? 'trolley-clicked' : ''}`}
                       style={{ background: 'none', border: 'none', boxShadow: 'none', padding: '0.3rem 0.8rem', position: 'relative' }}
                       title="Go to checkout"
+                      onClick={(e) => {
+                        // prevent immediate navigation so the click animation can play briefly
+                        e.preventDefault();
+                        if (trolleyClicked) return; // ignore double-clicks while animating
+                        setTrolleyClicked(true);
+                        // after animation duration, navigate
+                        setTimeout(() => {
+                          setTrolleyClicked(false);
+                          // use location so this works even though App renders Router
+                          window.location.href = '/checkout';
+                        }, 380);
+                      }}
                     >
                       <span style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
-                        <img src={trolleyIcon} alt="Trolley" style={{ width: 26, height: 26, marginRight: 6, filter: 'drop-shadow(0 1px 2px rgba(230,57,70,0.10))' }} />
-                        <span className="d-none d-md-inline" style={{ color: '#E63946', fontWeight: 600, fontSize: '1.05rem', marginLeft: 6 }}>Trolley</span>
+                        <img src={trolleyIcon} alt="Trolley" className="trolley-icon" />
+                        <span className="d-none d-md-inline trolley-label">Trolley</span>
                         {cartCount > 0 && (
                           <span style={{
                             position: 'absolute',
