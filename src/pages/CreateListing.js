@@ -63,8 +63,9 @@ const CreateListing = () => {
     }
 
     try {
-      // For now, placeholder image (you'll later use Firebase Storage)
-      const imageUrl = "https://via.placeholder.com/400x250";
+
+  // For now, placeholder image (you'll later use Firebase Storage)
+  const imageUrl = "https://via.placeholder.com/400x250";
 
       const docRef = await addDoc(collection(db, "listings"), {
         title,
@@ -78,7 +79,7 @@ const CreateListing = () => {
         trimSpec,
         condition,
         negotiable,
-        imageUrl: "https://via.placeholder.com/400x250", //need to replace this
+  imageUrl: imageUrl, // use the placeholder variable (replace with storage URL later)
         createdAt: serverTimestamp(),
         userId: user.uid // Firestore security
     });
@@ -124,13 +125,7 @@ const CreateListing = () => {
     }
   };
 
-  const handleLoginClick = () => {
-    if (isFormValid) {
-      setShowLoginModal(true); // Show the modal
-    } else {
-      setErrorMessage('*you must complete all mandatory boxes');
-    }
-  };
+  // removed unused handleLoginClick (login modal is triggered via other flows)
 
   const handleCloseLoginModal = () => setShowLoginModal(false);
 

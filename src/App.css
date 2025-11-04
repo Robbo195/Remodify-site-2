@@ -167,25 +167,33 @@
 }
 
 /* Animated slogan responsive tweaks */
-.animated-slogan {
-  max-width: 100%;
-  padding-left: 12px;
-  padding-right: 12px;
-  box-sizing: border-box;
-}
-.animated-slogan-word {
-  display: inline-block;
-  white-space: nowrap;
-  vertical-align: middle;
-}
 .animated-slogan-caret {
+  /* caret is drawn using border-right on the element; ensure it's visible */
+  border-right-width: 2px;
+  border-right-style: solid;
+  /* keep color inherited from inline styles, but fallback to black */
+  border-right-color: currentColor;
+  /* small horizontal spacing handled by inline marginLeft; ensure box sizing */
+  box-sizing: content-box;
+  /* caret size */
   display: inline-block;
+  width: 0; /* caret is a vertical line, no horizontal width */
+  height: 1em; /* match font height */
   vertical-align: middle;
+  margin-left: 0.25rem; /* small gap from the word */
+  /* animation only applied when .blink class is present */
 }
 
-.animated-slogan > span[style] {
-  display: inline-flex;
-  align-items: center;
+.animated-slogan-caret.blink {
+  /* blinking animation applied only when caret should blink */
+  animation: animated-caret-blink 1s steps(2, start) infinite;
+}
+
+/* keyframes for caret blink: toggle opacity to create a blinking cursor effect */
+@keyframes animated-caret-blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 /* At small widths allow the word to wrap and reduce font-size/padding */

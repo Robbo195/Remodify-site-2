@@ -1,9 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Image, Dropdown } from 'react-bootstrap';
+import { Dropdown } from 'react-bootstrap';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
-import profileIcon from '../assets/logo.png';
 
 const ProfileIcon = () => {
   const navigate = useNavigate();
