@@ -6,10 +6,9 @@ import { Container, Form, Row, Col, Button } from 'react-bootstrap';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import FeaturedCarousel from '../components/FeaturedCarousel';
 import { Typeahead } from 'react-bootstrap-typeahead';
 
-import nlp from 'compromise';
+// nlp library previously used for basic parsing; removed to avoid unused import
 import logo from '../assets/logo.png';
 
 const Landing = () => {
@@ -37,7 +36,7 @@ const Landing = () => {
     const text = e.target.value;
     setAnyPartSearch(text);
 
-    const doc = nlp(text);
+  // basic NLP available if we want to expand parsing later
 
     // Extract Year (simple regex for 4 digits)
     const yearMatch = text.match(/\b(19|20)\d{2}\b/);
@@ -63,9 +62,8 @@ const Landing = () => {
       setPartNumber('');
     }
 
-    // Extract Manufacturer and Model (more complex, requires better NLP or a predefined list)
-    // For now, let's try to extract nouns as potential manufacturers/models
-    const nouns = doc.nouns().out('array');
+  // Extract Manufacturer and Model (more complex, requires better NLP or a predefined list)
+  // For now, let's attempt to identify manufacturers/models from the input
     const carData = {
       "Toyota": ["Corolla", "Camry", "Hilux", "LandCruiser", "RAV4", "Yaris", "Prado", "Kluger", "Avalon"],
       "Mazda": ["Mazda 2", "Mazda 3", "Mazda 6", "CX-3", "CX-5", "CX-8", "CX-9", "BT-50"],
@@ -342,7 +340,7 @@ const Landing = () => {
     </div>
     <div style={{ marginTop: '48px', textAlign: 'center' }}>
       <h2 style={{ fontSize: '24pt', marginBottom: '12px' }}>I'm chasing...</h2>
-  <p style={{ color: '#555', maxWidth: 760, margin: '0 auto' }}>Looking for something specific but don't want it to get snatched up by someone else? Post a 'Wanting to Buy' note and allow sellers to get in contact with you as soon as they list their item if it closely matches your criteria!</p>
+  <p style={{ color: '#555', maxWidth: 760, margin: '0 auto' }}>Can't find the part you need? Post a 'Want to Buy' and get alerted — sellers reach out when they list matching items, so you beat other buyers.</p>
       <div className="d-flex justify-content-center" style={{ marginTop: '16px' }}>
         <Button
           as="a"
@@ -354,10 +352,6 @@ const Landing = () => {
         >Post a WTB</Button>
       </div>
     </div>
-
-    <footer style={{ padding: '16px', fontSize: '0.9rem', color: '#666' }} className="text-center mt-5">
-      (c) Remodify 2025
-    </footer>
   </Container>
 </div>
     </>
@@ -365,7 +359,7 @@ const Landing = () => {
 };
 
 // Animated slogan words (kept outside component to avoid effect dependencies)
-const SLOGAN_WORDS = ['car', 'motorbike', 'jetski', 'boat', 'ATV', 'truck'];
+const SLOGAN_WORDS = ['mum bus', 'show pony', 'pavement princess', 'weekend warrior', 'rice cooker', 'chick magnet']
 
 // Animated slogan component
 const AnimatedSlogan = () => {
@@ -374,6 +368,7 @@ const AnimatedSlogan = () => {
   const [display, setDisplay] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [charIndex, setCharIndex] = useState(0);
+  const [caretBlink, setCaretBlink] = useState(false);
   const [sloganError, setSloganError] = useState('');
 
   useEffect(() => {
@@ -385,14 +380,20 @@ const AnimatedSlogan = () => {
       if (!deleting) {
         // Typing (slower)
         if (charIndex < currentWord.length) {
+          // ensure caret not blinking while typing
+          if (caretBlink) setCaretBlink(false);
           // Slightly slower typing
           timeout = setTimeout(() => {
             setDisplay(currentWord.slice(0, charIndex + 1));
             setCharIndex(ci => ci + 1);
           }, 220);
         } else {
-          // Slightly longer pause before deleting
-          timeout = setTimeout(() => setDeleting(true), 1600);
+          // Word fully typed: enable caret blink during the pause, then delete
+          if (!caretBlink) setCaretBlink(true);
+          timeout = setTimeout(() => {
+            setDeleting(true);
+            setCaretBlink(false);
+          }, 1600);
         }
       } else {
         // Deleting (slower)
@@ -407,6 +408,8 @@ const AnimatedSlogan = () => {
           setDeleting(false);
           setIndex(i => (i + 1) % words.length);
           setCharIndex(0);
+          // ensure caret is off while starting to type next word
+          if (caretBlink) setCaretBlink(false);
         }
       }
     } catch (err) {
@@ -415,7 +418,7 @@ const AnimatedSlogan = () => {
     }
 
     return () => clearTimeout(timeout);
-  }, [charIndex, deleting, index, words]);
+  }, [charIndex, deleting, index, words, caretBlink]);
 
   return (
     <div>
@@ -435,7 +438,7 @@ const AnimatedSlogan = () => {
       }}>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'nowrap' }}>
           <span>Securely find parts for your</span>
-          <span className="animated-slogan-word" style={{ color: '#000000', display: 'inline-block', whiteSpace: 'nowrap' }}>{display}<span className="animated-slogan-caret" style={{ borderRight: '2px solid #000000', marginLeft: '4px' }} /></span>
+          <span className="animated-slogan-word" style={{ color: '#000000', display: 'inline-block', whiteSpace: 'nowrap' }}>{display}<span className={`animated-slogan-caret ${caretBlink ? 'blink' : ''}`} style={{ borderRight: '2px solid #000000', marginLeft: '4px' }} /></span>
         </span>
       </div>
       {sloganError && (

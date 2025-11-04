@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import {
-  getAuth,
   signInWithPopup,
   GoogleAuthProvider,
   FacebookAuthProvider,
-  onAuthStateChanged,
-  signOut
+  onAuthStateChanged
 } from 'firebase/auth'
 import { auth } from '../firebase.js'
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -14,7 +12,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const Login = () => {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null);
+  // user state is not used directly; remove to avoid linter warning
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -52,14 +50,10 @@ const Login = () => {
     }
   };
 
-  // Handle Sign-Out
-  const handleLogout = () => {
-    signOut(auth);
-  };
+  // Sign-out handler not required on this page; handled elsewhere
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      setUser(firebaseUser);
       if (firebaseUser) {
         // Check for redirect param in location.state or query string
         let redirectTo = null;
@@ -100,7 +94,7 @@ const Login = () => {
               <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} style={{ borderRadius: '2rem', padding: '0.75rem 1.2rem', fontSize: '1.1rem' }} />
             </Form.Group>
             <div style={{ textAlign: 'right', marginBottom: '1rem' }}>
-              <a href="#" style={{ color: '#E63946', fontWeight: 500, textDecoration: 'underline', fontSize: '1rem' }}>Forgot password?</a>
+              <button type="button" onClick={() => navigate('/forgot-password')} style={{ background: 'none', border: 'none', color: '#E63946', fontWeight: 500, textDecoration: 'underline', fontSize: '1rem', padding: 0, cursor: 'pointer' }}>Forgot password?</button>
             </div>
             <Button style={{ backgroundColor: '#E63946', borderColor: '#E63946', color: 'white', fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem', fontSize: '1.1rem', width: '100%' }} type="submit">
               Log in

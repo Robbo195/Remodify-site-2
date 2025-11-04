@@ -17,7 +17,7 @@ const Results = () => {
   const [itemsPerPage, setItemsPerPage] = useState(5); // Default 5 per page
   const [user, setUser] = useState(null);
   const [cart, setCart] = useState([]);
-  const [savedSearches, setSavedSearches] = useState([]);
+  // saved searches are persisted to localStorage; no need to keep in component state unless displayed
   const navigate = useNavigate();
 
   // Filtering and sorting state
@@ -35,7 +35,6 @@ const Results = () => {
   };
 
   const location = useLocation();
-  const params = new URLSearchParams(location.search);
   const newListing = location.state && location.state.newListing;
 
   useEffect(() => {
@@ -72,6 +71,7 @@ const Results = () => {
           }
         }
 
+        const params = new URLSearchParams(location.search);
         const search = {
           year: params.get("year") || "",
           manufacturer: params.get("manufacturer") || "",
@@ -108,7 +108,7 @@ const Results = () => {
     };
 
     loadInventoryAndSearch();
-  }, [location]);
+  }, [location.search, location.state, newListing]);
 
   // Save listing handler
   const handleSaveListing = async (listing) => {
@@ -159,15 +159,11 @@ const Results = () => {
     let searches = JSON.parse(localStorage.getItem('remodifySavedSearches') || '[]');
     searches.push(searchToSave);
     localStorage.setItem('remodifySavedSearches', JSON.stringify(searches));
-    setSavedSearches(searches);
     alert('Search saved!');
   };
 
   // Load saved searches from localStorage on mount
-  useEffect(() => {
-    const searches = JSON.parse(localStorage.getItem('remodifySavedSearches') || '[]');
-    setSavedSearches(searches);
-  }, []);
+  // (removed unused saved searches state and load effect to avoid unused variables)
 
   // Dynamically determine max price from listings
   const getMaxListingPrice = (items) => {
