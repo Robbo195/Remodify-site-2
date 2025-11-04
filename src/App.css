@@ -1,6 +1,9 @@
 .App {
   text-align: center;
 }
+.App, html, body {
+  background-color: #f8f9fa; /* page background to avoid white gaps under header */
+}
 .text-left {
   text-align: left;
 }
@@ -17,8 +20,14 @@
 }
 
 .App-header {
-  background-color: #fff;
+  background-color: transparent; /* allow hero background to show under the red rule */
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  z-index: 1030; /* ensure header sits above hero artwork */
+}
+
+/* Navbar red rule moved into CSS so styling is maintainable and not inline */
+.App-header .navbar {
+  border-bottom: 3px solid #E63946;
 }
 
 .App-header h1, .App-header h2, .App-header h3, .App-header h4, .App-header h5, .App-header h6 {
@@ -27,6 +36,12 @@
 
 .App-link {
   color: #61dafb;
+}
+
+/* Consistent top spacing for page headings under the header */
+.page-section h1 {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
 @keyframes App-logo-spin {
@@ -109,11 +124,13 @@
 }
 
 .search-box {
-  background-color: rgba(255, 255, 255,); 
+  background-color: rgba(255, 255, 255, 1);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   padding: 24px;
   position: relative;
   z-index: 2;
+  max-width: 760px;
+  margin: 0 auto;
 }
 
 .slick-slider {
@@ -215,4 +232,146 @@
     margin: 40px auto 0 auto !important;
   }
 }
+
+/* General responsive navbar/header tweaks */
+@media (max-width: 992px) {
+  .App-header .navbar {
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+  }
+  .App-header .navbar-brand img {
+    height: 36px;
+  }
+  .navbar-nav .nav-link {
+    padding: 0.4rem 0.5rem;
+  }
+}
+
+/* Hero and search adjustments for tablets and phones */
+@media (max-width: 768px) {
+  .hero-background {
+    padding: 60px 12px 120px;
+    align-items: center;
+    justify-content: center;
+  }
+  .search-box {
+    padding: 16px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    width: 100%;
+    max-width: 520px;
+    margin: 12px;
+  }
+  .animated-slogan {
+    font-size: 1.6rem !important;
+    line-height: 1.15;
+    padding: 8px 6px !important;
+  }
+  .carousel-item {
+    flex: 0 0 50%; /* show 2 items on medium/small screens */
+  }
+}
+
+/* Small phone-specific rules */
+@media (max-width: 480px) {
+  .App-header .navbar-brand img {
+    height: 28px;
+  }
+  .hero-background {
+    padding: 48px 10px 80px;
+  }
+  .search-box {
+    padding: 12px;
+    margin: 10px 8px;
+    max-width: 100%;
+  }
+  .animated-slogan {
+    font-size: 1.25rem !important;
+    margin: 16px auto 0 auto !important;
+  }
+  .animated-slogan-caret {
+    height: 1.1em;
+  }
+  .carousel-item {
+    flex: 0 0 100%; /* show 1 item on very small screens */
+  }
+  .page-section h1 {
+    font-size: 1.25rem;
+    margin-top: 1.25rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Ensure animated slogan wraps nicely and centers */
+.animated-slogan {
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  word-break: break-word;
+}
+
+/* Slightly larger tap targets for interactive elements on small screens */
+@media (max-width: 768px) {
+  .navbar-nav .nav-link,
+  .carousel-btn {
+    padding: 0.6rem 0.75rem;
+  }
+}
+
+  /* Trolley icon hover and click animations */
+  .trolley-link {
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0.3rem 0.8rem;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .trolley-icon {
+    width: 26px;
+    height: 26px;
+    margin-right: 6px;
+    transition: transform 210ms cubic-bezier(.2,.8,.2,1), filter 210ms ease;
+    transform-origin: center center;
+    will-change: transform;
+  }
+  .trolley-label {
+    color: #E63946;
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin-left: 6px;
+    transition: color 180ms ease, transform 180ms ease;
+  }
+
+  .trolley-link:hover .trolley-icon,
+  .trolley-link:focus .trolley-icon {
+    transform: translateY(-3px) rotate(-6deg) scale(1.08);
+    filter: drop-shadow(0 4px 8px rgba(230,57,70,0.12));
+  }
+  .trolley-link:hover .trolley-label,
+  .trolley-link:focus .trolley-label {
+    color: #b01c1c;
+    transform: translateY(-2px);
+  }
+
+  @keyframes trolley-pop {
+    0% { transform: scale(1) rotate(0); }
+    30% { transform: scale(1.25) rotate(-12deg); }
+    60% { transform: scale(0.95) rotate(6deg); }
+    100% { transform: scale(1) rotate(0); }
+  }
+
+  .trolley-clicked .trolley-icon {
+    animation: trolley-pop 420ms cubic-bezier(.2,.8,.2,1);
+  }
+  .trolley-clicked .trolley-label {
+    animation: trolley-pop 420ms cubic-bezier(.2,.8,.2,1);
+  }
+
+  /* Reduced-motion preference: turn off animations */
+  @media (prefers-reduced-motion: reduce) {
+    .trolley-icon, .trolley-label { transition: none !important; animation: none !important; }
+  }
 
