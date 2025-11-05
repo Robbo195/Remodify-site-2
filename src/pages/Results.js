@@ -153,13 +153,27 @@ const Results = () => {
     });
   };
 
-  // Save search handler
-  const handleSaveSearch = () => {
-    const searchToSave = { ...searchInputs, date: new Date().toISOString() };
-    let searches = JSON.parse(localStorage.getItem('remodifySavedSearches') || '[]');
-    searches.push(searchToSave);
-    localStorage.setItem('remodifySavedSearches', JSON.stringify(searches));
-    alert('Search saved!');
+  // Save search handler - persist per-user in Firestore when signed in; otherwise redirect to login
+  const handleSaveSearch = async () => {
+    const redirectTo = location.pathname + location.search;
+    if (!user) {
+      // send to login with redirect back to current results
+      navigate(`/login?redirect=${encodeURIComponent(redirectTo)}`);
+      return;
+    }
+
+    try {
+      const searchToSave = { ...searchInputs, date: new Date().toISOString() };
+      const userRef = doc(db, 'users', user.uid);
+      await setDoc(userRef, {}, { merge: true });
+      await updateDoc(userRef, {
+        savedSearches: arrayUnion(searchToSave)
+      });
+      alert('Search saved to your account!');
+    } catch (err) {
+      console.error('Error saving search', err);
+      alert('There was an error saving your search.');
+    }
   };
 
   // Load saved searches from localStorage on mount
@@ -217,6 +231,9 @@ const Results = () => {
                 <div className="card-body d-flex flex-column">
                   <h5 className="card-title" style={{ fontWeight: 600, color: '#E63946' }}>{newListing.title || "Untitled listing"}</h5>
                   <div className="mb-2"><strong>Price:</strong> ${newListing.price}</div>
+                  {newListing.negotiable && (
+                    <div className="mb-2"><small className="text-muted fst-italic">Negotiable</small></div>
+                  )}
                   <div className="mb-2"><strong>Manufacturer:</strong> {newListing.manufacturer}</div>
                   <div className="mb-2"><strong>Model:</strong> {newListing.model}</div>
                   <div className="mb-2"><strong>Year:</strong> {newListing.year}</div>
@@ -237,12 +254,24 @@ const Results = () => {
                   src={item.imageUrl || "https://via.placeholder.com/32x32"}
                   className="card-img-top"
                   alt={item.title}
-                  style={{ objectFit: 'cover', height: '200px' }}
+                  style={{ objectFit: 'cover', height: '200px', cursor: 'pointer' }}
+                  onClick={() => handleViewItem(item)}
+                  tabIndex={0}
+                  onKeyPress={e => { if (e.key === 'Enter' || e.key === ' ') handleViewItem(item); }}
                 />
                 <div className="card-body d-flex flex-column">
-                  <h5 className="card-title" style={{ fontWeight: 600, color: '#E63946' }}>{item.title || "Untitled listing"}</h5>
+                  <h5
+                    className="card-title"
+                    style={{ fontWeight: 600, color: '#E63946', cursor: 'pointer' }}
+                    onClick={() => handleViewItem(item)}
+                    tabIndex={0}
+                    onKeyPress={e => { if (e.key === 'Enter' || e.key === ' ') handleViewItem(item); }}
+                  >{item.title || "Untitled listing"}</h5>
                   <p className="card-text">{item.description}</p>
-                  <p className="card-text fw-bold" style={{ color: '#E63946' }}>${item.price?.toFixed(2) || "0.00"}</p>
+                  <p className="card-text fw-bold" style={{ color: '#E63946' }}>
+                    ${item.price?.toFixed(2) || "0.00"}
+                    {item.negotiable && <span className="ms-2 text-muted fst-italic">Negotiable</span>}
+                  </p>
                   <div className="mt-auto d-flex justify-content-between align-items-center">
                     <button
                       className="btn btn-sm me-2"
@@ -251,13 +280,7 @@ const Results = () => {
                     >
                       Save
                     </button>
-                    <button
-                      className="btn btn-sm"
-                      style={{ backgroundColor: "#E63946", color: "white", borderRadius: '1rem' }}
-                      onClick={() => handleViewItem(item)}
-                    >
-                      View Item
-                    </button>
+                    {/* View Item button removed — users can click the image or title to view the item */}
                   </div>
                 </div>
               </div>
@@ -385,6 +408,24 @@ const Results = () => {
   const [contactMessage, setContactMessage] = useState("");
   const [contactSuccess, setContactSuccess] = useState(false);
 
+  // Helper to format Firestore timestamps or raw date strings/numbers
+  const formatCreatedAt = (ts) => {
+    if (!ts) return null;
+    try {
+      let d;
+      // Firestore Timestamp
+      if (ts.toDate && typeof ts.toDate === 'function') d = ts.toDate();
+      // Plain object with seconds
+      else if (ts.seconds) d = new Date(ts.seconds * 1000);
+      else d = new Date(ts);
+      if (isNaN(d)) return null;
+      // Return date-only (no time). Example: '5 Nov 2025'
+      return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+    } catch (e) {
+      return null;
+    }
+  };
+
   return (
     <div className="page-section" style={{ background: '#f9f9fa', minHeight: '100vh' }}>
       <div className="row g-0" style={{ margin: 0 }}>
@@ -449,19 +490,45 @@ const Results = () => {
               <div className="modal-body">
                 <div className="row">
                   <div className="col-md-6 text-start d-flex flex-column">
+                    {/* Render all mandatory and any additional stored fields dynamically */}
                     <div>
-                      {searchInputs.partNumber && (
-                        <p className="text-muted">Part #: {selectedItem.partNumber}</p>
+                      {/* Part number (if present) */}
+                      {selectedItem.partNumber && (<p className="text-muted">Part #: {selectedItem.partNumber}</p>)}
+                      {/* Manufacturer, Model, Year */}
+                      {selectedItem.manufacturer && (<p><strong>Manufacturer:</strong> {selectedItem.manufacturer}</p>)}
+                      {selectedItem.model && (<p><strong>Model:</strong> {selectedItem.model}</p>)}
+                      {selectedItem.series && (<p><strong>Series / Generation:</strong> {selectedItem.series}</p>)}
+                      {selectedItem.trimSpec && (<p><strong>Trim / Spec:</strong> {selectedItem.trimSpec}</p>)}
+                      {selectedItem.year && (<p><strong>Year:</strong> {selectedItem.year}</p>)}
+                      {selectedItem.category && (<p><strong>Category:</strong> {selectedItem.category}</p>)}
+                      {selectedItem.condition && (<p><strong>Condition:</strong> {selectedItem.condition}</p>)}
+                      {/* Description */}
+                      {selectedItem.description && (<div style={{ marginTop: '0.5rem' }}><strong>Description:</strong><p>{selectedItem.description}</p></div>)}
+
+                      {/* Created / listed date */}
+                      {selectedItem.createdAt && (
+                        (() => {
+                          const d = formatCreatedAt(selectedItem.createdAt);
+                          return d ? <p className="text-muted">Listed: {d}</p> : null;
+                        })()
                       )}
-                      <p><strong>Model:</strong> {selectedItem.model}</p>
-                      <p><strong>Year:</strong> {selectedItem.year}</p>
-                      <p><strong>Description:</strong> {selectedItem.description}</p>
+
+                      {/* Render any additional keys stored on the listing that are not part of the main set */}
+                      {Object.keys(selectedItem).filter(k => !['id','imageUrl','title','price','negotiable','manufacturer','model','year','condition','series','trimSpec','category','description','createdAt','userId'].includes(k)).map((key) => (
+                        <div key={key}>
+                          {/* Skip internal fields we don't want to show */}
+                          {selectedItem[key] && typeof selectedItem[key] !== 'object' && (
+                            <p><strong>{key.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase())}:</strong> {String(selectedItem[key])}</p>
+                          )}
+                        </div>
+                      ))}
                     </div>
+
                     <div className="mt-auto text-start">
                       <h4 style={{ color: '#E63946', fontWeight: 700 }}>
-                        ${selectedItem.price?.toFixed(2)}
+                        ${selectedItem.price?.toFixed(2) || '0.00'}
                         {selectedItem.negotiable ? (
-                          <small className="text-muted fst-italic ms-2">negotiable</small>
+                          <small className="text-muted fst-italic ms-2">Negotiable</small>
                         ) : (
                           <small className="text-muted fst-italic ms-2">Fixed price</small>
                         )}
