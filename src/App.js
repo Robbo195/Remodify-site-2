@@ -12,6 +12,7 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Landing from './pages/Landing';
 import Results from './pages/Results';
+import WTB from './pages/WTB';
 import CreateListing from './pages/CreateListing';
 import SignupInformation from './pages/SignupInformation';
 import Login from './pages/Login';
@@ -25,6 +26,7 @@ import Returns from './pages/Returns';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Services2 from './pages/services2';
 import SavedListings from './pages/SavedListings';
+import SavedSearches from './pages/SavedSearches';
 import Checkout from './pages/checkout';
 import DeliveryPaymentDetails from './pages/DeliveryDetails';
 
@@ -139,6 +141,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/results" element={<Results />} />
+          <Route path="/wtb" element={<WTB />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/SellersAddress" element={<SignupInformation />} />
@@ -147,6 +150,7 @@ function App() {
           <Route path="/listing-success" element={<ListingSuccess />} />
           <Route path="/services2" element={<Services2 />} />
           <Route path="/saved-listings" element={<SavedListings />} />
+          <Route path="/saved-searches" element={<SavedSearches />} />
           <Route path="/delivery-details" element={<DeliveryPaymentDetails />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/returns" element={<Returns />} />
