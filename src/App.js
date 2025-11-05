@@ -12,6 +12,7 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Landing from './pages/Landing';
 import Results from './pages/Results';
+import WTB from './pages/WTB';
 import CreateListing from './pages/CreateListing';
 import SignupInformation from './pages/SignupInformation';
 import Login from './pages/Login';
@@ -140,6 +141,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/results" element={<Results />} />
+          <Route path="/wtb" element={<WTB />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/SellersAddress" element={<SignupInformation />} />
