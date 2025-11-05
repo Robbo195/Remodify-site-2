@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { Container, Form, Row, Col, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -343,8 +344,8 @@ const Landing = () => {
   <p style={{ color: '#555', maxWidth: 760, margin: '0 auto' }}>Can't find the part you need? Post a 'Want to Buy' and get alerted — sellers reach out when they list matching items, so you beat other buyers.</p>
       <div className="d-flex justify-content-center" style={{ marginTop: '16px' }}>
         <Button
-          as="a"
-          href="/create-listing?prefill=want"
+          as={Link}
+          to="/wtb"
           variant="outline-danger"
           style={{ borderRadius: '8px', fontWeight: 700, padding: '12px 24px', transition: 'background 0.15s, color 0.15s' }}
           onMouseEnter={e => { e.currentTarget.style.background = '#E63946'; e.currentTarget.style.color = 'white'; e.currentTarget.style.borderColor = '#B01C1C'; }}

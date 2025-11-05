@@ -16,6 +16,9 @@ const Results = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5); // Default 5 per page
   const [user, setUser] = useState(null);
+  const [isSavingSearch, setIsSavingSearch] = useState(false);
+  const [saveSearchMessage, setSaveSearchMessage] = useState('');
+  const [saveSearchError, setSaveSearchError] = useState('');
   const [cart, setCart] = useState([]);
   // saved searches are persisted to localStorage; no need to keep in component state unless displayed
   const navigate = useNavigate();
@@ -161,7 +164,9 @@ const Results = () => {
       navigate(`/login?redirect=${encodeURIComponent(redirectTo)}`);
       return;
     }
-
+    setIsSavingSearch(true);
+    setSaveSearchMessage('');
+    setSaveSearchError('');
     try {
       const searchToSave = { ...searchInputs, date: new Date().toISOString() };
       const userRef = doc(db, 'users', user.uid);
@@ -169,10 +174,15 @@ const Results = () => {
       await updateDoc(userRef, {
         savedSearches: arrayUnion(searchToSave)
       });
-      alert('Search saved to your account!');
+      setSaveSearchMessage('Search saved to your account');
+      // clear message after a short delay
+      setTimeout(() => setSaveSearchMessage(''), 3500);
     } catch (err) {
       console.error('Error saving search', err);
-      alert('There was an error saving your search.');
+      setSaveSearchError('There was an error saving your search.');
+      setTimeout(() => setSaveSearchError(''), 5000);
+    } finally {
+      setIsSavingSearch(false);
     }
   };
 
@@ -389,10 +399,19 @@ const Results = () => {
           boxShadow: '0 2px 8px rgba(255,106,19,0.10)'
         }}
         onClick={handleSaveSearch}
-        disabled={Object.values(searchInputs).every(val => !val)}
+        disabled={Object.values(searchInputs).every(val => !val) || isSavingSearch}
       >
-        Save Search
+        {isSavingSearch ? 'Saving...' : 'Save Search'}
       </button>
+      {/* Inline feedback for save action */}
+      <div style={{ minWidth: 220 }}>
+        {saveSearchMessage && (
+          <div className="alert alert-success py-1 px-2 mb-0" style={{ marginLeft: '0.5rem' }}>{saveSearchMessage}</div>
+        )}
+        {saveSearchError && (
+          <div className="alert alert-danger py-1 px-2 mb-0" style={{ marginLeft: '0.5rem' }}>{saveSearchError}</div>
+        )}
+      </div>
       <label className="form-label me-2 mb-0">Sort By</label>
       <select className="form-select w-auto" value={sortBy} onChange={e => setSortBy(e.target.value)}>
         <option value="relevance">Relevance</option>
@@ -444,7 +463,17 @@ const Results = () => {
         </div>
         <div className="col-12 col-md-10" style={{ paddingLeft: 0 }}>
           <div className="container text-start" style={{ paddingLeft: 0, paddingRight: 0 }}>
-            <h1 className="title-underline-1" style={{ fontWeight: 700, color: '#E63946', marginBottom: '2rem', marginTop: '2.5rem' }}>Results</h1>
+            <div className="d-flex align-items-center justify-content-between" style={{ marginTop: '2.5rem', marginBottom: '1rem' }}>
+              <h1 className="title-underline-1" style={{ fontWeight: 700, color: '#E63946', margin: 0 }}>Results</h1>
+              <button
+                type="button"
+                className="btn"
+                style={{ borderRadius: '8px', fontWeight: 700, padding: '8px 16px', background: 'transparent', color: '#E63946', border: '2px solid #E63946' }}
+                onClick={() => navigate('/wtb')}
+              >
+                Post a WTB
+              </button>
+            </div>
             {Object.values(searchInputs).some(input => input) && (
               <div className="p-3 mb-4 rounded" style={{ background: '#fff3f3', border: '1px solid #E63946', color: '#E63946' }}>
                 <span className="fst-italic">
