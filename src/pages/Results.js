@@ -347,19 +347,20 @@ const Results = () => {
   /* Filtering UI (sidebar) */
   const renderFilters = () => (
     <div className="p-3 mb-3" style={{
-      background: '#f8f9fa', /* match page background */
-      border: '1px solid #e5e5e5', /* lighter border */
+      background: '#ffffff', /* make filter box white so it stands out */
+      border: '1px solid #000', /* black border per request */
       borderRadius: '1rem',
       marginLeft: '-2px',
       width: 'calc(100% + 4px)',
       maxWidth: 200,
       boxShadow: 'none',
+      color: '#000'
     }}>
-      <h5 style={{ color: '#B01C1C', fontWeight: 600 }}>Filter</h5>
+      <h5 style={{ color: '#FF6A13', fontWeight: 600 }}>Filter</h5>
       <div className="mb-4">
-        <label className="form-label" style={{ color: '#888' }}>Price</label>
+        <label className="form-label" style={{ color: '#000' }}>Price</label>
         <div className="d-flex align-items-center gap-2">
-          <span style={{ minWidth: 28, color: '#bbb' }}>$0</span>
+          <span style={{ minWidth: 28, color: '#000' }}>$0</span>
           <input
             type="range"
             min={0}
@@ -368,12 +369,13 @@ const Results = () => {
             value={maxPrice}
             onChange={e => setMaxPrice(Number(e.target.value))}
             className="form-range flex-grow-1"
+            style={{ accentColor: '#FF6A13' }}
           />
-          <span style={{ minWidth: 28, color: '#bbb' }}>{maxPrice === dynamicMax ? 'Max' : `$${maxPrice}`}</span>
+          <span style={{ minWidth: 28, color: '#000' }}>{maxPrice === dynamicMax ? 'Max' : `$${maxPrice}`}</span>
         </div>
       </div>
       <div className="mb-3">
-        <label className="form-label" style={{ color: '#888' }}>Condition</label>
+        <label className="form-label" style={{ color: '#000' }}>Condition</label>
         <select className="form-select" value={filters.condition} onChange={e => setFilters(f => ({ ...f, condition: e.target.value }))}>
           <option value="">Any</option>
           <option value="New">New</option>
@@ -386,15 +388,26 @@ const Results = () => {
 
   /* Sort By UI (top right) */
   const renderSortBy = () => (
-    <div className="d-flex justify-content-end align-items-center mb-3">
+    <div className="d-flex justify-content-end align-items-center mb-3" style={{ gap: '0.5rem' }}>
+      {/* WTB button to the left of Save Search — use the same hover effect as 'Sell your part' in the header */}
+      <button
+        type="button"
+        className="btn"
+        style={{ color: '#E63946', fontWeight: 700, border: '2px solid #E63946', borderRadius: '2rem', padding: '0.3rem 1.2rem', background: 'white', transition: 'background 0.2s, color 0.2s' }}
+        onMouseOver={e => { e.currentTarget.style.background = '#E63946'; e.currentTarget.style.color = 'white'; }}
+        onMouseOut={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.color = '#E63946'; }}
+        onClick={() => navigate('/wtb')}
+      >
+        Post a WTB
+      </button>
+
       <button
         className="btn"
         style={{
-          background: 'white',
-          color: '#FF6A13', // Remodify orange text
+          background: '#FF6A13',
+          color: 'white',
           borderRadius: '1rem',
           fontWeight: 600,
-          marginRight: '1rem',
           border: '2px solid #FF6A13',
           boxShadow: '0 2px 8px rgba(255,106,19,0.10)'
         }}
@@ -403,15 +416,17 @@ const Results = () => {
       >
         {isSavingSearch ? 'Saving...' : 'Save Search'}
       </button>
-      {/* Inline feedback for save action */}
-      <div style={{ minWidth: 220 }}>
+
+      {/* Inline feedback for save action (compact to avoid creating large horizontal gap) */}
+      <div style={{ minWidth: 0, display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
         {saveSearchMessage && (
-          <div className="alert alert-success py-1 px-2 mb-0" style={{ marginLeft: '0.5rem' }}>{saveSearchMessage}</div>
+          <div className="alert alert-success py-1 px-2 mb-0">{saveSearchMessage}</div>
         )}
         {saveSearchError && (
-          <div className="alert alert-danger py-1 px-2 mb-0" style={{ marginLeft: '0.5rem' }}>{saveSearchError}</div>
+          <div className="alert alert-danger py-1 px-2 mb-0">{saveSearchError}</div>
         )}
       </div>
+
       <label className="form-label me-2 mb-0">Sort By</label>
       <select className="form-select w-auto" value={sortBy} onChange={e => setSortBy(e.target.value)}>
         <option value="relevance">Relevance</option>
@@ -453,10 +468,14 @@ const Results = () => {
           className="col-12 col-md-2"
           style={{
             minWidth: 220,
-            paddingLeft: 0,
-            paddingRight: 0,
-            background: '#f8f9fa',
-            marginTop: '6.5rem' // aligns with header + search summary + sort bar
+        paddingLeft: 0,
+          paddingRight: 0,
+          background: '#f8f9fa',
+          marginTop: '6.5rem', // aligns with header + search summary + sort bar
+          position: 'sticky',
+          top: '6.5rem',
+          alignSelf: 'flex-start',
+          zIndex: 20
           }}
         >
           {renderFilters()}
@@ -465,14 +484,6 @@ const Results = () => {
           <div className="container text-start" style={{ paddingLeft: 0, paddingRight: 0 }}>
             <div className="d-flex align-items-center justify-content-between" style={{ marginTop: '2.5rem', marginBottom: '1rem' }}>
               <h1 className="title-underline-1" style={{ fontWeight: 700, color: '#E63946', margin: 0 }}>Results</h1>
-              <button
-                type="button"
-                className="btn"
-                style={{ borderRadius: '8px', fontWeight: 700, padding: '8px 16px', background: 'transparent', color: '#E63946', border: '2px solid #E63946' }}
-                onClick={() => navigate('/wtb')}
-              >
-                Post a WTB
-              </button>
             </div>
             {Object.values(searchInputs).some(input => input) && (
               <div className="p-3 mb-4 rounded" style={{ background: '#fff3f3', border: '1px solid #E63946', color: '#E63946' }}>

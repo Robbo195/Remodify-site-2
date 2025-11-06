@@ -89,10 +89,10 @@ const WTB = () => {
   };
 
   return (
-    <div className="page-section" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
+    <div className="page-section" style={{ background: '#f8f9fa', minHeight: '100vh', fontFamily: 'Inter, sans-serif' }}>
       <Container className="text-start">
         <h1 className="title-underline-1" style={{ fontSize: '2.2rem', textAlign: 'left', marginTop: '2rem', color: '#E63946', fontWeight: 700 }}>WTB (Want To Buy)</h1>
-        <p className="lead">Post a request and we'll notify you when matching parts are listed.</p>
+        <p className="lead">Are you chasing a specific item? Post a WTB and let sellers see your request once they have listed an item. If it's a close match, they can notify you directly so you don't miss out!</p>
 
         <Form onSubmit={handleSubmit} style={{ background: '#fff', border: '1px solid #e9e9e9', padding: '1.25rem', borderRadius: '0.75rem' }}>
         {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
