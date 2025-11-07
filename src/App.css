@@ -1,8 +1,18 @@
 .App {
   text-align: center;
+  /* make the app a column flex container so footer can be pushed to the bottom */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 .App, html, body {
   background-color: #f8f9fa; /* page background to avoid white gaps under header */
+}
+
+/* Main content area should grow to fill available height so footer sits at bottom */
+.App-main {
+  flex: 1 1 auto;
+  display: block;
 }
 .text-left {
   text-align: left;

@@ -29,6 +29,7 @@ import SavedListings from './pages/SavedListings';
 import SavedSearches from './pages/SavedSearches';
 import Checkout from './pages/checkout';
 import DeliveryPaymentDetails from './pages/DeliveryDetails';
+import Messages from './pages/Messages';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -136,26 +137,29 @@ function App() {
           </Navbar>
         </div>
 
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/results" element={<Results />} />
-          <Route path="/wtb" element={<WTB />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/create-listing" element={<CreateListing />} />
-          <Route path="/SellersAddress" element={<SignupInformation />} />
-          <Route path="/Login" element={<Login />} />
-          <Route path="/account" element={<Account />} />
-          <Route path="/listing-success" element={<ListingSuccess />} />
-          <Route path="/services2" element={<Services2 />} />
-          <Route path="/saved-listings" element={<SavedListings />} />
-          <Route path="/saved-searches" element={<SavedSearches />} />
-          <Route path="/delivery-details" element={<DeliveryPaymentDetails />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/returns" element={<Returns />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-        </Routes>
+        <main className="App-main">
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/results" element={<Results />} />
+            <Route path="/wtb" element={<WTB />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/create-listing" element={<CreateListing />} />
+            <Route path="/SellersAddress" element={<SignupInformation />} />
+            <Route path="/Login" element={<Login />} />
+            <Route path="/account" element={<Account />} />
+            <Route path="/listing-success" element={<ListingSuccess />} />
+            <Route path="/services2" element={<Services2 />} />
+            <Route path="/saved-listings" element={<SavedListings />} />
+            <Route path="/saved-searches" element={<SavedSearches />} />
+            <Route path="/delivery-details" element={<DeliveryPaymentDetails />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/returns" element={<Returns />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+          </Routes>
+        </main>
         <Footer />
       </div>
     </Router>
