@@ -121,14 +121,14 @@ function App() {
                       as={Link}
                       to="/create-listing"
                       className="ms-2"
-                      style={{ color: '#E63946', fontWeight: 700, fontSize: '1.1rem', border: '2px solid #E63946', borderRadius: '2rem', padding: '0.3rem 1.2rem', background: 'white', transition: 'background 0.2s, color 0.2s' }}
+                      style={{ color: '#E63946', fontWeight: 700, fontSize: '1.1rem', border: '2px solid rgba(230, 57, 70, 1)', borderRadius: '2rem', padding: '0.3rem 1.2rem', background: 'white', transition: 'background 0.2s, color 0.2s' }}
                       onMouseOver={e => { e.target.style.background = '#E63946'; e.target.style.color = 'white'; }}
                       onMouseOut={e => { e.target.style.background = 'white'; e.target.style.color = '#E63946'; }}
                     >Sell your part</Nav.Link>
                     {authLoading ? null : user ? (
                       <div style={{ marginLeft: '2.5rem' }}><ProfileIcon /></div>
                     ) : (
-                      <Nav.Link as={Link} to="/login" className="btn ms-2" style={{ backgroundColor: '#FF6600', color: 'white', fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem', fontSize: '1.1rem', boxShadow: '0 2px 8px rgba(230,57,70,0.10)' }}>Sign up/Log in</Nav.Link>
+                      <Nav.Link as={Link} to="/login" className="btn ms-2" style={{ backgroundColor: 'rgba(230, 57, 70, 1)', color: 'white', fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem', fontSize: '1.1rem', boxShadow: '0 2px 8px rgba(230,57,70,0.10)' }}>Sign up/Log in</Nav.Link>
                     )}
                   </div>
                 </Nav>
