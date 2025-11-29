@@ -409,7 +409,7 @@ const CreateListing = () => {
       {!user && (
         <div style={{ display: 'flex', justifyContent: 'center', margin: '2.5rem 0 2rem 0' }}>
           <Button
-            style={{ backgroundColor: '#FF6600', borderColor: '#FF6600', color: 'white', fontWeight: 600, borderRadius: '2rem', padding: '0.7rem 2.5rem', fontSize: '1.15rem' }}
+            style={{ backgroundColor: 'rgba(30, 78, 172, 1)', borderColor: 'rgba(30, 78, 172, 1)', color: 'white', fontWeight: 600, borderRadius: '2rem', padding: '0.7rem 2.5rem', fontSize: '1.15rem' }}
             onClick={() => navigate('/login?redirect=/create-listing')}
           >
             Sign up or Log in

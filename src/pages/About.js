@@ -20,10 +20,10 @@ const About = () => {
                 As car enthusiasts, we understand that building your dream rig is no easy feat. But we also understand that you shouldn’t have to settle for less or being ripped off.
               </p>
               <p className="text-left">
-                At Remodify, we value ALL motoring enthusiasts. No matter what your project – a car, bike, buggy or even a racing lawn mower, we are here to help you make your dream vehicle a reality and do it without breaking the bank. 
+                At ModRex, we value ALL motoring enthusiasts. No matter what your project – a car, bike, buggy or even a racing lawn mower, we are here to help you make your dream vehicle a reality and do it without breaking the bank. 
               </p>
               <p className="text-left">
-                Remodify connects enthusiasts to get the best parts at the best prices. Why buy brand new when you can buy almost brand new and pay half the price? And forget about being limited to the parts in your local area. Being from a regional city, we get it. Remodify will connect you with people all over the globe and make shipping and transactions safer and easier than ever.
+                ModRex connects enthusiasts to get the best parts at the best prices. Why buy brand new when you can buy almost brand new and pay half the price? And forget about being limited to the parts in your local area. Being from a regional city, we get it. Remodify will connect you with people all over the globe and make shipping and transactions safer and easier than ever.
               </p>
               <p className="text-left">
                 Got a part to sell? Want to buy a part? Remodify is your one-stop solution.
@@ -32,7 +32,7 @@ const About = () => {
                 So, what are you waiting for? 
               </p>
               <p className="text-left">
-                Happy Remodifying!
+                Happy modifying with ModRex!
               </p>
             </div>
           </Col>

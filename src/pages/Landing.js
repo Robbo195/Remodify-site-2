@@ -21,6 +21,8 @@ const Landing = () => {
   const [keyword, setKeyword] = useState('');
   const [anyPartSearch, setAnyPartSearch] = useState('');
   const [showManualSearch, setShowManualSearch] = useState(false);
+  const [showSlogan, setShowSlogan] = useState(true);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const navigate = useNavigate();
 
   const carBrands = [
@@ -130,6 +132,22 @@ const Landing = () => {
     navigate(`/results?${queryParams}`);
   };
 
+  const searchInputStyle = {
+    width: '100%',
+    padding: '18px 44px 18px 28px',
+    fontSize: '1.1rem',
+    borderRadius: '30px',
+    border: '1px solid #dee2e6',
+    boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
+    transition: 'all 0.2s ease-in-out',
+  };
+
+  const searchInputStyleFocused = {
+    ...searchInputStyle,
+    borderColor: '#013120',
+    boxShadow: '0 8px 20px rgba(1, 49, 32, 0.2)',
+  };
+
   return (
     <>
       <div className="hero-background">
@@ -139,24 +157,29 @@ const Landing = () => {
     </h1>
 
     <Row className="justify-content-center mb-2">
-      <Col md={10} lg={8}>
+      <Col md={10} lg={10}>
         <Form.Group controlId="formAnyPartSearch" style={{ position: 'relative' }}>
+          {showSlogan && <AnimatedSlogan />}
           <Form.Control
             type="text"
-            placeholder="Search any part"
+            placeholder={showSlogan ? '' : "Search any part"}
             className="form-control-lg"
             value={anyPartSearch}
             onChange={handleAnyPartSearchChange}
-            style={{
-              width: '100%',
-              padding: '14px 44px 14px 20px',
-              fontSize: '1rem',
-              border: '1px solid #ccc',
-              borderRadius: '6px',
+            onFocus={() => {
+              setShowSlogan(false);
+              setIsSearchFocused(true);
             }}
+            onBlur={() => {
+              if (!anyPartSearch) {
+                  setShowSlogan(true);
+              }
+              setIsSearchFocused(false);
+            }}
+            style={isSearchFocused ? searchInputStyleFocused : searchInputStyle}
           />
           <FaSearch
-            style={{ position: 'absolute', right: 18, top: '50%', transform: 'translateY(-50%)', color: '#b01c1c', fontSize: '1.2rem', cursor: 'pointer', zIndex: 2 }}
+            style={{ position: 'absolute', right: 28, top: '50%', transform: 'translateY(-50%)', color: '#013120', fontSize: '1.2rem', cursor: 'pointer', zIndex: 2 }}
             onClick={handleSearch}
             title="Search"
             tabIndex={0}
@@ -276,16 +299,6 @@ const Landing = () => {
     )}
   </Container>
 
-    {/* Slogan below searching fields, hidden when manual search is open */}
-    {!showManualSearch && (
-      <Container>
-        <Row className="justify-content-center">
-          <Col md={10} lg={8}>
-            <AnimatedSlogan />
-          </Col>
-        </Row>
-      </Container>
-    )}
     <div className="curve-divider">
       <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
         <path
@@ -364,89 +377,69 @@ const SLOGAN_WORDS = ['mum bus', 'show pony', 'pavement princess', 'weekend warr
 
 // Animated slogan component
 const AnimatedSlogan = () => {
-  const words = SLOGAN_WORDS;
-  const [index, setIndex] = useState(0);
-  const [display, setDisplay] = useState('');
-  const [deleting, setDeleting] = useState(false);
-  const [charIndex, setCharIndex] = useState(0);
-  const [caretBlink, setCaretBlink] = useState(false);
-  const [sloganError, setSloganError] = useState('');
+    const words = SLOGAN_WORDS;
+    const [index, setIndex] = useState(0);
+    const [display, setDisplay] = useState('');
+    const [deleting, setDeleting] = useState(false);
+    const [charIndex, setCharIndex] = useState(0);
+    const [caretBlink, setCaretBlink] = useState(false);
 
-  useEffect(() => {
-    let timeout;
-    try {
-      if (!words || words.length === 0) return undefined;
-      const currentWord = words[index] || '';
+    useEffect(() => {
+        let timeout;
+        const currentWord = words[index] || '';
 
-      if (!deleting) {
-        // Typing (slower)
-        if (charIndex < currentWord.length) {
-          // ensure caret not blinking while typing
-          if (caretBlink) setCaretBlink(false);
-          // Slightly slower typing
-          timeout = setTimeout(() => {
-            setDisplay(currentWord.slice(0, charIndex + 1));
-            setCharIndex(ci => ci + 1);
-          }, 220);
+        if (!deleting) {
+            // Typing
+            if (charIndex < currentWord.length) {
+                if (caretBlink) setCaretBlink(false);
+                timeout = setTimeout(() => {
+                    setDisplay(currentWord.slice(0, charIndex + 1));
+                    setCharIndex(ci => ci + 1);
+                }, 220);
+            } else {
+                // Pause, then delete
+                if (!caretBlink) setCaretBlink(true);
+                timeout = setTimeout(() => {
+                    setDeleting(true);
+                    setCaretBlink(false);
+                }, 1600);
+            }
         } else {
-          // Word fully typed: enable caret blink during the pause, then delete
-          if (!caretBlink) setCaretBlink(true);
-          timeout = setTimeout(() => {
-            setDeleting(true);
-            setCaretBlink(false);
-          }, 1600);
+            // Deleting
+            if (charIndex > 0) {
+                timeout = setTimeout(() => {
+                    setDisplay(currentWord.slice(0, charIndex - 1));
+                    setCharIndex(ci => ci - 1);
+                }, 150);
+            } else {
+                // Move to next word
+                setDeleting(false);
+                setIndex(i => (i + 1) % words.length);
+                setCharIndex(0);
+                if (caretBlink) setCaretBlink(false);
+            }
         }
-      } else {
-        // Deleting (slower)
-        if (charIndex > 0) {
-          // Slightly slower deleting
-          timeout = setTimeout(() => {
-            setDisplay(currentWord.slice(0, charIndex - 1));
-            setCharIndex(ci => ci - 1);
-          }, 150);
-        } else {
-          // Move to next word
-          setDeleting(false);
-          setIndex(i => (i + 1) % words.length);
-          setCharIndex(0);
-          // ensure caret is off while starting to type next word
-          if (caretBlink) setCaretBlink(false);
-        }
-      }
-    } catch (err) {
-      console.error('AnimatedSlogan error', err);
-      setSloganError(err?.message || String(err));
-    }
 
-    return () => clearTimeout(timeout);
-  }, [charIndex, deleting, index, words, caretBlink]);
+        return () => clearTimeout(timeout);
+    }, [charIndex, deleting, index, words, caretBlink]);
 
-  return (
-    <div>
-  <div className="text-center mb-5 animated-slogan" style={{
-        fontSize: '2.2rem',
-        color: '#E63946',
-        fontWeight: 800,
-  fontStyle: 'normal',
-        letterSpacing: '1.5px',
-        textShadow: '0 2px 12px rgba(230,57,70,0.10)',
-        background: 'linear-gradient(90deg, #fff 60%, #ffeaea 100%)',
-        borderRadius: '1.5rem',
-        padding: '1.2rem 0 1.2rem 0',
-        margin: '60px auto 0 auto',
-        maxWidth: '100%',
-        boxShadow: '0 4px 24px rgba(230,57,70,0.10)'
-      }}>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'nowrap' }}>
-          <span>Securely find parts for your</span>
-          <span className="animated-slogan-word" style={{ color: '#000000', display: 'inline-block', whiteSpace: 'nowrap' }}>{display}<span className={`animated-slogan-caret ${caretBlink ? 'blink' : ''}`} style={{ borderRight: '2px solid #000000', marginLeft: '4px' }} /></span>
-        </span>
-      </div>
-      {sloganError && (
-        <div style={{ color: 'red', textAlign: 'center' }}>Slogan error: {sloganError}</div>
-      )}
-    </div>
-  );
+    return (
+        <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '28px',
+            transform: 'translateY(-50%)',
+            zIndex: 1,
+            pointerEvents: 'none',
+            fontSize: '1.1rem',
+            color: '#6c757d',
+            whiteSpace: 'nowrap',
+        }}>
+            <span>Securely find parts for your </span>
+            <span style={{ color: '#212529', fontWeight: '500' }}>{display}</span>
+            <span className={`animated-slogan-caret ${caretBlink ? 'blink' : ''}`} style={{ borderRight: '2px solid #212529', marginLeft: '2px', display: 'inline-block', height: '1rem' }} />
+        </div>
+    );
 };
 
 export default Landing;
