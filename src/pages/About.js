@@ -17,16 +17,16 @@ const About = () => {
                 And what about if you buy the wrong part? You’ve scoured every corner of the internet just to be sent the wrong part and find out there’s no refunds. 
               </p>
               <p className="text-left">
-                As car enthusiasts, we understand that building your dream rig is no easy feat. But we also understand that you shouldn’t have to settle for less or being ripped off.
+                As car enthusiasts, we understand that building your dream rig is no easy feat. We also believe that you shouldn’t have to settle for being ripped off.
               </p>
               <p className="text-left">
                 At ModRex, we value ALL motoring enthusiasts. No matter what your project – a car, bike, buggy or even a racing lawn mower, we are here to help you make your dream vehicle a reality and do it without breaking the bank. 
               </p>
               <p className="text-left">
-                ModRex connects enthusiasts to get the best parts at the best prices. Why buy brand new when you can buy almost brand new and pay half the price? And forget about being limited to the parts in your local area. Being from a regional city, we get it. Remodify will connect you with people all over the globe and make shipping and transactions safer and easier than ever.
+                ModRex connects enthusiasts to get the best parts, at the best prices. Why buy brand new when you can buy virtually new at a fraction of the price? And forget about being limited to the parts in your local area. Being from a regional city, we get it. ModRex will connect you with people all over the globe and make shipping and transactions safer and easier than ever.
               </p>
               <p className="text-left">
-                Got a part to sell? Want to buy a part? Remodify is your one-stop solution.
+                Got a part to sell? Want to buy a part? ModRex is your one-stop solution.
               </p>
               <p className="text-left">
                 So, what are you waiting for? 
