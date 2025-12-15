@@ -5,10 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { auth } from '../firebase';
+import { auth, storage } from '../firebase';
 
 import { db } from '../firebase'; 
 import { collection, addDoc, serverTimestamp, getDocs } from 'firebase/firestore'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 import { onAuthStateChanged } from 'firebase/auth';
 
@@ -29,7 +30,16 @@ const CreateListing = () => {
   const [negotiable, setNegotiable] = useState(false);
   const [showOtherManufacturerField, setShowOtherManufacturerField] = useState(false);
   const [showAdditionalInfo, setShowAdditionalInfo] = useState(false); // Collapsible section state
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
+
+  // Set up auth state listener
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const carBrands = [
     "Abarth", "Alfa Romeo", "Alpine", "Aston Martin", "Audi", "Bentley", "BMW", "BYD",
@@ -45,6 +55,8 @@ const CreateListing = () => {
     'Engine', 'Suspension', 'Brakes', 'Electrical', 'Body', 'Interior', 'Transmission', 'Wheels & Tyres', 'Accessories', 'Performance', 'Cooling', 'Hydraulic', 'Custom Made', 'Other'
   ];
 
+  const years = Array.from({ length: 2026 - 1940 + 1 }, (_, i) => 2026 - i);
+
   const onDrop = useCallback(acceptedFiles => {
     setFiles(acceptedFiles.map(file => Object.assign(file, {
       preview: URL.createObjectURL(file)
@@ -53,19 +65,39 @@ const CreateListing = () => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const isFormValid = title && price && model && year && condition && category && files.length > 0 && description;
+  const isFormValid = title && price && manufacturer && model && condition && category && description;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Debug logging
+    console.log('Form values:', { title, price, manufacturer, model, year, condition, category, description });
+    console.log('isFormValid:', isFormValid);
+    console.log('User:', user);
+    
     if (!isFormValid) {
       setErrorMessage('*you must complete all mandatory boxes');
       return;
     }
 
-    try {
+    if (!user) {
+      setShowLoginModal(true);
+      return;
+    }
 
-  // For now, placeholder image (you'll later use Firebase Storage)
-  const imageUrl = "https://via.placeholder.com/400x250";
+    try {
+      // Upload images to Firebase Storage
+      let imageUrl = "https://via.placeholder.com/400x250";
+      
+      if (files.length > 0) {
+        const file = files[0]; // Use first image for now
+        const timestamp = Date.now();
+        const storageRef = ref(storage, `listings/${user.uid}/${timestamp}_${file.name}`);
+        
+        await uploadBytes(storageRef, file);
+        imageUrl = await getDownloadURL(storageRef);
+        console.log('Image uploaded successfully:', imageUrl);
+      }
 
       const docRef = await addDoc(collection(db, "listings"), {
         title,
@@ -79,10 +111,10 @@ const CreateListing = () => {
         trimSpec,
         condition,
         negotiable,
-  imageUrl: imageUrl, // use the placeholder variable (replace with storage URL later)
+        imageUrl: imageUrl,
         createdAt: serverTimestamp(),
-        userId: user.uid // Firestore security
-    });
+        userId: user.uid
+      });
 
       console.log("Listing added with ID:", docRef.id);
 
@@ -121,18 +153,10 @@ const CreateListing = () => {
   navigate('/listing-success', { state: { listingTitle: title, listingId: docRef.id, matchedBuyers: top4.map(t => ({ id: t.id, score: t.score })) } });
     } catch (error) {
       console.error("Error adding listing:", error);
+      console.error("Error details:", error.message, error.code);
       setErrorMessage("Something went wrong. Please try again.");
     }
   };
-
-  // removed unused handleLoginClick (login modal is triggered via other flows)
-
-  const handleCloseLoginModal = () => setShowLoginModal(false);
-
-  const years = [];
-  for (let i = 2026; i >= 1940; i--) {
-    years.push(i);
-  }
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
@@ -144,13 +168,9 @@ const CreateListing = () => {
    }
   };
 
-  const [user, setUser] = useState(null);
-  useEffect(() => {
-    const unsubcribe = onAuthStateChanged(auth, (firebaseUser) => {
-      setUser(firebaseUser)
-    });
-    return () => unsubcribe();
-  }, []);
+  const handleCloseLoginModal = () => {
+    setShowLoginModal(false);
+  };
 
   return (
     <div className="page-section" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
