@@ -30,6 +30,7 @@ import SavedSearches from './pages/SavedSearches';
 import Checkout from './pages/checkout';
 import DeliveryPaymentDetails from './pages/DeliveryDetails';
 import Messages from './pages/Messages';
+import MyListings from './pages/MyListings';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -155,6 +156,7 @@ function App() {
             <Route path="/saved-searches" element={<SavedSearches />} />
             <Route path="/delivery-details" element={<DeliveryPaymentDetails />} />
             <Route path="/messages" element={<Messages />} />
+            <Route path="/my-listings" element={<MyListings />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/returns" element={<Returns />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
