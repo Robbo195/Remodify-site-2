@@ -58,7 +58,6 @@ const Contact = () => {
           <p>
             G'day and Welcome to ModRex!<br /><br />
             Thanks for taking a look around. We hope we have been useful to you in finding what you need.<br /><br />
-            We're Robert and Mark - two uni students studying medicine and commerce full time, while working part time. Sometimes, as with all of us, life gets a bit hectic. This being so, we mightn't be able to get back to you as fast as some other websites may. Nevertheless, we will endeavour to get back to you as soon as possible.<br /><br />
             We would love for you to leave feedback - any feedback whether positive or negative is constructive to us.<br /><br />
             We look forward to hearing from you. Happy modifying with ModRex!<br /><br />
             Mark and Rob.
