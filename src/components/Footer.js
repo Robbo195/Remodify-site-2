@@ -21,10 +21,15 @@ const Footer = () => {
           <img src={australiaFlag} alt="Flag of Australia" style={{ width: 28, height: 'auto', borderRadius: 3, boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }} />
         </div>
 
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <Link to="/terms" style={linkStyle} onMouseOver={e => e.currentTarget.style.color = '#E63946'} onMouseOut={e => e.currentTarget.style.color = '#222'}>T's & C's</Link>
-          <Link to="/returns" style={linkStyle} onMouseOver={e => e.currentTarget.style.color = '#E63946'} onMouseOut={e => e.currentTarget.style.color = '#222'}>Returns</Link>
-          <Link to="/privacy" style={linkStyle} onMouseOver={e => e.currentTarget.style.color = '#E63946'} onMouseOut={e => e.currentTarget.style.color = '#222'}>Privacy Policy</Link>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <Link to="/terms" style={linkStyle} onMouseOver={e => e.currentTarget.style.color = '#E63946'} onMouseOut={e => e.currentTarget.style.color = '#222'}>T's & C's</Link>
+            <Link to="/returns" style={linkStyle} onMouseOver={e => e.currentTarget.style.color = '#E63946'} onMouseOut={e => e.currentTarget.style.color = '#222'}>Returns</Link>
+            <Link to="/privacy" style={linkStyle} onMouseOver={e => e.currentTarget.style.color = '#E63946'} onMouseOut={e => e.currentTarget.style.color = '#222'}>Privacy Policy</Link>
+          </div>
+          <div style={{ color: '#666', fontSize: '0.85rem' }}>
+            ABN: 92 939 615 779 | © {new Date().getFullYear()} All Rights Reserved
+          </div>
         </div>
       </Container>
     </footer>

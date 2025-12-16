@@ -118,13 +118,6 @@ const MyListings = () => {
                     </Card.Text>
                     <div className="d-flex gap-2 mt-3">
                       <Button
-                        variant="outline-danger"
-                        onClick={() => handleDelete(listing.id)}
-                        style={{ borderRadius: '1.5rem', flex: 1 }}
-                      >
-                        Delete
-                      </Button>
-                      <Button
                         variant="danger"
                         onClick={() => navigate(`/edit-listing/${listing.id}`)}
                         style={{
@@ -135,6 +128,13 @@ const MyListings = () => {
                         }}
                       >
                         Edit
+                      </Button>
+                      <Button
+                        variant="outline-danger"
+                        onClick={() => handleDelete(listing.id)}
+                        style={{ borderRadius: '1.5rem', flex: 1 }}
+                      >
+                        Delete
                       </Button>
                     </div>
                   </Card.Body>

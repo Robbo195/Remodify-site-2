@@ -441,6 +441,9 @@ const Results = () => {
   const [showContactBox, setShowContactBox] = useState(false);
   const [contactMessage, setContactMessage] = useState("");
   const [contactSuccess, setContactSuccess] = useState(false);
+  const [showOfferBox, setShowOfferBox] = useState(false);
+  const [offerAmount, setOfferAmount] = useState("");
+  const [offerSuccess, setOfferSuccess] = useState(false);
 
   // Helper to format Firestore timestamps or raw date strings/numbers
   const formatCreatedAt = (ts) => {
@@ -506,7 +509,7 @@ const Results = () => {
           className="modal show fade d-block"
           tabIndex="-1"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-          onClick={() => { setShowModal(false); setShowContactBox(false); setContactSuccess(false); }}
+          onClick={() => { setShowModal(false); setShowContactBox(false); setContactSuccess(false); setShowOfferBox(false); setOfferSuccess(false); setOfferAmount(""); }}
         >
           <div
             className="modal-dialog modal-dialog-centered modal-xl"
@@ -524,6 +527,9 @@ const Results = () => {
                     setShowModal(false);
                     setShowContactBox(false);
                     setContactSuccess(false);
+                    setShowOfferBox(false);
+                    setOfferSuccess(false);
+                    setOfferAmount("");
                   }}
                 />
               </div>
@@ -583,6 +589,69 @@ const Results = () => {
                       style={{ objectFit: 'cover', maxHeight: '300px', background: '#fff' }}
                     />
                     <div className="mt-auto pt-3 text-end">
+                      {selectedItem.negotiable && !showOfferBox && !offerSuccess && (
+                        <button
+                          type="button"
+                          className="btn me-2"
+                          style={{ backgroundColor: "#28a745", color: "white", fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem' }}
+                          onClick={() => setShowOfferBox(true)}
+                        >
+                          Make Offer
+                        </button>
+                      )}
+                      {showOfferBox && (
+                        <div className="mb-3 text-start">
+                          <label className="form-label fw-bold">Your Offer ($)</label>
+                          <input
+                            type="number"
+                            className="form-control mb-2"
+                            placeholder="Enter your offer amount"
+                            value={offerAmount}
+                            onChange={e => setOfferAmount(e.target.value)}
+                            min="0"
+                            step="0.01"
+                          />
+                          <div className="d-flex gap-2">
+                            <button
+                              className="btn btn-success"
+                              style={{ borderRadius: '1rem', fontWeight: 600 }}
+                              onClick={() => {
+                                let messages = JSON.parse(localStorage.getItem('remodifySellerMessages') || '[]');
+                                messages.push({
+                                  from: 'buyer',
+                                  message: `Offer: $${offerAmount}`,
+                                  type: 'offer',
+                                  offerAmount: parseFloat(offerAmount),
+                                  listingPrice: selectedItem.price,
+                                  date: new Date().toISOString(),
+                                  listingId: selectedItem.id,
+                                  listingTitle: selectedItem.title
+                                });
+                                localStorage.setItem('remodifySellerMessages', JSON.stringify(messages));
+                                setOfferSuccess(true);
+                                setOfferAmount("");
+                                setShowOfferBox(false);
+                              }}
+                              disabled={!offerAmount || parseFloat(offerAmount) <= 0}
+                            >
+                              Send Offer
+                            </button>
+                            <button
+                              className="btn btn-secondary"
+                              style={{ borderRadius: '1rem' }}
+                              onClick={() => {
+                                setShowOfferBox(false);
+                                setOfferAmount("");
+                              }}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                      {offerSuccess && (
+                        <div className="alert alert-success mb-3">Your offer has been sent to the seller!</div>
+                      )}
                       {!showContactBox && (
                         <button
                           type="button"
