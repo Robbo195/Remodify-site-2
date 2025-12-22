@@ -24,7 +24,7 @@ import trolleyIcon from './assets/trolley.svg';
 import Terms from './pages/Terms';
 import Returns from './pages/Returns';
 import PrivacyPolicy from './pages/PrivacyPolicy';
-import Services2 from './pages/services2';
+import Services3 from './pages/Services3';
 import SavedListings from './pages/SavedListings';
 import SavedSearches from './pages/SavedSearches';
 import Checkout from './pages/checkout';
@@ -68,7 +68,7 @@ function App() {
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="me-auto" style={{ color: 'black', fontWeight: 500, fontSize: '1.1rem' }}>
-                  <Nav.Link as={Link} to="/services2" style={{ color: '#222', marginRight: '1.5rem' }}>Services</Nav.Link>
+                  <Nav.Link as={Link} to="/services3" style={{ color: '#222', marginRight: '1.5rem' }}>Services</Nav.Link>
                   <Nav.Link as={Link} to="/about" style={{ color: '#222', marginRight: '1.5rem' }}>About</Nav.Link>
                   <Nav.Link as={Link} to="/contact" style={{ color: '#222', marginRight: '1.5rem' }}>Contact</Nav.Link>
                   {/* Removed Saved Listings button from banner as it is now in the account dropdown */}
@@ -150,7 +150,7 @@ function App() {
             <Route path="/Login" element={<Login />} />
             <Route path="/account" element={<Account />} />
             <Route path="/listing-success" element={<ListingSuccess />} />
-            <Route path="/services2" element={<Services2 />} />
+            <Route path="/services3" element={<Services3 />} />
             <Route path="/saved-listings" element={<SavedListings />} />
             <Route path="/saved-searches" element={<SavedSearches />} />
             <Route path="/delivery-details" element={<DeliveryPaymentDetails />} />
