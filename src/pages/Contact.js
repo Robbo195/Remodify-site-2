@@ -14,19 +14,24 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch('http://localhost:5000/send', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formData)
-    });
-    const data = await response.json();
-    if (data.success) {
-      alert('Message sent!');
-      setFormData({ name: '', email: '', message: '' });
-    } else {
-      alert('Error sending message.');
+    try {
+      const response = await fetch('http://localhost:5000/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+      const data = await response.json();
+      if (data.success) {
+        alert('Message sent successfully! We\'ll get back to you soon.');
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        alert('Error sending message. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error sending message. Please check your connection and try again.');
     }
   };
 
