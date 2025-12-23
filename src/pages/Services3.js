@@ -11,8 +11,8 @@ const Services3 = () => {
       padding: '2rem',
       minHeight: 'calc(100vh - 140px)' // Adjust height to fill viewport below navbar and above footer
     }}>
-      <img src={ModRexSwoosh} alt="ModRex Swoosh" style={{ maxWidth: '100%', maxHeight: '50vh', height: 'auto' }} />
-      <h1 style={{ marginTop: '1rem' }}>Securely connecting you</h1>
+      <img src={ModRexSwoosh} alt="ModRex Swoosh" style={{ maxWidth: '100%', maxHeight: '60vh', height: 'auto' }} />
+      <h1 style={{ marginTop: '1rem', fontSize: '1.5rem' }}>Securely connecting you</h1>
     </div>
   );
 };
