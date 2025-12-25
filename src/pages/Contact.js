@@ -37,6 +37,18 @@ const Contact = () => {
 
   return (
     <div className="page-section" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
+      <div className="team-section" style={{ marginTop: '3rem', textAlign: 'left' }}>
+        <Container>
+          <h2 className="title-underline-2" style={{ textAlign: 'left', fontSize: '2.5rem', color: '#E63946', fontWeight: 700 }}>Meet the Team</h2>
+          <p>
+            G'day and Welcome to ModRex!<br /><br />
+            Thanks for taking a look around. We hope we have been useful to you in finding what you need.<br /><br />
+            We would love for you to leave feedback - any feedback whether positive or negative is constructive to us.<br /><br />
+            We look forward to hearing from you. Happy modifying with ModRex!<br /><br />
+            Mark and Rob.
+          </p>
+        </Container>
+      </div>
       <Container>
         <h1 className="title-underline-2" style={{ textAlign: 'left', marginTop: '2rem', color: '#E63946', fontWeight: 700 }}>Contact Us</h1>
         <Form onSubmit={handleSubmit} style={{ textAlign: 'left', background: '#fff', borderRadius: '1rem', boxShadow: '0 2px 12px rgba(230,57,70,0.07)', padding: '2rem' }}>
@@ -57,18 +69,6 @@ const Contact = () => {
           </Button>
         </Form>
       </Container>
-      <div className="team-section" style={{ marginTop: '3rem', textAlign: 'left' }}>
-        <Container>
-          <h2 className="title-underline-2" style={{ textAlign: 'left', fontSize: '2.5rem', color: '#E63946', fontWeight: 700 }}>Meet the Team</h2>
-          <p>
-            G'day and Welcome to ModRex!<br /><br />
-            Thanks for taking a look around. We hope we have been useful to you in finding what you need.<br /><br />
-            We would love for you to leave feedback - any feedback whether positive or negative is constructive to us.<br /><br />
-            We look forward to hearing from you. Happy modifying with ModRex!<br /><br />
-            Mark and Rob.
-          </p>
-        </Container>
-      </div>
     </div>
   );
 };

@@ -25,6 +25,9 @@ const Landing = () => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const navigate = useNavigate();
 
+  // Toggle to enable/disable the animated slogan without removing the component
+  const ENABLE_ANIMATED_SLOGAN = true;
+
   const carBrands = [
     "Abarth", "Alfa Romeo", "Alpine", "Aston Martin", "Audi", "Bentley", "BMW", "BYD",
     "Chery", "Chevrolet", "Chrysler", "Citroen", "Cupra", "Ferrari", "Fiat", "Ford",
@@ -159,7 +162,25 @@ const Landing = () => {
     <Row className="justify-content-center mb-2">
       <Col md={10} lg={10}>
         <Form.Group controlId="formAnyPartSearch" style={{ position: 'relative' }}>
-          {showSlogan && <AnimatedSlogan />}
+          {showSlogan && (ENABLE_ANIMATED_SLOGAN ? (
+            <AnimatedSlogan />
+          ) : (
+            <div style={{
+              position: 'absolute',
+              top: '50%',
+              left: '28px',
+              transform: 'translateY(-50%)',
+              zIndex: 1,
+              pointerEvents: 'none',
+              fontSize: '1.1rem',
+              color: '#6c757d',
+              whiteSpace: 'nowrap',
+            }}>
+              <span>Securely find parts for your </span>
+              <span style={{ color: '#212529', fontWeight: '500' }}>{SLOGAN_WORDS[0]}</span>
+              <span style={{ borderRight: '2px solid #212529', marginLeft: '2px', display: 'inline-block', height: '1rem' }} />
+            </div>
+          ))}
           <Form.Control
             type="text"
             placeholder={showSlogan ? '' : "Search any part"}
