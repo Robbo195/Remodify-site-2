@@ -20,7 +20,7 @@ import Account from './pages/Account';
 import ListingSuccess from './pages/ListingSuccess';
 import ProfileIcon from './components/ProfileIcon';
 import Footer from './components/Footer';
-import trolleyIcon from './assets/trolley.svg';
+import trolleyIcon from './assets/Trolley.png';
 import Terms from './pages/Terms';
 import Returns from './pages/Returns';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -149,6 +149,7 @@ function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/create-listing" element={<CreateListing />} />
             <Route path="/SellersAddress" element={<SignupInformation />} />
+            <Route path="/signupinformation" element={<SignupInformation />} />
             <Route path="/Login" element={<Login />} />
             <Route path="/account" element={<Account />} />
             <Route path="/listing-success" element={<ListingSuccess />} />
