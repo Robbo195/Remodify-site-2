@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Form, Button } from 'react-bootstrap';
+import { Container, Form, Button, Row, Col } from 'react-bootstrap';
 import {
   signInWithPopup,
   GoogleAuthProvider,
   FacebookAuthProvider,
-  onAuthStateChanged
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword
 } from 'firebase/auth'
 import { auth } from '../firebase.js'
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -12,23 +14,42 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const Login = () => {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   // user state is not used directly; remove to avoid linter warning
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Accept either email or username
-    const isEmail = identifier.includes('@');
-    if (isEmail) {
-      // Use email for authentication (email/password or provider)
-      // Add email/password auth here if desired
-      console.log({ email: identifier, password });
-    } else {
-      // Username: in a real app, lookup email by username from your user DB
-      // For now, just log for demonstration
-      console.log({ username: identifier, password });
-      // You would fetch the email for this username, then proceed with email/password auth
+    setError('');
+    if (!identifier.includes('@')) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+    try {
+      await signInWithEmailAndPassword(auth, identifier, password);
+      // Navigation will be handled by onAuthStateChanged
+    } catch (error) {
+      console.error('Email/Password Sign-In Error:', error);
+      setError('Please use the same provider you signed up with.');
+    }
+  };
+
+  const handleSignUp = async () => {
+    if (!identifier.includes('@')) {
+      alert('Please enter a valid email address.');
+      return;
+    }
+    if (!password) {
+      alert('Please enter a password.');
+      return;
+    }
+    try {
+      await createUserWithEmailAndPassword(auth, identifier, password);
+      navigate('/signupinformation');
+    } catch (error) {
+      console.error('Email/Password Sign-Up Error:', error);
+      alert('Error creating account. Please try again.');
     }
   };
 
@@ -36,6 +57,7 @@ const Login = () => {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
+      navigate('/signupinformation');
     } catch (error) {
       console.error('Google Sign-In Error:', error);
     }
@@ -45,6 +67,7 @@ const Login = () => {
     const provider = new FacebookAuthProvider();
     try {
       await signInWithPopup(auth, provider);
+      navigate('/signupinformation');
     } catch (error) {
       console.error('Facebook Sign-In Error:', error);
     }
@@ -80,10 +103,10 @@ const Login = () => {
           </div>
           <Form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
             <Form.Group controlId="formBasicIdentifier" className="mb-3">
-              <Form.Label>Email Address or Username</Form.Label>
+              <Form.Label>Email Address</Form.Label>
               <Form.Control
-                type="text"
-                placeholder="Enter email or username"
+                type="email"
+                placeholder="Enter email"
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 style={{ borderRadius: '2rem', padding: '0.75rem 1.2rem', fontSize: '1.1rem' }}
@@ -96,14 +119,24 @@ const Login = () => {
             <div style={{ textAlign: 'right', marginBottom: '1rem' }}>
               <button type="button" onClick={() => navigate('/forgot-password')} style={{ background: 'none', border: 'none', color: '#E63946', fontWeight: 500, textDecoration: 'underline', fontSize: '1rem', padding: 0, cursor: 'pointer' }}>Forgot password?</button>
             </div>
-            <Button style={{ backgroundColor: '#E63946', borderColor: '#E63946', color: 'white', fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem', fontSize: '1.1rem', width: '100%' }} type="submit">
-              Log in
-            </Button>
+            <Row>
+              <Col md={6}>
+                <Button style={{ backgroundColor: '#E63946', borderColor: '#E63946', color: 'white', fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem', fontSize: '1.1rem', width: '100%' }} type="submit">
+                  Log in
+                </Button>
+              </Col>
+              <Col md={6}>
+                <Button style={{ backgroundColor: '#7b91c7ff', borderColor: '#ab9be4ff', color: 'white', fontWeight: 600, borderRadius: '2rem', padding: '0.5rem 2rem', fontSize: '1.1rem', width: '100%' }} type="button" onClick={handleSignUp}>
+                  Sign up
+                </Button>
+              </Col>
+            </Row>
           </Form>
+          {error && <div style={{ color: 'red', fontStyle: 'italic', textAlign: 'center', marginTop: '1rem' }}>{error}</div>}
           <div style={{ textAlign: 'center', marginTop: '1.5rem', marginBottom: '0.5rem' }}>
             <span style={{ fontSize: '1rem', color: '#222' }}>
-              Not a member?{' '}
-              <a href="/SellersAddress" style={{ color: '#E63946', fontWeight: 600, textDecoration: 'underline' }}>Sign up!</a>
+              In a rush?{' '}
+              <span style={{ color: '#E63946', fontWeight: 600 }}>Sign in with our providers below</span>
             </span>
           </div>
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4 gap-2">

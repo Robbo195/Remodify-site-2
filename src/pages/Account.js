@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Form, Button, Row, Col } from 'react-bootstrap';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 
 const Account = () => {
   const [form, setForm] = useState({
@@ -12,6 +14,9 @@ const Account = () => {
     dob: '',
     password: '',
     confirmPassword: '',
+    address: '',
+    postcode: '',
+    companyName: '',
   });
 
   const [user, setUser] = useState(null);
@@ -28,14 +33,14 @@ const Account = () => {
   const validate = () => {
     const newErrors = {};
     Object.entries(form).forEach(([key, value]) => {
-      if (!value.trim()) {
+      if (key !== 'companyName' && key !== 'password' && key !== 'confirmPassword' && !value.trim()) {
         newErrors[key] = 'This field is required';
       }
     });
-    if (form.password !== form.confirmPassword) {
+    if (form.password && form.password !== form.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
-    if (!form.email.includes('@')) {
+    if (form.email && !form.email.includes('@')) {
       newErrors.email = 'Invalid email';
     }
     return newErrors;
@@ -58,6 +63,33 @@ const Account = () => {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const fetchSensitiveData = async () => {
+      if (user) {
+        try {
+          const docRef = doc(db, 'sensitiveaccounts', user.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setForm((prev) => ({
+              ...prev,
+              firstName: data.firstName || prev.firstName,
+              surname: data.lastName || prev.surname,
+              phone: data.phoneNumber || prev.phone,
+              email: data.email || prev.email,
+              address: data.address || prev.address,
+              postcode: data.postcode || prev.postcode,
+              companyName: data.companyName || prev.companyName,
+            }));
+          }
+        } catch (error) {
+          console.error('Error fetching sensitive data:', error);
+        }
+      }
+    };
+    fetchSensitiveData();
+  }, [user]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const validationErrors = validate();
@@ -76,7 +108,7 @@ const Account = () => {
   return (
     <div className="page-section" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
       <Container>
-        <h1 className="title-underline-2 text-left" style={{ color: '#E63946', fontWeight: 700, marginBottom: '2rem' }}>Your Remodify account</h1>
+        <h1 className="title-underline-2 text-left" style={{ color: '#E63946', fontWeight: 700, marginBottom: '2rem' }}>ModRex account information</h1>
         {user && (
           <div className="mb-4 d-flex align-items-center">
             <img
@@ -193,6 +225,50 @@ const Account = () => {
               </Form.Group>
             </Col>
           </Row>
+          <Row className="mb-3">
+            <Col md={6}>
+              <Form.Group controlId="address">
+                <Form.Label>Address</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="address"
+                  value={form.address}
+                  onChange={handleChange}
+                  required
+                  isInvalid={!!errors.address}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.address}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group controlId="postcode">
+                <Form.Label>Postcode</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="postcode"
+                  value={form.postcode}
+                  onChange={handleChange}
+                  required
+                  isInvalid={!!errors.postcode}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.postcode}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Form.Group controlId="companyName" className="mb-3">
+            <Form.Label>Company Name</Form.Label>
+            <Form.Control
+              type="text"
+              name="companyName"
+              value={form.companyName}
+              onChange={handleChange}
+              placeholder="Enter company name (optional)"
+            />
+          </Form.Group>
           <Row className="mb-3">
             <Col md={6}>
               <Form.Group controlId="password">
