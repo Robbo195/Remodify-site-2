@@ -2,6 +2,7 @@
   "name": "remodify-site",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:5001",
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -29,6 +30,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:api": "node server.js",
+    "start:web": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
