@@ -1,3 +1,74 @@
-[dotenv@17.2.3] injecting env (8) from .env -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+[dotenv@17.2.3] injecting env (8) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
 Server listening at http://localhost:5001
-Message sent via Graph from no-reply@modrex.com.au on behalf of CI Test (no-reply@remodify.test)
+send: using Graph, replyTo set to customer@example.com
+sendMailGraph payload: {
+  subject: 'New Contact Form Submission from Header Test',
+  body: {
+    contentType: 'HTML',
+    content: '\n' +
+      '      <h2>New Contact Form Submission</h2>\n' +
+      '      <p><strong>Name:</strong> Header Test</p>\n' +
+      '      <p><strong>Email:</strong> customer@example.com</p>\n' +
+      '      <p><strong>Message:</strong></p>\n' +
+      '      <p>Check Reply-To header</p>\n' +
+      '    '
+  },
+  toRecipients: [ { emailAddress: [Object] } ],
+  from: { emailAddress: { address: 'no-reply@modrex.com.au' } },
+  replyTo: [ { emailAddress: [Object] } ]
+}
+Message sent via Graph from no-reply@modrex.com.au on behalf of Header Test (customer@example.com)
+send: using Graph, replyTo set to markclark041222@gmail.com
+send: using Graph, replyTo set to markclark041222@gmail.com
+sendMailGraph payload: {
+  subject: 'New Contact Form Submission from Mark Clark',
+  body: {
+    contentType: 'HTML',
+    content: '\n' +
+      '      <h2>New Contact Form Submission</h2>\n' +
+      '      <p><strong>Name:</strong> Mark Clark</p>\n' +
+      '      <p><strong>Email:</strong> markclark041222@gmail.com</p>\n' +
+      '      <p><strong>Message:</strong></p>\n' +
+      '      <p>Test</p>\n' +
+      '    '
+  },
+  toRecipients: [ { emailAddress: [Object] } ],
+  from: { emailAddress: { address: 'no-reply@modrex.com.au' } },
+  replyTo: [ { emailAddress: [Object] } ]
+}
+sendMailGraph payload: {
+  subject: 'New Contact Form Submission from Mark Clark',
+  body: {
+    contentType: 'HTML',
+    content: '\n' +
+      '      <h2>New Contact Form Submission</h2>\n' +
+      '      <p><strong>Name:</strong> Mark Clark</p>\n' +
+      '      <p><strong>Email:</strong> markclark041222@gmail.com</p>\n' +
+      '      <p><strong>Message:</strong></p>\n' +
+      '      <p>Test</p>\n' +
+      '    '
+  },
+  toRecipients: [ { emailAddress: [Object] } ],
+  from: { emailAddress: { address: 'no-reply@modrex.com.au' } },
+  replyTo: [ { emailAddress: [Object] } ]
+}
+Message sent via Graph from no-reply@modrex.com.au on behalf of Mark Clark (markclark041222@gmail.com)
+Message sent via Graph from no-reply@modrex.com.au on behalf of Mark Clark (markclark041222@gmail.com)
+send: using Graph, replyTo set to markclark041222@gmail.com
+sendMailGraph payload: {
+  subject: 'New Contact Form Submission from Mark Andrew Clark',
+  body: {
+    contentType: 'HTML',
+    content: '\n' +
+      '      <h2>New Contact Form Submission</h2>\n' +
+      '      <p><strong>Name:</strong> Mark Andrew Clark</p>\n' +
+      '      <p><strong>Email:</strong> markclark041222@gmail.com</p>\n' +
+      '      <p><strong>Message:</strong></p>\n' +
+      '      <p>Test 2</p>\n' +
+      '    '
+  },
+  toRecipients: [ { emailAddress: [Object] } ],
+  from: { emailAddress: { address: 'no-reply@modrex.com.au' } },
+  replyTo: [ { emailAddress: [Object] } ]
+}
+Message sent via Graph from no-reply@modrex.com.au on behalf of Mark Andrew Clark (markclark041222@gmail.com)

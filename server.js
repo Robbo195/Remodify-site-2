@@ -73,25 +73,33 @@ const getGraphToken = () => {
 };
 
 // Helper: send mail via Microsoft Graph using app-only token
-const sendMailGraph = async ({ from, to, subject, html }) => {
+const sendMailGraph = async ({ from, to, subject, html, replyTo }) => {
   const token = await getGraphToken();
-  const postBody = JSON.stringify({
-    message: {
-      subject,
-      body: {
-        contentType: 'HTML',
-        content: html
-      },
-      toRecipients: [
-        {
-          emailAddress: {
-            address: to
-          }
-        }
-      ]
+  const messageObj = {
+    subject,
+    body: {
+      contentType: 'HTML',
+      content: html
     },
-    saveToSentItems: true
-  });
+    toRecipients: [
+      {
+        emailAddress: {
+          address: to
+        }
+      }
+    ]
+  };
+
+  // include explicit From header and optional Reply-To
+  messageObj.from = { emailAddress: { address: from } };
+  if (replyTo) {
+    messageObj.replyTo = [{ emailAddress: { address: replyTo } }];
+  }
+
+  const postBody = JSON.stringify({ message: messageObj, saveToSentItems: true });
+
+  // log payload (no secrets) for debugging headers
+  console.log('sendMailGraph payload:', messageObj);
 
   const options = {
     hostname: 'graph.microsoft.com',
@@ -142,7 +150,8 @@ app.post('/send', async (req, res) => {
     if (process.env.USE_GRAPH && process.env.USE_GRAPH === 'true') {
       // Using Microsoft Graph API (app-only) to send mail as a user
       const fromUser = process.env.GRAPH_SENDER || process.env.EMAIL_USER;
-      await sendMailGraph({ from: fromUser, to: toAddress, subject, html: htmlBody });
+      console.log('send: using Graph, replyTo set to', email);
+      await sendMailGraph({ from: fromUser, to: toAddress, subject, html: htmlBody, replyTo: email });
       console.log(`Message sent via Graph from ${fromUser} on behalf of ${name} (${email})`);
       return res.json({ success: true });
     }
